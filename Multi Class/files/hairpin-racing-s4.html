@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hairpin Racing — Season 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --bg-2: #131315;
+    --ink: #f5f5f2;
+    --ink-dim: #9a9a96;
+    --line: #262627;
+    --accent: #f5d300;
+    --accent-2: #ff3b30;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --body: 'Archivo', system-ui, sans-serif;
+    --display: 'Anton', 'Archivo', sans-serif;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* Animated backdrop: glow + moving speed lines */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 85% -10%, rgba(245,211,0,0.10), transparent 40%),
+      radial-gradient(circle at 0% 110%, rgba(255,59,48,0.08), transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, transparent 0, transparent 49.5%, rgba(255,255,255,0.025) 50%, transparent 50.5%, transparent 100%);
+    background-size: 80px 100%;
+    pointer-events: none;
+    z-index: 0;
+    animation: lines 14s linear infinite;
+  }
+  @keyframes lines {
+    from { background-position: 0 0; }
+    to { background-position: -320px 0; }
+  }
+
+  .wrap, header, section, footer, .marquee, .flag { position: relative; z-index: 1; }
+
+  /* Moving checkered flag strips */
+  .flag {
+    height: 18px;
+    background: repeating-conic-gradient(#fff 0% 25%, #0b0b0c 0% 50%) 0 0 / 18px 18px;
+    animation: flagmove 3s linear infinite;
+  }
+  @keyframes flagmove {
+    from { background-position: 0 0; }
+    to { background-position: 72px 0; }
+  }
+
+  /* Ticker */
+  .marquee {
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    padding: 10px 0;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 48px;
+    white-space: nowrap;
+    animation: scroll 38s linear infinite;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    width: max-content;
+  }
+  .marquee-track span.dot { color: var(--accent); }
+  .marquee-track b { color: var(--ink); font-weight: 500; }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header { padding: 72px 0 48px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeIn 0.8s var(--ease-out) 0.1s forwards;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 0; height: 1px;
+    background: var(--accent);
+    display: inline-block;
+    animation: growLine 0.8s var(--ease-out) 0.3s forwards;
+  }
+  @keyframes growLine { to { width: 28px; } }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(64px, 12vw, 144px);
+    line-height: 0.85;
+    letter-spacing: -0.01em;
+    margin: 18px 0 6px;
+    text-transform: uppercase;
+  }
+  h1 .word { display: inline-block; overflow: hidden; vertical-align: top; }
+  h1 .word > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise 0.9s var(--ease-out) forwards;
+  }
+  h1 .w1 > span { animation-delay: 0.15s; }
+  h1 .w2 > span { animation-delay: 0.35s; color: var(--accent); }
+  @keyframes rise { to { transform: translateY(0); } }
+
+  .subtitle {
+    font-family: var(--display);
+    font-size: clamp(28px, 4.5vw, 48px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+    margin: 0 0 28px;
+    text-transform: uppercase;
+    overflow: hidden;
+  }
+  .subtitle > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise 0.9s var(--ease-out) 0.55s forwards;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-top: 24px;
+  }
+  .meta > div {
+    background: var(--bg);
+    padding: 16px 18px;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 0.6s var(--ease-out) forwards;
+    transition: background 0.3s var(--ease);
+  }
+  .meta > div:nth-child(1) { animation-delay: 0.75s; }
+  .meta > div:nth-child(2) { animation-delay: 0.85s; }
+  .meta > div:nth-child(3) { animation-delay: 0.95s; }
+  .meta > div:nth-child(4) { animation-delay: 1.05s; }
+  .meta > div:hover { background: var(--bg-2); }
+  .meta > div:hover .v { color: var(--accent); }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  .meta .k {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 4px;
+  }
+  .meta .v {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    transition: color 0.3s var(--ease);
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    will-change: opacity, transform;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* Stagger children */
+  .stagger:not(.in) > * { opacity: 0; transform: translateY(20px); }
+  .stagger > * {
+    transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  }
+  .stagger.in > * { opacity: 1; transform: translateY(0); }
+  .stagger.in > *:nth-child(1) { transition-delay: 0.05s; }
+  .stagger.in > *:nth-child(2) { transition-delay: 0.12s; }
+  .stagger.in > *:nth-child(3) { transition-delay: 0.19s; }
+  .stagger.in > *:nth-child(4) { transition-delay: 0.26s; }
+  .stagger.in > *:nth-child(5) { transition-delay: 0.33s; }
+  .stagger.in > *:nth-child(6) { transition-delay: 0.4s; }
+  .stagger.in > *:nth-child(7) { transition-delay: 0.47s; }
+  .stagger.in > *:nth-child(8) { transition-delay: 0.54s; }
+  .stagger.in > *:nth-child(9) { transition-delay: 0.61s; }
+  .stagger.in > *:nth-child(10) { transition-delay: 0.68s; }
+  .stagger.in > *:nth-child(11) { transition-delay: 0.75s; }
+  .stagger.in > *:nth-child(12) { transition-delay: 0.82s; }
+  .stagger.in > *:nth-child(13) { transition-delay: 0.89s; }
+
+  section { padding: 72px 0 24px; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+  .section-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 28px; }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 0.95;
+    margin: 0;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  p { margin: 0 0 14px; color: var(--ink); }
+  .dim { color: var(--ink-dim); }
+
+  /* Callout with sweeping light */
+  .callout {
+    border: 1px solid var(--accent);
+    background: linear-gradient(180deg, rgba(245,211,0,0.08), rgba(245,211,0,0) 80%);
+    margin-top: 8px;
+    position: relative;
+  }
+  .callout::before {
+    content: "THE BIG PICTURE";
+    position: absolute;
+    top: -10px; left: 20px;
+    background: var(--bg);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 0 8px;
+    z-index: 3;
+  }
+  .callout-inner {
+    position: relative;
+    overflow: hidden;
+    padding: 24px 26px;
+  }
+  .callout-inner::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -40%;
+    width: 40%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(245,211,0,0.18), transparent);
+    animation: sweep 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sweep {
+    0% { left: -40%; }
+    60%, 100% { left: 100%; }
+  }
+  .callout p { margin: 0; font-size: 17px; position: relative; z-index: 1; }
+
+  /* Schedule */
+  .schedule {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .schedule th, .schedule td {
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .schedule th {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 500;
+    border-bottom: 1px solid var(--ink);
+  }
+  .schedule tr { transition: background 0.25s var(--ease); }
+  .schedule tbody tr:not(.swap):hover { background: rgba(245,211,0,0.04); }
+  .schedule tbody tr:not(.swap):hover td.race { color: #fff; }
+  .schedule tbody tr:not(.swap):hover td.track { transform: translateX(4px); }
+  .schedule td.race {
+    color: var(--accent);
+    font-weight: 700;
+    width: 70px;
+    transition: color 0.25s var(--ease);
+  }
+  .schedule td.class { width: 180px; color: var(--ink); }
+  .schedule td.track {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 15px;
+    transition: transform 0.25s var(--ease);
+    display: inline-block;
+  }
+  .schedule tr.swap td {
+    background: #1a1a1c;
+    color: var(--accent-2);
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+  }
+  .schedule tr.swap td::before,
+  .schedule tr.swap td::after {
+    content: "↻";
+    margin: 0 10px;
+    display: inline-block;
+    animation: spin 3s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .schedule tr.special td.class { color: var(--accent); }
+
+  /* Assignment */
+  /* Ladder — P1–P8 class assignment */
+  .ladder {
+    border: 1px solid var(--line);
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .rung {
+    display: grid;
+    grid-template-columns: 90px 40px 1fr;
+    align-items: center;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.3s var(--ease), padding-left 0.3s var(--ease);
+  }
+  .rung:last-child { border-bottom: none; }
+  .rung .p {
+    font-family: var(--display);
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .rung .arrow {
+    font-family: var(--mono);
+    color: var(--ink-dim);
+    font-size: 14px;
+  }
+  .rung .cls {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .rung.c1 { background: linear-gradient(90deg, rgba(245,211,0,0.07), transparent 70%); }
+  .rung.c1 .cls { color: var(--accent); }
+  .rung.c2 { background: linear-gradient(90deg, rgba(255,59,48,0.07), transparent 70%); }
+  .rung.c2 .cls { color: var(--accent-2); }
+  .rung:hover { padding-left: 30px; }
+  .rung.c1:hover { background: linear-gradient(90deg, rgba(245,211,0,0.14), transparent 70%); }
+  .rung.c2:hover { background: linear-gradient(90deg, rgba(255,59,48,0.14), transparent 70%); }
+
+  .assignment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    margin-top: 4px;
+  }
+  .assignment > div {
+    padding: 28px 26px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s var(--ease);
+  }
+  .assignment > div:hover { transform: translateY(-3px); }
+  .assignment .odd {
+    border-right: 1px solid var(--line);
+    background: linear-gradient(135deg, rgba(245,211,0,0.1), transparent);
+  }
+  .assignment .even {
+    background: linear-gradient(135deg, rgba(255,59,48,0.1), transparent);
+  }
+  .assignment .pos {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .assignment .class-big {
+    font-family: var(--display);
+    font-size: 42px;
+    letter-spacing: 0.02em;
+    margin: 6px 0 8px;
+    text-transform: uppercase;
+  }
+  .assignment .odd .class-big { color: var(--accent); }
+  .assignment .even .class-big { color: var(--accent-2); }
+  .assignment .team-list {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* Groups */
+  .groups {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .group {
+    border: 1px solid var(--line);
+    padding: 20px 22px;
+    transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .group.good { border-color: rgba(245,211,0,0.4); }
+  .group.bad { border-color: rgba(255,59,48,0.4); }
+  .group.good:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .group.bad:hover { border-color: var(--accent-2); transform: translateY(-3px); }
+  .group h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    margin: 0 0 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .group.good h4 { color: var(--accent); }
+  .group.bad h4 { color: var(--accent-2); }
+  .group ul { margin: 0; padding: 0; list-style: none; font-size: 14px; }
+  .group ul li {
+    padding: 4px 0;
+    transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .group ul li:hover { transform: translateX(4px); color: #fff; }
+
+  /* Flow */
+  .flow {
+    display: flex;
+    gap: 0;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    border: 1px solid var(--line);
+  }
+  .flow .step {
+    flex: 1;
+    min-width: 160px;
+    padding: 20px 22px;
+    border-right: 1px solid var(--line);
+    background: var(--bg-2);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s var(--ease);
+  }
+  .flow .step:last-child { border-right: none; }
+  .flow .step::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(245,211,0,0.15), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+  }
+  .flow .step:hover::before { opacity: 1; }
+  .flow .step .n {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    position: relative;
+  }
+  .flow .step .t {
+    font-family: var(--display);
+    font-size: 22px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    position: relative;
+  }
+  .flow .step .d {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin-top: 6px;
+    position: relative;
+  }
+
+  /* Settings */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .settings-grid .row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.25s var(--ease);
+  }
+  .settings-grid .row:last-child { border-bottom: none; }
+  .settings-grid .row:hover { background: rgba(245,211,0,0.03); }
+  .settings-grid .k {
+    padding: 14px 18px;
+    background: #161618;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+    border-right: 1px solid var(--line);
+  }
+  .settings-grid .v { padding: 14px 18px; color: var(--ink); }
+  .settings-grid .v.bold { color: var(--accent); font-weight: 700; }
+
+  /* Notes */
+  .notes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-top: 8px;
+  }
+  .note {
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 20px;
+    transition: border-color 0.3s var(--ease), padding-left 0.3s var(--ease), border-left-width 0.3s var(--ease);
+  }
+  .note:hover {
+    border-left-color: var(--accent-2);
+    border-left-width: 4px;
+    padding-left: 22px;
+  }
+  .note h4 {
+    font-family: var(--display);
+    font-size: 22px;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .note p { margin: 0; font-size: 15px; color: var(--ink-dim); }
+  .note strong { color: var(--ink); }
+
+  footer {
+    padding: 56px 0 40px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  footer .sig {
+    color: var(--accent);
+    margin-top: 8px;
+    font-family: var(--display);
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  /* Mobile */
+  @media (max-width: 720px) {
+    .meta { grid-template-columns: repeat(2, 1fr); }
+    .groups, .assignment, .notes { grid-template-columns: 1fr; }
+    .assignment .odd { border-right: none; border-bottom: 1px solid var(--line); }
+    .schedule td.class { width: auto; }
+    .settings-grid .row { grid-template-columns: 110px 1fr; }
+    .flow .step { flex: 1 1 100%; border-right: none; border-bottom: 1px solid var(--line); }
+    .flow .step:last-child { border-bottom: none; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal, .stagger > * { opacity: 1 !important; transform: none !important; }
+    h1 .word > span, .subtitle > span { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="flag"></div>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span><b>SEASON 4</b></span><span class="dot">●</span>
+    <span>TUESDAYS 9 PM ET</span><span class="dot">●</span>
+    <span>10 RACES</span><span class="dot">●</span>
+    <span>4 CLASSES</span><span class="dot">●</span>
+    <span><b>GR1 · GR2 · GR3 · GR4</b></span><span class="dot">●</span>
+    <span>8 TEAMS</span><span class="dot">●</span>
+    <span>NO VGTs</span><span class="dot">●</span>
+    <span>NO DRS</span><span class="dot">●</span>
+    <span>SEE YOU ON TRACK</span><span class="dot">●</span>
+    <span><b>SEASON 4</b></span><span class="dot">●</span>
+    <span>TUESDAYS 9 PM ET</span><span class="dot">●</span>
+    <span>10 RACES</span><span class="dot">●</span>
+    <span>4 CLASSES</span><span class="dot">●</span>
+    <span><b>GR1 · GR2 · GR3 · GR4</b></span><span class="dot">●</span>
+    <span>8 TEAMS</span><span class="dot">●</span>
+    <span>NO VGTs</span><span class="dot">●</span>
+    <span>NO DRS</span><span class="dot">●</span>
+    <span>SEE YOU ON TRACK</span><span class="dot">●</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Multi-Class Season 4 · Gran Turismo 7</div>
+    <h1>
+      <span class="word w1"><span>Hairpin</span></span><br />
+      <span class="word w2"><span>Racing.</span></span>
+    </h1>
+    <div class="subtitle"><span>Ten Races · Four Classes · Eight Teams</span></div>
+
+    <div class="meta">
+      <div><div class="k">Night</div><div class="v">Tuesdays</div></div>
+      <div><div class="k">Start</div><div class="v">9:00 PM ET</div></div>
+      <div><div class="k">Format</div><div class="v">Teams of 2</div></div>
+      <div><div class="k">Length</div><div class="v">10 Races</div></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="callout reveal">
+      <div class="callout-inner">
+        <p>Across the season, each driver will race every class (Gr1, Gr2, Gr3, Gr4) <strong>twice</strong>. R1–R4 is one full rotation. R5 is the first "all-classes" race, assigned by standings. R6–R9 is another rotation (your team flipped to the opposite class from R5). R10 is the second "all-classes" race, opposite of R5.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">01</span>
+      <h2>How It Works</h2>
+    </div>
+    <div class="reveal">
+      <p>Each team has 2 drivers. In every race, one teammate runs <strong>Gr1–Gr2</strong> and the other runs <strong>Gr3–Gr4</strong>. Teams decide internally who drives which class each race.</p>
+      <p class="dim">"Teams change driver class" markers in the schedule indicate the points where driver pairings within a team swap so each person covers all four groups.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">02</span>
+      <h2>Race &amp; Track Schedule</h2>
+    </div>
+    <table class="schedule">
+      <thead>
+        <tr><th>Race</th><th>Class</th><th>Track</th></tr>
+      </thead>
+      <tbody class="stagger">
+        <tr><td class="race">R1</td><td class="class">Gr1–Gr2</td><td><span class="track">Sardegna</span></td></tr>
+        <tr><td class="race">R2</td><td class="class">Gr3–Gr4</td><td><span class="track">Dragon Trail — Seaside</span></td></tr>
+        <tr class="swap"><td colspan="3">Teams change driver class</td></tr>
+        <tr><td class="race">R3</td><td class="class">Gr1–Gr2</td><td><span class="track">Trial Mountain</span></td></tr>
+        <tr><td class="race">R4</td><td class="class">Gr3–Gr4</td><td><span class="track">Fuji</span></td></tr>
+        <tr class="special"><td class="race">R5</td><td class="class">All classes on track</td><td><span class="track">Spa</span></td></tr>
+        <tr><td class="race">R6</td><td class="class">Gr1–Gr2</td><td><span class="track">St Croix B</span></td></tr>
+        <tr><td class="race">R7</td><td class="class">Gr3–Gr4</td><td><span class="track">Interlagos</span></td></tr>
+        <tr class="swap"><td colspan="3">Teams change driver class</td></tr>
+        <tr><td class="race">R8</td><td class="class">Gr1–Gr2</td><td><span class="track">Nürburgring GP</span></td></tr>
+        <tr><td class="race">R9</td><td class="class">Gr3–Gr4</td><td><span class="track">Brands Hatch</span></td></tr>
+        <tr class="special"><td class="race">R10</td><td class="class">All classes on track</td><td><span class="track">Alsace Village</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">03</span>
+      <h2>R5 — Class Assignment</h2>
+    </div>
+    <p class="dim reveal">Based on season standings after R4. Alternating down the standings:</p>
+    <div class="ladder stagger">
+      <div class="rung c1"><span class="p">P1</span><span class="arrow">→</span><span class="cls">Gr1–Gr2</span></div>
+      <div class="rung c2"><span class="p">P2</span><span class="arrow">→</span><span class="cls">Gr3–Gr4</span></div>
+      <div class="rung c1"><span class="p">P3</span><span class="arrow">→</span><span class="cls">Gr1–Gr2</span></div>
+      <div class="rung c2"><span class="p">P4</span><span class="arrow">→</span><span class="cls">Gr3–Gr4</span></div>
+      <div class="rung c1"><span class="p">P5</span><span class="arrow">→</span><span class="cls">Gr1–Gr2</span></div>
+      <div class="rung c2"><span class="p">P6</span><span class="arrow">→</span><span class="cls">Gr3–Gr4</span></div>
+      <div class="rung c1"><span class="p">P7</span><span class="arrow">→</span><span class="cls">Gr1–Gr2</span></div>
+      <div class="rung c2"><span class="p">P8</span><span class="arrow">→</span><span class="cls">Gr3–Gr4</span></div>
+    </div>
+    <p class="dim reveal" style="margin-top:16px;">Your team picks internally which teammate drives which class.</p>
+    <p class="reveal" style="margin-top:24px;"><strong>After R5, your team flips class for R6–R9.</strong> If you were Gr1–Gr2 at Spa, you're Gr3–Gr4 the rest of the way. Each driver still gets one race in each class across R6–R9.</p>
+    <p class="reveal"><strong>R10 works like R5</strong>, but your team is in the opposite class from R5.</p>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">04</span>
+      <h2>Car Rules</h2>
+    </div>
+    <div class="groups stagger">
+      <div class="group good">
+        <h4>Allowed</h4>
+        <ul>
+          <li>Any car in your assigned class — you can change cars between races (e.g., Audi Gr3 one race, Mercedes Gr3 another)</li>
+          <li>Teams already randomly drawn — see the pinned team list</li>
+        </ul>
+      </div>
+      <div class="group bad">
+        <h4>Not Allowed</h4>
+        <ul>
+          <li>No VGTs</li>
+          <li>No all-electric cars</li>
+          <li>No cars with DRS</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">05</span>
+      <h2>Race Night Flow</h2>
+    </div>
+    <div class="flow stagger">
+      <div class="step">
+        <div class="n">STEP 01</div>
+        <div class="t">Practice</div>
+        <div class="d">Warm up · tune · test</div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 02</div>
+        <div class="t">Qualifier</div>
+        <div class="d">10 min · 180s runoff</div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 03</div>
+        <div class="t">Endurance</div>
+        <div class="d">50 min main event</div>
+      </div>
+    </div>
+    <p style="margin-top:18px;" class="dim reveal">Plan on <strong style="color:var(--ink);">~75–90 minutes per race night.</strong></p>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">06</span>
+      <h2>Room Settings</h2>
+    </div>
+    <p class="dim reveal" style="margin-bottom:16px;">Changes from S3 shown in <span style="color:var(--accent);font-weight:700;">yellow</span>.</p>
+    <div class="settings-grid stagger">
+      <div class="row"><div class="k">Grid</div><div class="v">16× · Friends Only · rolling start · grid fastest first · auto-start off</div></div>
+      <div class="row"><div class="k">Refuel Rate</div><div class="v bold">6 L/sec (up from S3)</div></div>
+      <div class="row"><div class="k">Weather</div><div class="v">Custom random blocks</div></div>
+      <div class="row"><div class="k">Time of Day</div><div class="v">Randomizer · variable time speed 3×</div></div>
+      <div class="row"><div class="k">Tire &amp; Fuel</div><div class="v">Randomizer 3×–9× · initial fuel same as race · one required compound change</div></div>
+      <div class="row"><div class="k">Usable Tires</div><div class="v">RS / RM / RH / IM / W</div></div>
+      <div class="row"><div class="k">BoP</div><div class="v">On (brakes only) · Boost none · Slipstream real</div></div>
+      <div class="row"><div class="k">Damage</div><div class="v">Visible on · mechanical light · grip off-track real</div></div>
+      <div class="row"><div class="k">Penalties</div><div class="v">Shortcut weak · pit-lane cut on · ghosting off · flag rules on</div></div>
+      <div class="row"><div class="k">Collisions</div><div class="v">Wall collision off · car collision penalty off · correct-vehicle-course off</div></div>
+    </div>
+
+    <div class="groups stagger">
+      <div class="group bad">
+        <h4>Prohibited Assists</h4>
+        <ul>
+          <li>Nitro / overtake</li>
+          <li>Nitrous</li>
+          <li>Kart usage</li>
+          <li>Engine swap</li>
+          <li>Counter-steer assist</li>
+          <li>Active stability</li>
+          <li>Driving line assist</li>
+          <li>Auto-drive</li>
+        </ul>
+      </div>
+      <div class="group good">
+        <h4>Allowed</h4>
+        <ul>
+          <li>Traction control</li>
+          <li>ABS</li>
+          <li>Unrestricted tuning parts</li>
+          <li>No limits on PP</li>
+          <li>No limits on max power</li>
+          <li>No limits on min weight</li>
+          <li>No limits on category</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">07</span>
+      <h2>Season Logistics</h2>
+    </div>
+    <div class="notes stagger">
+      <div class="note">
+        <h4>Registration &amp; Newbies</h4>
+        <p>First come, first served. If we hit <strong>32 racers</strong>, we'll open a second lobby — let Barry know if you're willing to host.</p>
+      </div>
+      <div class="note">
+        <h4>Missing a Race / Subs</h4>
+        <p>Life happens. If you'll miss a race, <strong>message Barry ASAP</strong>. Replacement drivers and absences are handled case-by-case so your team isn't penalized.</p>
+      </div>
+      <div class="note">
+        <h4>Team Names</h4>
+        <p>DM Barry your team name for the Hairpin Racing app by <strong>[DATE TBD]</strong>. Heads up: the app may have character/format limits, so keep it short and clean — Barry will let you know if it won't fit.</p>
+      </div>
+      <div class="note">
+        <h4>Start Date</h4>
+        <p>Season 4 starts <strong>2–3 weeks after Season 3 wraps</strong> (2 races left in S3, possibly a 1-week break). Exact date TBA.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="reveal">
+    Hairpin Racing · Season 4
+    <div class="sig">See you on track.</div>
+  </footer>
+
+</div>
+
+<div class="flag"></div>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
