@@ -635,6 +635,7 @@
     border-bottom: 1px solid var(--line);
     text-align: center;
     background: var(--bg);
+    white-space: nowrap;
   }
   .ct-tally-table th:first-child { text-align: left; }
   .ct-tally-table td {
@@ -765,6 +766,10 @@
     .legend-note { display: none; }
     .rounds-table { font-size: 11px; }
     .rounds-table td, .rounds-table th { padding: 8px 8px; }
+    .ct-tally-table { font-size: 12px; }
+    .ct-tally-table td, .ct-tally-table th { padding: 9px 10px; }
+    .ct-tally-table td.ct-driver-col { padding-right: 6px; }
+    .ct-col-done { display: none; }
     /* Scrollable overflow containers */
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .chart-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -1179,8 +1184,8 @@
         <thead>
           <tr>
             <th>Driver</th>
-            <th>Gr.1 Done</th>
-            <th>Gr.2 Done</th>
+            <th class="ct-col-done">Gr.1 Done</th>
+            <th class="ct-col-done">Gr.2 Done</th>
             <th>Gr.1 Left</th>
             <th>Gr.2 Left</th>
           </tr>
@@ -1189,74 +1194,74 @@
           <tr class="ct-team-row"><td colspan="5">Sully-Sully</td></tr>
           <tr>
             <td class="ct-driver-col">Sully</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
           <tr>
             <td class="ct-driver-col">Speedysully</td>
-            <td>3</td><td>4</td><td class="ct-tight">2</td><td>1</td>
+            <td class="ct-col-done">3</td><td class="ct-col-done">4</td><td class="ct-tight">2</td><td>1</td>
           </tr>
           <tr class="ct-team-row"><td colspan="5">Boltus-Zerpa</td></tr>
           <tr>
             <td class="ct-driver-col">Boltus</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
           <tr>
             <td class="ct-driver-col">A. Zerpa</td>
-            <td>3</td><td>3</td><td class="ct-tight">2</td><td class="ct-tight">2</td>
+            <td class="ct-col-done">3</td><td class="ct-col-done">3</td><td class="ct-tight">2</td><td class="ct-tight">2</td>
           </tr>
           <tr class="ct-team-row"><td colspan="5">Dark-Ctill</td></tr>
           <tr>
             <td class="ct-driver-col">Dark Delacroix</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
           <tr>
             <td class="ct-driver-col">CtillVR</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
           <tr class="ct-team-row"><td colspan="5">Barry-Pawl</td></tr>
           <tr>
             <td class="ct-driver-col">Barry</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
           <tr>
             <td class="ct-driver-col">Pawl</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
           <tr class="ct-team-row"><td colspan="5">Peekaboo-Jett</td></tr>
           <tr>
             <td class="ct-driver-col">PeekabooRacing</td>
-            <td class="ct-done">5</td><td>3</td><td class="ct-done">✓</td><td class="ct-tight">2</td>
+            <td class="ct-col-done ct-done">5</td><td class="ct-col-done">3</td><td class="ct-done">✓</td><td class="ct-tight">2</td>
           </tr>
           <tr>
             <td class="ct-driver-col">Jett</td>
-            <td>3</td><td class="ct-done">5</td><td class="ct-tight">2</td><td class="ct-done">✓</td>
+            <td class="ct-col-done">3</td><td class="ct-col-done ct-done">5</td><td class="ct-tight">2</td><td class="ct-done">✓</td>
           </tr>
           <tr class="ct-team-row"><td colspan="5">TVDV-Ncard</td></tr>
           <tr>
             <td class="ct-driver-col">TVDV</td>
-            <td class="ct-over">6</td><td>2</td><td class="ct-over">—</td><td class="ct-over">3</td>
+            <td class="ct-col-done ct-over">6</td><td class="ct-col-done">2</td><td class="ct-over">—</td><td class="ct-over">3</td>
           </tr>
           <tr>
             <td class="ct-driver-col">Ncardw11</td>
-            <td>2</td><td class="ct-over">6</td><td class="ct-over">3</td><td class="ct-over">—</td>
+            <td class="ct-col-done">2</td><td class="ct-col-done ct-over">6</td><td class="ct-over">3</td><td class="ct-over">—</td>
           </tr>
           <tr class="ct-team-row"><td colspan="5">Punk-Lead</td></tr>
           <tr>
             <td class="ct-driver-col">PunkTree</td>
-            <td class="ct-done">5</td><td>3</td><td class="ct-done">✓</td><td class="ct-tight">2</td>
+            <td class="ct-col-done ct-done">5</td><td class="ct-col-done">3</td><td class="ct-done">✓</td><td class="ct-tight">2</td>
           </tr>
           <tr>
             <td class="ct-driver-col">Leadfoot</td>
-            <td>2</td><td>4</td><td class="ct-over">3</td><td>1</td>
+            <td class="ct-col-done">2</td><td class="ct-col-done">4</td><td class="ct-over">3</td><td>1</td>
           </tr>
           <tr class="ct-team-row"><td colspan="5">Weasel-Jesus</td></tr>
           <tr>
             <td class="ct-driver-col">TheEliteWeasel61</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
           <tr>
             <td class="ct-driver-col">LART_Jesus</td>
-            <td>4</td><td>4</td><td>1</td><td>1</td>
+            <td class="ct-col-done">4</td><td class="ct-col-done">4</td><td>1</td><td>1</td>
           </tr>
         </tbody>
       </table>
