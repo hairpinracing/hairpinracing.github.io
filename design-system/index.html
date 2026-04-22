@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hairpin Racing — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Azeret+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<script>(function(){var t=localStorage.getItem('hairpin-theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;})();</script>
+<style>
+  /* ── Design Tokens ── */
+  :root {
+    --bg:       oklch(9% 0.006 80);
+    --bg-2:     oklch(11.5% 0.004 80);
+    --ink:      oklch(96% 0.003 80);
+    --ink-dim:  oklch(64% 0.004 80);
+    --line:     oklch(19% 0.005 80);
+    --accent:   oklch(86% 0.175 97);   /* yellow — hub level */
+    --accent-2: oklch(56% 0.215 28);   /* red — S3 level */
+    --green:    oklch(70% 0.18 145);
+    --mono:    'Azeret Mono', ui-monospace, monospace;
+    --body:    'Archivo', system-ui, sans-serif;
+    --display: 'Anton', 'Archivo', sans-serif;
+    --ease:     cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    color-scheme: dark light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* ── Background texture ── */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 85% -10%, oklch(86% 0.175 97 / 10%), transparent 40%),
+      radial-gradient(circle at 0% 110%,  oklch(56% 0.215 28 / 6%),  transparent 45%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: linear-gradient(90deg, transparent 0, transparent 49.5%, oklch(100% 0 0 / 2.5%) 50%, transparent 50.5%, transparent 100%);
+    background-size: 80px 100%;
+    pointer-events: none; z-index: 0;
+    animation: lines 14s linear infinite;
+  }
+  @keyframes lines { from { background-position: 0 0; } to { background-position: -320px 0; } }
+
+  /* ── Flag ── */
+  .flag {
+    height: 18px;
+    background: repeating-conic-gradient(oklch(97% 0 0) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px;
+    animation: flagmove 3s linear infinite;
+    position: relative; z-index: 1;
+  }
+  @keyframes flagmove { from { background-position: 0 0; } to { background-position: 72px 0; } }
+
+  /* ── Marquee ── */
+  .marquee {
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    padding: 10px 0;
+    position: relative; z-index: 1;
+  }
+  .marquee-track {
+    display: flex; gap: 48px; white-space: nowrap;
+    animation: scroll 52s linear infinite;
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    width: max-content;
+  }
+  .marquee-track span.dot { color: var(--accent); }
+  .marquee-track b { color: var(--ink); }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ── Nav ── */
+  .nav { padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .nav a {
+    font-family: var(--body); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-dim); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: color 0.2s var(--ease);
+  }
+  .nav a:hover { color: var(--accent); }
+  .nav a::before { content: "←"; font-weight: 400; letter-spacing: 0; }
+
+  /* ── Header ── */
+  header { padding: 56px 0 48px; border-bottom: 1px solid var(--line); }
+  .status-badge {
+    font-family: var(--body); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid oklch(86% 0.175 97 / 40%);
+    background: oklch(86% 0.175 97 / 8%);
+    padding: 4px 10px; display: inline-block; margin-bottom: 20px;
+    opacity: 0; animation: fadeIn 0.6s var(--ease-out) 0.1s forwards;
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(56px, 10vw, 120px);
+    line-height: 0.85;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+  }
+  h1 .word { display: inline-block; overflow: hidden; vertical-align: top; }
+  h1 .word > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise 0.9s var(--ease-out) forwards;
+  }
+  h1 .w1 > span { animation-delay: 0.15s; }
+  h1 .w2 > span { animation-delay: 0.35s; color: var(--accent); }
+  @keyframes rise { to { transform: translateY(0); } }
+
+  .subtitle {
+    font-family: var(--display);
+    font-size: clamp(20px, 3.5vw, 36px);
+    line-height: 1; letter-spacing: 0.02em;
+    color: var(--ink-dim); margin: 0 0 28px;
+    text-transform: uppercase; overflow: hidden;
+  }
+  .subtitle > span { display: inline-block; transform: translateY(110%); animation: rise 0.9s var(--ease-out) 0.5s forwards; }
+
+  .meta {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--line);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    margin-top: 24px;
+  }
+  .meta > div {
+    background: var(--bg); padding: 16px 18px;
+    opacity: 0; transform: translateY(12px);
+    animation: fadeUp 0.6s var(--ease-out) forwards;
+  }
+  .meta > div:nth-child(1) { animation-delay: 0.7s; }
+  .meta > div:nth-child(2) { animation-delay: 0.8s; }
+  .meta > div:nth-child(3) { animation-delay: 0.9s; }
+  .meta > div:nth-child(4) { animation-delay: 1.0s; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .meta .k { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 4px; }
+  .meta .v { font-family: var(--display); font-size: 22px; letter-spacing: 0.02em; text-transform: uppercase; }
+  .meta .v.hl { color: var(--accent); }
+
+  /* ── Sections ── */
+  section { border-bottom: 1px solid var(--line); padding: 56px 0; }
+  .section-head { display: flex; align-items: baseline; gap: 20px; margin-bottom: 36px; }
+  .section-num { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--ink-dim); text-transform: uppercase; flex-shrink: 0; }
+  .section-head h2 { font-family: var(--display); font-size: clamp(28px, 5vw, 48px); font-weight: 400; letter-spacing: 0.02em; text-transform: uppercase; margin: 0; line-height: 1; }
+
+  /* ── Scroll reveal ── */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
+  .reveal.in { opacity: 1; transform: none; }
+  .stagger > * { opacity: 0; transform: translateY(16px); transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out); }
+  .stagger.in > *:nth-child(1)  { transition-delay: 0.05s; }
+  .stagger.in > *:nth-child(2)  { transition-delay: 0.10s; }
+  .stagger.in > *:nth-child(3)  { transition-delay: 0.15s; }
+  .stagger.in > *:nth-child(4)  { transition-delay: 0.20s; }
+  .stagger.in > *:nth-child(5)  { transition-delay: 0.25s; }
+  .stagger.in > *:nth-child(6)  { transition-delay: 0.30s; }
+  .stagger.in > *:nth-child(7)  { transition-delay: 0.35s; }
+  .stagger.in > *:nth-child(8)  { transition-delay: 0.40s; }
+  .stagger.in > * { opacity: 1; transform: none; }
+
+  /* ── Callout ── */
+  .callout-inner {
+    border: 1px solid oklch(86% 0.175 97 / 35%);
+    background: oklch(86% 0.175 97 / 4%);
+    padding: 36px 40px;
+  }
+  .callout-tag { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: block; }
+  .callout-inner p { font-family: var(--display); font-size: clamp(20px, 3vw, 30px); line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase; margin: 0; color: var(--ink); max-width: 720px; }
+  .callout-sub { font-family: var(--body); font-size: 15px; color: var(--ink-dim); line-height: 1.7; text-transform: none; margin: 16px 0 0; letter-spacing: 0; max-width: 65ch; }
+  .callout-hl { color: var(--accent); }
+
+  /* ── Sub-head ── */
+  .sub-head {
+    font-family: var(--body); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-dim); margin-bottom: 16px;
+  }
+
+  /* ─────────────────────────────────────
+     DS-SPECIFIC COMPONENTS
+  ───────────────────────────────────── */
+
+  /* Color token grid */
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  .token-swatch {
+    background: var(--bg-2);
+    padding: 0 0 12px;
+    display: flex; flex-direction: column;
+  }
+  .swatch-color {
+    height: 64px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .swatch-name {
+    font-family: var(--mono); font-size: 11px; color: var(--ink);
+    letter-spacing: 0.04em; padding: 0 12px; margin-bottom: 4px;
+  }
+  .swatch-value {
+    font-family: var(--body); font-size: 10px; color: var(--ink-dim);
+    letter-spacing: 0.04em; padding: 0 12px; line-height: 1.5;
+  }
+
+  /* Seasonal accent comparison */
+  .season-compare {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  .season-col { background: var(--bg-2); padding: 24px 20px; }
+  .season-tag { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 16px; }
+  .season-swatch { height: 40px; border-radius: 0; margin-bottom: 14px; }
+  .season-label { font-family: var(--display); font-size: 20px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .season-val { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); }
+
+  /* Typography specimens */
+  .type-specimen {
+    border: 1px solid var(--line); background: var(--bg-2); margin-bottom: 1px;
+    padding: 24px 28px;
+  }
+  .type-meta {
+    display: flex; gap: 16px; align-items: center;
+    margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .type-tag { font-family: var(--mono); font-size: 10px; color: var(--ink-dim); letter-spacing: 0.08em; }
+  .type-tag.accent { color: var(--accent); }
+  .type-specimen + .type-specimen { border-top: none; }
+
+  /* Motion demo cells */
+  .motion-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  .motion-cell {
+    background: var(--bg-2); padding: 28px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .motion-name { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; }
+  .motion-desc { font-family: var(--body); font-size: 13px; color: var(--ink-dim); line-height: 1.6; }
+  .motion-spec { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); opacity: 0.6; }
+
+  /* Animated demo elements */
+  .demo-flag {
+    height: 18px;
+    background: repeating-conic-gradient(oklch(97% 0 0) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px;
+    animation: flagmove 3s linear infinite;
+  }
+  .demo-marquee-track {
+    font-family: var(--body); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: scroll 8s linear infinite;
+    width: 100%;
+  }
+  .demo-badge {
+    font-family: var(--body); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+    border: 1px solid oklch(86% 0.175 97 / 40%);
+    background: oklch(86% 0.175 97 / 8%);
+    padding: 4px 10px; display: inline-block;
+  }
+  .demo-pulse {
+    font-family: var(--body); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .demo-pulse::before { content: "●  "; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .demo-rise-wrap { overflow: hidden; }
+  .demo-rise {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise 0.9s var(--ease-out) 0.3s forwards;
+    font-family: var(--display); font-size: 32px; text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Easing demo */
+  .ease-demo {
+    height: 40px; position: relative; overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .ease-ball {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); position: absolute; top: 14px; left: 0;
+    animation: ease-move 2.4s var(--ease-out) infinite;
+  }
+  .ease-ball.ease-2 { animation-timing-function: var(--ease); animation-delay: -1.2s; background: var(--accent-2); }
+  @keyframes ease-move { 0%, 100% { left: 0; } 50% { left: calc(100% - 12px); } }
+
+  /* Component inventory table */
+  .component-table {
+    width: 100%; border-collapse: collapse;
+    border: 1px solid var(--line); font-size: 13px;
+    margin-bottom: 28px;
+  }
+  .component-table th {
+    font-family: var(--body); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-dim); padding: 10px 14px;
+    border-bottom: 1px solid var(--line); text-align: left;
+    background: var(--bg);
+  }
+  .component-table td {
+    padding: 12px 14px; border-bottom: 1px solid var(--line);
+    vertical-align: top; color: var(--ink-dim);
+  }
+  .component-table tr:last-child td { border-bottom: none; }
+  .component-table td:first-child { font-family: var(--mono); font-size: 12px; color: var(--ink); letter-spacing: 0.04em; }
+  .component-table td:nth-child(2) { color: var(--ink); font-weight: 500; }
+  .tag-pill {
+    display: inline-block; padding: 2px 8px;
+    border: 1px solid var(--line); background: var(--bg);
+    font-family: var(--body); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-dim); margin: 2px 2px 2px 0;
+  }
+
+  /* Live component specimens */
+  .specimen-wrap {
+    border: 1px solid var(--line); background: var(--bg-2);
+    margin-bottom: 28px;
+  }
+  .specimen-header {
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .specimen-label { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; }
+  .specimen-tag { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+  .specimen-body { padding: 28px 24px; }
+
+  /* Inline demo of the standings row */
+  .ds-standings-row {
+    display: flex; align-items: center; padding: 10px 16px;
+    border-bottom: 1px solid var(--line); gap: 10px;
+    background: var(--bg);
+  }
+  .ds-standings-row.leader { background: oklch(86% 0.175 97 / 4%); }
+  .ds-rank { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); width: 20px; text-align: right; flex-shrink: 0; }
+  .ds-rank.podium { color: var(--accent); font-weight: 700; }
+  .ds-name { font-family: var(--body); font-size: 14px; color: var(--ink); flex: 1; font-weight: 500; }
+  .ds-standings-row.leader .ds-name { color: var(--accent); }
+  .ds-pts { font-family: var(--mono); font-size: 13px; color: var(--ink-dim); flex-shrink: 0; }
+  .ds-pts strong { color: var(--ink); }
+
+  /* Inline demo of team card */
+  .ds-team-card {
+    background: var(--bg); padding: 22px 20px;
+    position: relative; overflow: hidden; border: 1px solid var(--line);
+  }
+  .ds-team-card::after {
+    content: "P1"; font-family: var(--display); font-size: 64px; line-height: 1;
+    letter-spacing: -0.02em; color: oklch(86% 0.175 97 / 14%);
+    position: absolute; top: 8px; right: 12px;
+    pointer-events: none; z-index: 0;
+  }
+  .ds-team-name {
+    font-family: var(--display); font-size: 20px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--accent); margin-bottom: 14px;
+    line-height: 1; position: relative; z-index: 1;
+  }
+  .ds-split-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 3px 0; position: relative; z-index: 1;
+  }
+  .ds-driver { font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
+  .ds-split-pts { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+  .ds-split-track { height: 2px; background: var(--line); margin: 8px 0; position: relative; z-index: 1; }
+  .ds-split-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); }
+  .ds-team-pts { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.05em; margin-top: 8px; position: relative; z-index: 1; }
+
+  /* Inline demo of meta grid */
+  .ds-meta {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+  }
+  .ds-meta > div { background: var(--bg-2); padding: 16px 18px; }
+
+  /* Callout red variant (S3) */
+  .callout-red {
+    border: 1px solid oklch(56% 0.215 28 / 35%);
+    background: oklch(56% 0.215 28 / 4%);
+    padding: 28px 32px;
+  }
+  .callout-red .callout-tag { color: var(--accent-2); }
+
+  /* Voice & tone */
+  .voice-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  .voice-cell { background: var(--bg-2); padding: 24px 22px; }
+  .voice-label {
+    font-family: var(--body); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 14px;
+  }
+  .voice-label.do { color: var(--green); }
+  .voice-label.dont { color: var(--accent-2); }
+  .voice-example {
+    font-family: var(--body); font-size: 15px; line-height: 1.65;
+    color: var(--ink); margin-bottom: 12px;
+  }
+  .voice-reason { font-family: var(--body); font-size: 12px; color: var(--ink-dim); line-height: 1.6; font-style: italic; }
+
+  .pattern-list {
+    list-style: none; margin: 0; padding: 0;
+    border: 1px solid var(--line); background: var(--bg-2);
+    margin-bottom: 28px;
+  }
+  .pattern-list li {
+    padding: 14px 20px; border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: 200px 1fr;
+    gap: 24px; align-items: start;
+  }
+  .pattern-list li:last-child { border-bottom: none; }
+  .pattern-name { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.06em; }
+  .pattern-text { font-family: var(--body); font-size: 14px; color: var(--ink-dim); line-height: 1.6; }
+  .pattern-example { font-family: var(--body); font-size: 14px; color: var(--ink); margin-top: 6px; }
+
+  /* Anatomy diagram */
+  .anatomy-wrap {
+    border: 1px solid var(--line); background: var(--bg-2);
+    margin-bottom: 28px;
+  }
+  .anatomy-row {
+    display: flex; align-items: stretch;
+    border-bottom: 1px solid var(--line);
+  }
+  .anatomy-row:last-child { border-bottom: none; }
+  .anatomy-label {
+    width: 160px; flex-shrink: 0;
+    padding: 14px 16px;
+    font-family: var(--mono); font-size: 11px; color: var(--accent);
+    letter-spacing: 0.08em; border-right: 1px solid var(--line);
+    display: flex; align-items: center;
+  }
+  .anatomy-desc {
+    padding: 14px 20px;
+    font-family: var(--body); font-size: 13px; color: var(--ink-dim);
+    line-height: 1.6; flex: 1;
+  }
+  .anatomy-desc strong { color: var(--ink); }
+  .anatomy-preview {
+    flex-shrink: 0; width: 200px;
+    border-left: 1px solid var(--line);
+    padding: 14px 16px; display: flex; align-items: center;
+    font-family: var(--body); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim);
+  }
+
+  /* How/steps grid */
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 28px; }
+  .how-item { background: var(--bg-2); padding: 28px 24px; }
+  .how-num { font-family: var(--display); font-size: 48px; color: oklch(86% 0.175 97 / 12%); line-height: 1; margin-bottom: 8px; }
+  .how-title { font-family: var(--display); font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .how-desc { font-size: 14px; color: var(--ink-dim); line-height: 1.65; }
+
+  /* Breakpoint ruler */
+  .breakpoint-ruler {
+    display: flex; gap: 1px; background: var(--line);
+    border: 1px solid var(--line); margin-bottom: 28px;
+  }
+  .bp-col { background: var(--bg-2); padding: 18px 20px; flex: 1; }
+  .bp-label { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 6px; }
+  .bp-range { font-family: var(--body); font-size: 13px; color: var(--ink-dim); margin-bottom: 10px; }
+  .bp-changes { list-style: none; margin: 0; padding: 0; }
+  .bp-changes li { font-family: var(--body); font-size: 12px; color: var(--ink-dim); padding: 3px 0; }
+  .bp-changes li::before { content: "—  "; color: var(--ink-dim); opacity: 0.4; }
+
+  /* Footer */
+  footer { padding: 48px 0 36px; text-align: center; font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.25em; color: var(--ink-dim); text-transform: uppercase; position: relative; z-index: 1; }
+  footer .sig { color: var(--accent); margin-top: 8px; font-family: var(--display); font-size: 22px; letter-spacing: 0.04em; }
+
+  /* ── Light theme ── */
+  [data-theme="light"] {
+    --bg:       oklch(97% 0.004 80);
+    --bg-2:     oklch(92.5% 0.004 80);
+    --ink:      oklch(11% 0.006 80);
+    --ink-dim:  oklch(47% 0.006 80);
+    --line:     oklch(83% 0.005 80);
+    --accent:   oklch(52% 0.17 97);
+    --accent-2: oklch(50% 0.215 28);
+    color-scheme: light;
+  }
+  [data-theme="light"] body::before {
+    background:
+      radial-gradient(circle at 85% -10%, oklch(52% 0.17 97 / 7%), transparent 40%),
+      radial-gradient(circle at 0% 110%,  oklch(50% 0.215 28 / 5%), transparent 45%);
+  }
+  [data-theme="light"] body::after {
+    background-image: linear-gradient(90deg, transparent 0, transparent 49.5%, oklch(0% 0 0 / 2%) 50%, transparent 50.5%, transparent 100%);
+  }
+  [data-theme="light"] .flag {
+    background: repeating-conic-gradient(oklch(18% 0.008 80) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px;
+  }
+  [data-theme="light"] .demo-flag {
+    background: repeating-conic-gradient(oklch(18% 0.008 80) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px;
+    animation: flagmove 3s linear infinite;
+  }
+
+  /* Theme toggle */
+  .theme-btn {
+    position: fixed; bottom: 20px; right: 20px; z-index: 100;
+    font-family: var(--mono); font-size: 9px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--ink-dim); background: var(--bg-2);
+    border: 1px solid var(--line);
+    padding: 7px 12px; cursor: pointer;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .theme-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    header { padding: 36px 0 28px; }
+    section { padding: 36px 0; }
+    .meta { grid-template-columns: repeat(2, 1fr); }
+    .season-compare { grid-template-columns: 1fr; }
+    .motion-grid { grid-template-columns: 1fr; }
+    .voice-grid { grid-template-columns: 1fr; }
+    .how-grid { grid-template-columns: 1fr; }
+    .callout-inner { padding: 24px 20px; }
+    .ds-meta { grid-template-columns: repeat(2, 1fr); }
+    .pattern-list li { grid-template-columns: 1fr; gap: 8px; }
+    .anatomy-preview { display: none; }
+    .anatomy-label { width: 120px; }
+    .breakpoint-ruler { flex-direction: column; }
+    .token-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  }
+  @media (max-width: 480px) {
+    .component-table { font-size: 11px; }
+    .component-table td, .component-table th { padding: 8px 10px; }
+    h1 { font-size: clamp(40px, 14vw, 80px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="flag"></div>
+
+<div class="marquee">
+  <div class="marquee-track" aria-hidden="true">
+    <span>Design System</span><span class="dot">·</span>
+    <b>Color Tokens</b><span class="dot">·</span>
+    <span>Typography</span><span class="dot">·</span>
+    <b>Motion</b><span class="dot">·</span>
+    <span>Components</span><span class="dot">·</span>
+    <b>Voice &amp; Tone</b><span class="dot">·</span>
+    <span>Anton · Archivo · Azeret Mono</span><span class="dot">·</span>
+    <b>Dark · Light</b><span class="dot">·</span>
+    <span>OKLch Color Space</span><span class="dot">·</span>
+    <b>Scroll Reveal</b><span class="dot">·</span>
+    <span>Stagger</span><span class="dot">·</span>
+    <b>Hairpin Racing League</b><span class="dot">·</span>
+    <!-- duplicate for seamless loop -->
+    <span>Design System</span><span class="dot">·</span>
+    <b>Color Tokens</b><span class="dot">·</span>
+    <span>Typography</span><span class="dot">·</span>
+    <b>Motion</b><span class="dot">·</span>
+    <span>Components</span><span class="dot">·</span>
+    <b>Voice &amp; Tone</b><span class="dot">·</span>
+    <span>Anton · Archivo · Azeret Mono</span><span class="dot">·</span>
+    <b>Dark · Light</b><span class="dot">·</span>
+    <span>OKLch Color Space</span><span class="dot">·</span>
+    <b>Scroll Reveal</b><span class="dot">·</span>
+    <span>Stagger</span><span class="dot">·</span>
+    <b>Hairpin Racing League</b><span class="dot">·</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="nav">
+    <a href="../index.html">League Home</a>
+  </div>
+</div>
+
+<header>
+  <div class="wrap">
+    <div class="status-badge">Living Document · 2026</div>
+    <h1>
+      <span class="word w1"><span>Hairpin</span></span>&nbsp;
+      <span class="word w2"><span>Design</span></span>
+    </h1>
+    <div class="subtitle"><span>Visual Language · Component Reference</span></div>
+
+    <div class="meta">
+      <div>
+        <div class="k">Files</div>
+        <div class="v">4</div>
+      </div>
+      <div>
+        <div class="k">Components</div>
+        <div class="v hl">20+</div>
+      </div>
+      <div>
+        <div class="k">Fonts</div>
+        <div class="v">3</div>
+      </div>
+      <div>
+        <div class="k">Color Mode</div>
+        <div class="v hl">Dark · Light</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<!-- ─────────────────────────────────
+  01 · FOUNDATION
+───────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">01</div>
+      <h2>Foundation</h2>
+    </div>
+
+    <div class="callout-inner reveal" style="margin-bottom:36px">
+      <span class="callout-tag">Design Tokens · OKLch Color Space</span>
+      <p>Every color is an <span class="callout-hl">oklch()</span> value — perceptually uniform, automatically theme-safe. The same variable names flip between dark and light via <code>[data-theme="light"]</code> overrides.</p>
+      <p class="callout-sub">No hex codes in the system. No magic numbers. Every color decision is a variable. Light mode is not an afterthought — it is maintained in parallel.</p>
+    </div>
+
+    <p class="sub-head reveal">Base Tokens — Shared Across All Pages</p>
+    <div class="token-grid stagger reveal">
+      <div class="token-swatch">
+        <div class="swatch-color" style="background: oklch(9% 0.006 80)"></div>
+        <div class="swatch-name">--bg</div>
+        <div class="swatch-value">oklch(9% 0.006 80)<br>Page background</div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch-color" style="background: oklch(11.5% 0.004 80)"></div>
+        <div class="swatch-name">--bg-2</div>
+        <div class="swatch-value">oklch(11.5% 0.004 80)<br>Card / elevated</div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch-color" style="background: oklch(96% 0.003 80)"></div>
+        <div class="swatch-name">--ink</div>
+        <div class="swatch-value">oklch(96% 0.003 80)<br>Primary text</div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch-color" style="background: oklch(64% 0.004 80)"></div>
+        <div class="swatch-name">--ink-dim</div>
+        <div class="swatch-value">oklch(64% 0.004 80)<br>Labels / meta</div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch-color" style="background: oklch(19% 0.005 80)"></div>
+        <div class="swatch-name">--line</div>
+        <div class="swatch-value">oklch(19% 0.005 80)<br>Borders / dividers</div>
+      </div>
+      <div class="token-swatch">
+        <div class="swatch-color" style="background: oklch(70% 0.18 145)"></div>
+        <div class="swatch-name">--green</div>
+        <div class="swatch-value">oklch(70% 0.18 145)<br>Completed / OK state</div>
+      </div>
+    </div>
+
+    <p class="sub-head reveal">Accent Colors — Per Season</p>
+    <div class="season-compare reveal">
+      <div class="season-col">
+        <div class="season-tag">Index · Hub</div>
+        <div class="season-swatch" style="background: oklch(86% 0.175 97)"></div>
+        <div class="season-label" style="color: oklch(86% 0.175 97)">Yellow</div>
+        <div class="season-val">oklch(86% 0.175 97)</div>
+      </div>
+      <div class="season-col">
+        <div class="season-tag">Season 3 · Active</div>
+        <div class="season-swatch" style="background: oklch(56% 0.215 28)"></div>
+        <div class="season-label" style="color: oklch(56% 0.215 28)">Red</div>
+        <div class="season-val">oklch(56% 0.215 28)</div>
+      </div>
+      <div class="season-col">
+        <div class="season-tag">Season 4 · Upcoming</div>
+        <div class="season-swatch" style="background: oklch(86% 0.175 97)"></div>
+        <div class="season-label" style="color: oklch(86% 0.175 97)">Yellow</div>
+        <div class="season-val">oklch(86% 0.175 97)</div>
+      </div>
+    </div>
+
+    <p class="sub-head reveal">Light Mode Overrides</p>
+    <table class="component-table reveal">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Dark Value</th>
+          <th>Light Value</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>--bg</td><td>oklch(9% …)</td><td>oklch(97% …)</td><td>Inverted luminance</td></tr>
+        <tr><td>--bg-2</td><td>oklch(11.5% …)</td><td>oklch(92.5% …)</td><td>Card surface</td></tr>
+        <tr><td>--ink</td><td>oklch(96% …)</td><td>oklch(11% …)</td><td>Text flips dark</td></tr>
+        <tr><td>--ink-dim</td><td>oklch(64% …)</td><td>oklch(47% …)</td><td>Dimmed text</td></tr>
+        <tr><td>--line</td><td>oklch(19% …)</td><td>oklch(83% …)</td><td>Borders lighten</td></tr>
+        <tr><td>--accent (S3)</td><td>oklch(56% 0.215 28)</td><td>oklch(50% 0.215 28)</td><td>Slightly darker for contrast</td></tr>
+        <tr><td>--accent (index/S4)</td><td>oklch(86% 0.175 97)</td><td>oklch(52% 0.17 97)</td><td>Much darker — light bg demands it</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout-red reveal">
+      <span class="callout-tag">Rule</span>
+      <p style="font-family: var(--display); font-size: clamp(16px, 2.5vw, 24px); text-transform: uppercase; letter-spacing: 0.01em; margin: 0; color: var(--ink);">Accent colors must maintain WCAG AA contrast on their respective background. Light mode always sets a darker oklch() value for accents to compensate for the white surface.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─────────────────────────────────
+  02 · TYPOGRAPHY
+───────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">02</div>
+      <h2>Typography</h2>
+    </div>
+
+    <p class="sub-head reveal">Three-Font System</p>
+
+    <!-- Anton -->
+    <div class="type-specimen reveal">
+      <div class="type-meta">
+        <span class="type-tag accent">Anton</span>
+        <span class="type-tag">--display</span>
+        <span class="type-tag">Google Fonts · weight 400 (single weight)</span>
+      </div>
+      <div style="font-family: 'Anton', sans-serif; font-size: clamp(48px, 10vw, 112px); line-height: 0.88; letter-spacing: -0.01em; text-transform: uppercase; margin-bottom: 12px;">Hairpin<br><span style="color: var(--accent)">Racing</span></div>
+      <div style="font-family: var(--body); font-size: 13px; color: var(--ink-dim);">
+        Use for: H1 headings, section heads, team names, large callout text, moment card titles, score displays. Always uppercase. Always letter-spacing 0.02–0.04em unless set tight at display scale.
+      </div>
+    </div>
+
+    <!-- Archivo -->
+    <div class="type-specimen reveal">
+      <div class="type-meta">
+        <span class="type-tag accent">Archivo</span>
+        <span class="type-tag">--body</span>
+        <span class="type-tag">wght 400 · 500 · 600 · 700 · 800 · 900 · italic 400</span>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <div style="font-family: 'Archivo', sans-serif; font-size: 13px; color: var(--ink-dim); margin-bottom: 6px;">Label / Tag — 10–11px · wght 700 · letter-spacing 0.18–0.25em · uppercase</div>
+        <div style="font-family: 'Archivo', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);">Live · Standings After R8</div>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <div style="font-family: 'Archivo', sans-serif; font-size: 13px; color: var(--ink-dim); margin-bottom: 6px;">Body text — 14–16px · wght 400–500 · line-height 1.55–1.7</div>
+        <div style="font-family: 'Archivo', sans-serif; font-size: 15px; color: var(--ink); line-height: 1.65; max-width: 55ch;">In multi-class racing, each driver earns points within their own car category. Those scores combine into a team total — which is what the standings track.</div>
+      </div>
+      <div>
+        <div style="font-family: 'Archivo', sans-serif; font-size: 13px; color: var(--ink-dim); margin-bottom: 6px;">Driver / standings name — 14px · wght 500 · standard tracking</div>
+        <div style="font-family: 'Archivo', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink);">DarkDelacroix</div>
+      </div>
+    </div>
+
+    <!-- Azeret Mono -->
+    <div class="type-specimen reveal">
+      <div class="type-meta">
+        <span class="type-tag accent">Azeret Mono</span>
+        <span class="type-tag">--mono</span>
+        <span class="type-tag">wght 400 · 500 · 700</span>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <div style="font-family: 'Archivo', sans-serif; font-size: 13px; color: var(--ink-dim); margin-bottom: 6px;">Large score — clamp(32px, 5vw, 48px) · letter-spacing -0.02em</div>
+        <div style="font-family: 'Azeret Mono', monospace; font-size: clamp(32px, 5vw, 48px); letter-spacing: -0.02em; line-height: 1;">203</div>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <div style="font-family: 'Archivo', sans-serif; font-size: 13px; color: var(--ink-dim); margin-bottom: 6px;">Standings points — 13px · standard</div>
+        <div style="font-family: 'Azeret Mono', monospace; font-size: 13px; color: var(--ink-dim);">168 pts &nbsp;<strong style="color: var(--ink);">→ 1st</strong></div>
+      </div>
+      <div>
+        <div style="font-family: 'Archivo', sans-serif; font-size: 13px; color: var(--ink-dim); margin-bottom: 6px;">Mono tags / round numbers — 11–12px · letter-spacing 0.04–0.08em</div>
+        <div style="font-family: 'Azeret Mono', monospace; font-size: 11px; color: var(--accent-2); letter-spacing: 0.06em;">24–29 pts every round · 203 pts · 1-pt lead</div>
+      </div>
+    </div>
+
+    <p class="sub-head reveal" style="margin-top: 28px;">Clamp Scale</p>
+    <table class="component-table reveal">
+      <thead>
+        <tr><th>Role</th><th>Expression</th><th>Min → Max</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>H1 Display</td><td>clamp(64px, 12vw, 144px)</td><td>64 → 144px</td></tr>
+        <tr><td>H1 Display (ds page)</td><td>clamp(56px, 10vw, 120px)</td><td>56 → 120px</td></tr>
+        <tr><td>Subtitle</td><td>clamp(24px, 4vw, 40px)</td><td>24 → 40px</td></tr>
+        <tr><td>Section Head</td><td>clamp(28px, 5vw, 48px)</td><td>28 → 48px</td></tr>
+        <tr><td>Callout Text</td><td>clamp(22px, 3.5vw, 34px)</td><td>22 → 34px</td></tr>
+        <tr><td>Score / Margin</td><td>clamp(52px, 8vw, 88px)</td><td>52 → 88px</td></tr>
+        <tr><td>Moment Title</td><td>clamp(17px, 2vw, 22px)</td><td>17 → 22px</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ─────────────────────────────────
+  03 · MOTION
+───────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">03</div>
+      <h2>Motion</h2>
+    </div>
+
+    <div class="callout-inner reveal" style="margin-bottom:36px">
+      <span class="callout-tag">Two Easing Curves · All Animations</span>
+      <p>Motion is purposeful, not decorative. <span class="callout-hl">--ease-out</span> powers everything entrance-related. <span class="callout-hl">--ease</span> handles transitions and state changes.</p>
+      <p class="callout-sub">prefers-reduced-motion is respected everywhere — all scroll-triggered animations collapse to instant opacity reveals; all SVG draw animations are disabled at the stylesheet level.</p>
+    </div>
+
+    <p class="sub-head reveal">Easing Curves</p>
+    <div class="specimen-wrap reveal" style="margin-bottom:28px">
+      <div class="specimen-body">
+        <div style="display:flex;gap:32px;flex-wrap:wrap;margin-bottom:20px;">
+          <div>
+            <div class="sub-head" style="margin-bottom:6px">--ease-out · Entrances</div>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--ink-dim);">cubic-bezier(0.16, 1, 0.3, 1)</div>
+          </div>
+          <div>
+            <div class="sub-head" style="margin-bottom:6px">--ease · Transitions</div>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--ink-dim);">cubic-bezier(0.2, 0.8, 0.2, 1)</div>
+          </div>
+        </div>
+        <div class="ease-demo">
+          <div class="ease-ball"></div>
+          <div class="ease-ball ease-2"></div>
+        </div>
+        <div style="display:flex;gap:24px;margin-top:10px;">
+          <div style="display:flex;align-items:center;gap:8px;font-family:var(--body);font-size:11px;color:var(--ink-dim);">
+            <div style="width:12px;height:12px;border-radius:50%;background:var(--accent);flex-shrink:0"></div> --ease-out
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-family:var(--body);font-size:11px;color:var(--ink-dim);">
+            <div style="width:12px;height:12px;border-radius:50%;background:var(--accent-2);flex-shrink:0"></div> --ease
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub-head reveal">Named Keyframes</p>
+    <div class="motion-grid stagger reveal">
+      <div class="motion-cell">
+        <div class="motion-name">flagmove</div>
+        <div class="demo-flag"></div>
+        <div class="motion-desc">Checkered flag strip that scrolls horizontally. Runs on page load, loops forever. The opening ritual of every page.</div>
+        <div class="motion-spec">3s · linear · infinite · background-position</div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-name">scroll (marquee)</div>
+        <div style="overflow:hidden;border:1px solid var(--line);padding:8px 0;">
+          <div style="display:flex;gap:32px;white-space:nowrap;animation:scroll 8s linear infinite;width:max-content;font-family:var(--body);font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-dim);">
+            <span>Design System</span><span style="color:var(--accent)">·</span>
+            <span>Hairpin Racing</span><span style="color:var(--accent)">·</span>
+            <span>Design System</span><span style="color:var(--accent)">·</span>
+            <span>Hairpin Racing</span><span style="color:var(--accent)">·</span>
+          </div>
+        </div>
+        <div class="motion-desc">Continuous ticker below the flag. Content duplicated for seamless loop. 38–52s duration depending on content density.</div>
+        <div class="motion-spec">38–52s · linear · infinite · translateX(-50%)</div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-name">rise (headline words)</div>
+        <div class="demo-rise-wrap">
+          <div class="demo-rise">Season</div>
+        </div>
+        <div class="motion-desc">Each word in H1 masks behind an overflow:hidden container and rises from translateY(110%) to 0. Words stagger by 0.2s delay per word.</div>
+        <div class="motion-spec">0.9s · ease-out · 0.15–0.5s delay · translateY</div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-name">fadeIn</div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <div class="demo-badge" style="animation:fadeIn 1.5s var(--ease-out) infinite alternate;">Live</div>
+        </div>
+        <div class="motion-desc">Simple opacity 0→1. Used for: status badges, chart grids, chart axis labels, chart end-labels — anything that appears as a secondary reveal.</div>
+        <div class="motion-spec">0.35–0.6s · ease-out · once</div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-name">fadeUp (meta grid)</div>
+        <div class="ds-meta" style="margin-bottom:0">
+          <div style="opacity:0;transform:translateY(12px);animation:fadeUp 0.6s var(--ease-out) 0.1s forwards">
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Teams</div>
+            <div class="v" style="font-family:var(--display);font-size:22px;text-transform:uppercase;">8</div>
+          </div>
+          <div style="opacity:0;transform:translateY(12px);animation:fadeUp 0.6s var(--ease-out) 0.2s forwards">
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Rounds</div>
+            <div class="v" style="font-family:var(--display);font-size:22px;text-transform:uppercase;color:var(--accent);">10</div>
+          </div>
+          <div style="opacity:0;transform:translateY(12px);animation:fadeUp 0.6s var(--ease-out) 0.3s forwards">
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Classes</div>
+            <div class="v" style="font-family:var(--display);font-size:22px;text-transform:uppercase;">2</div>
+          </div>
+          <div style="opacity:0;transform:translateY(12px);animation:fadeUp 0.6s var(--ease-out) 0.4s forwards">
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Rule</div>
+            <div class="v" style="font-family:var(--display);font-size:22px;text-transform:uppercase;color:var(--accent);">5/5</div>
+          </div>
+        </div>
+        <div class="motion-desc">Four meta cells stagger in with 0.1s delay each. Each cell opacity + translateY. Part of the header sequence.</div>
+        <div class="motion-spec">0.6s · ease-out · 0.7–1.0s delay · once</div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-name">pulse (live indicator)</div>
+        <div class="demo-pulse">Tonight — R9</div>
+        <div class="motion-desc">Slow opacity breathe on live-race status labels. Not distracting — a gentle confirmation something is happening right now.</div>
+        <div class="motion-spec">1.5s · ease-in-out · infinite · opacity 1→0.5</div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-name">lines (bg grid)</div>
+        <div style="height:48px;background:var(--bg);position:relative;overflow:hidden;border:1px solid var(--line);">
+          <div style="position:absolute;inset:0;background-image:linear-gradient(90deg,transparent 0,transparent 49.5%,oklch(100% 0 0 / 6%) 50%,transparent 50.5%,transparent 100%);background-size:80px 100%;animation:lines 14s linear infinite;"></div>
+        </div>
+        <div class="motion-desc">Fixed background vertical lines drift left at imperceptible speed. Adds texture without distraction. Set to pointer-events:none, z-index 0.</div>
+        <div class="motion-spec">14s · linear · infinite · background-position</div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-name">drawLine (SVG chart)</div>
+        <div style="padding:8px 0">
+          <svg width="100%" height="48" viewBox="0 0 240 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="44" x2="240" y2="44" stroke="var(--line)" stroke-width="1"/>
+            <polyline points="0,36 40,28 80,20 120,14 160,10 200,8 240,6"
+              stroke="var(--accent)" stroke-width="2" fill="none"
+              style="stroke-dasharray:9999;stroke-dashoffset:9999;animation:drawLine 2s var(--ease-out) 0.5s infinite both"/>
+            <polyline points="0,40 40,38 80,32 120,26 160,22 200,18 240,16"
+              stroke="var(--accent-2)" stroke-width="2" fill="none"
+              style="stroke-dasharray:9999;stroke-dashoffset:9999;animation:drawLine 2s var(--ease-out) 0.8s infinite both"/>
+          </svg>
+          @keyframes drawLine { from { stroke-dashoffset: 9999; } to { stroke-dashoffset: 0; } }
+        </div>
+        <div class="motion-desc">Championship chart lines draw from left to right using stroke-dashoffset. Triggered by IntersectionObserver when .chart-wrap enters viewport.</div>
+        <div class="motion-spec">1.6s · ease-out · intersection-triggered · per-team delay</div>
+      </div>
+    </div>
+
+    <p class="sub-head reveal">Scroll-Triggered Reveal System</p>
+    <table class="component-table reveal">
+      <thead>
+        <tr><th>Class</th><th>Behavior</th><th>When triggered</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>.reveal</td>
+          <td>opacity 0→1 + translateY(20px→0) · 0.6s ease-out</td>
+          <td>IntersectionObserver threshold 0.1 — adds .in class</td>
+        </tr>
+        <tr>
+          <td>.stagger</td>
+          <td>Same as .reveal but each child delays 0.05s × child index (1–10)</td>
+          <td>Same observer — .in on parent cascades to children</td>
+        </tr>
+        <tr>
+          <td>.chart-wrap.in</td>
+          <td>Unpauses all .chart-line, .chart-grid, .chart-circle, .chart-end-label animations</td>
+          <td>IntersectionObserver on .chart-wrap</td>
+        </tr>
+        <tr>
+          <td>prefers-reduced-motion</td>
+          <td>All animated properties set to final values immediately; animations disabled</td>
+          <td>@media rule — no JS needed</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ─────────────────────────────────
+  04 · COMPONENTS
+───────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">04</div>
+      <h2>Components</h2>
+    </div>
+
+    <p class="sub-head reveal">Component Inventory</p>
+    <table class="component-table reveal">
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Name</th>
+          <th>Used In</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>.flag</td>
+          <td>Checkered Flag Strip</td>
+          <td>All pages</td>
+          <td>Always first element in body. 18px tall.</td>
+        </tr>
+        <tr>
+          <td>.marquee</td>
+          <td>Info Ticker</td>
+          <td>All pages</td>
+          <td>Always second element. Content duplicated for loop.</td>
+        </tr>
+        <tr>
+          <td>.status-badge</td>
+          <td>Status Badge</td>
+          <td>All pages</td>
+          <td>First visible element in header. Accent border + bg tint.</td>
+        </tr>
+        <tr>
+          <td>.meta</td>
+          <td>Meta Grid</td>
+          <td>All pages</td>
+          <td>4-col grid below H1. 2-col on mobile. Key/value pairs.</td>
+        </tr>
+        <tr>
+          <td>.callout-inner</td>
+          <td>Callout Block</td>
+          <td>S3, S4, DS</td>
+          <td>Accent-bordered statement box. Has .callout-tag, p, .callout-sub variants.</td>
+        </tr>
+        <tr>
+          <td>.how-grid / .how-item</td>
+          <td>Flow Steps</td>
+          <td>S3, S4</td>
+          <td>3-col numbered steps. Ghost large numbers as decoration.</td>
+        </tr>
+        <tr>
+          <td>.schedule-table</td>
+          <td>Race Schedule Table</td>
+          <td>S3, S4</td>
+          <td>Done / Tonight / Upcoming row states. .tonight has accent tint.</td>
+        </tr>
+        <tr>
+          <td>.champ-picture</td>
+          <td>Championship Battle Card</td>
+          <td>S3, S4</td>
+          <td>3-col layout: leader | gap | chaser. Accent-bordered.</td>
+        </tr>
+        <tr>
+          <td>.standings-wrap</td>
+          <td>Standings Grid</td>
+          <td>S3, S4</td>
+          <td>2 side-by-side columns (individual + team). 1-col on mobile.</td>
+        </tr>
+        <tr>
+          <td>.teams-grid / .team-card</td>
+          <td>Team Cards</td>
+          <td>S3, S4</td>
+          <td>2-col grid. Ghost "Px" counter. Split bar shows driver contribution.</td>
+        </tr>
+        <tr>
+          <td>.chart-wrap</td>
+          <td>Points Chart</td>
+          <td>S3, S4</td>
+          <td>SVG inline chart with drawLine animations. Intersection-triggered.</td>
+        </tr>
+        <tr>
+          <td>.moment-grid / .moment-card</td>
+          <td>Season Moments</td>
+          <td>S3, S4</td>
+          <td>2-col grid of narrative cards. Ghost round number bg decoration.</td>
+        </tr>
+        <tr>
+          <td>.rounds-table</td>
+          <td>Round-by-Round Table</td>
+          <td>S3, S4</td>
+          <td>Mono font for data. .rt-win / .rt-crisis color states.</td>
+        </tr>
+        <tr>
+          <td>.ct-tally-table</td>
+          <td>Class Allocation Tally</td>
+          <td>S3</td>
+          <td>5/5 rule tracker. Team group rows. Green/red/yellow cell states.</td>
+        </tr>
+        <tr>
+          <td>.settings-grid</td>
+          <td>Room Settings</td>
+          <td>S3, S4</td>
+          <td>2-col key/value grid. .ok (green) and .no (red) value states.</td>
+        </tr>
+        <tr>
+          <td>.theme-btn</td>
+          <td>Dark/Light Toggle</td>
+          <td>All pages</td>
+          <td>Fixed bottom-right. Mono label. Persists to localStorage.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Live specimens -->
+    <p class="sub-head reveal">Live Specimens</p>
+
+    <!-- Status badge -->
+    <div class="specimen-wrap reveal">
+      <div class="specimen-header">
+        <span class="specimen-label">.status-badge</span>
+        <span class="specimen-tag">Header · Always first in header</span>
+      </div>
+      <div class="specimen-body" style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="demo-badge">Live · R8 Complete</div>
+        <div class="demo-badge" style="border-color:oklch(56% 0.215 28 / 40%);background:oklch(56% 0.215 28 / 8%);color:oklch(56% 0.215 28)">Season 3 · Active</div>
+      </div>
+    </div>
+
+    <!-- Meta grid -->
+    <div class="specimen-wrap reveal">
+      <div class="specimen-header">
+        <span class="specimen-label">.meta</span>
+        <span class="specimen-tag">Header · Below H1 · 4→2 col on mobile</span>
+      </div>
+      <div class="specimen-body" style="padding:0">
+        <div class="ds-meta">
+          <div>
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Season</div>
+            <div style="font-family:var(--display);font-size:22px;text-transform:uppercase;">3</div>
+          </div>
+          <div>
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Teams</div>
+            <div style="font-family:var(--display);font-size:22px;text-transform:uppercase;">8</div>
+          </div>
+          <div>
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Rounds</div>
+            <div style="font-family:var(--display);font-size:22px;text-transform:uppercase;color:var(--accent);">10</div>
+          </div>
+          <div>
+            <div class="k" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Status</div>
+            <div style="font-family:var(--display);font-size:22px;text-transform:uppercase;color:var(--accent);">Live</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Callout -->
+    <div class="specimen-wrap reveal">
+      <div class="specimen-header">
+        <span class="specimen-label">.callout-inner</span>
+        <span class="specimen-tag">Statement block · accent-bordered · two accent variants</span>
+      </div>
+      <div class="specimen-body">
+        <div style="margin-bottom:16px">
+          <div style="font-family:var(--body);font-size:10px;color:var(--ink-dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Yellow variant (index/S4)</div>
+          <div class="callout-inner" style="padding:24px 28px">
+            <span class="callout-tag">Key Rule · S4</span>
+            <p>5 rounds in each car class. Every driver. No exceptions.</p>
+          </div>
+        </div>
+        <div class="callout-red">
+          <span class="callout-tag">Key Rule · S3</span>
+          <p style="font-family:var(--display);font-size:clamp(16px,2.5vw,24px);text-transform:uppercase;letter-spacing:0.01em;margin:0;color:var(--ink);">Red variant (S3). Same structure, accent-2 colors.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Standings -->
+    <div class="specimen-wrap reveal">
+      <div class="specimen-header">
+        <span class="specimen-label">.standings-row</span>
+        <span class="specimen-tag">Individual standings · .leader highlights top row</span>
+      </div>
+      <div class="specimen-body" style="padding:0">
+        <div class="ds-standings-row leader">
+          <span class="ds-rank podium">1</span>
+          <span class="ds-name">Sully</span>
+          <span class="ds-pts"><strong>168</strong></span>
+        </div>
+        <div class="ds-standings-row">
+          <span class="ds-rank podium">2</span>
+          <span class="ds-name">DarkDelacroix</span>
+          <span class="ds-pts"><strong>130</strong></span>
+        </div>
+        <div class="ds-standings-row">
+          <span class="ds-rank podium">3</span>
+          <span class="ds-name">Barry</span>
+          <span class="ds-pts"><strong>121</strong></span>
+        </div>
+        <div class="ds-standings-row">
+          <span class="ds-rank">4</span>
+          <span class="ds-name">A. Zerpa</span>
+          <span class="ds-pts"><strong>115</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team card -->
+    <div class="specimen-wrap reveal">
+      <div class="specimen-header">
+        <span class="specimen-label">.team-card</span>
+        <span class="specimen-tag">Ghost position watermark · split bar · .leader tints accent</span>
+      </div>
+      <div class="specimen-body">
+        <div class="ds-team-card">
+          <div class="ds-team-name">Sully-Speedysully</div>
+          <div class="ds-split-row">
+            <span class="ds-driver">Sully</span>
+            <span class="ds-split-pts">168 pts</span>
+          </div>
+          <div class="ds-split-row">
+            <span class="ds-driver">Speedysully</span>
+            <span class="ds-split-pts">35 pts</span>
+          </div>
+          <div class="ds-split-track" style="position:relative">
+            <div class="ds-split-fill" style="width:83%"></div>
+          </div>
+          <div class="ds-team-pts">203 pts total</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow steps -->
+    <div class="specimen-wrap reveal">
+      <div class="specimen-header">
+        <span class="specimen-label">.how-grid / .how-item</span>
+        <span class="specimen-tag">3-col numbered steps · 1-col on mobile</span>
+      </div>
+      <div class="specimen-body" style="padding:0">
+        <div class="how-grid" style="border:none;margin-bottom:0">
+          <div class="how-item">
+            <div class="how-num">01</div>
+            <div class="how-title">Pick Your Car</div>
+            <div class="how-desc">Choose Gr.1 or Gr.2 each round. Five rounds required in each class.</div>
+          </div>
+          <div class="how-item">
+            <div class="how-num">02</div>
+            <div class="how-title">Earn Points</div>
+            <div class="how-desc">Score within your class. Your points combine with your teammate's for the team total.</div>
+          </div>
+          <div class="how-item">
+            <div class="how-num">03</div>
+            <div class="how-title">Win the Season</div>
+            <div class="how-desc">Highest combined team score after R10 takes the championship.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─────────────────────────────────
+  05 · VOICE & TONE
+───────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">05</div>
+      <h2>Voice &amp; Tone</h2>
+    </div>
+
+    <div class="callout-inner reveal" style="margin-bottom:36px">
+      <span class="callout-tag">Writing Principles</span>
+      <p>Direct. Declarative. <span class="callout-hl">Never softened.</span> Stats stand alone — they don't need framing to feel important.</p>
+      <p class="callout-sub">The voice is a pit board, not a press release. It knows the audience already understands racing. Context is parenthetical, not explanatory. Short sentences finish hard.</p>
+    </div>
+
+    <p class="sub-head reveal">Do / Don't</p>
+    <div class="voice-grid stagger reveal">
+      <div class="voice-cell">
+        <div class="voice-label do">✓ Do</div>
+        <div class="voice-example">"Eight rounds of clockwork built a 1-point lead."</div>
+        <div class="voice-reason">Declarative. No filler. The number anchors the claim.</div>
+      </div>
+      <div class="voice-cell">
+        <div class="voice-label dont">✗ Don't</div>
+        <div class="voice-example">"After an impressive performance across all eight rounds so far, the team currently holds a slim lead."</div>
+        <div class="voice-reason">Padded, hedged, vague. "Currently" and "slim" do less than the actual number.</div>
+      </div>
+      <div class="voice-cell">
+        <div class="voice-label do">✓ Do</div>
+        <div class="voice-example">"24–29 pts every round · 203 pts · 1-pt lead"</div>
+        <div class="voice-reason">Mono font reinforces data-first intent. The dot separator reads as a ticker, not a sentence.</div>
+      </div>
+      <div class="voice-cell">
+        <div class="voice-label dont">✗ Don't</div>
+        <div class="voice-example">"They consistently scored between 24 and 29 points and now lead by one."</div>
+        <div class="voice-reason">Loses the visual rhythm. Prose buries what data shows instantly.</div>
+      </div>
+      <div class="voice-cell">
+        <div class="voice-label do">✓ Do</div>
+        <div class="voice-example">"BZ swung higher and crashed harder."</div>
+        <div class="voice-reason">Conversational but precise. Racing verbs. No abstract adjectives.</div>
+      </div>
+      <div class="voice-cell">
+        <div class="voice-label dont">✗ Don't</div>
+        <div class="voice-example">"Team Boltus-Zerpa had some higher scoring rounds but also experienced some lower finishes."</div>
+        <div class="voice-reason">"Some" appears twice. "Experienced" is a bureaucratic verb. Zero specificity.</div>
+      </div>
+      <div class="voice-cell">
+        <div class="voice-label do">✓ Do</div>
+        <div class="voice-example">"In multi-class, Sully and Speedysully each earn points within their own category — Gr.1 or Gr.2 — then the scores combine for the team."</div>
+        <div class="voice-reason">Context delivered parenthetically. Em-dash rhythm. One sentence does the job.</div>
+      </div>
+      <div class="voice-cell">
+        <div class="voice-label dont">✗ Don't</div>
+        <div class="voice-example">"It's important to note that this is a multi-class format, which means that the scoring works differently than what you might expect from a standard racing series."</div>
+        <div class="voice-reason">Assumes the reader doesn't get it. Wastes 30 words on apology for complexity.</div>
+      </div>
+    </div>
+
+    <p class="sub-head reveal">Writing Patterns</p>
+    <ul class="pattern-list reveal">
+      <li>
+        <span class="pattern-name">Stat-first opener</span>
+        <div>
+          <div class="pattern-text">Lead with the number, then explain why it matters. Never bury the lede.</div>
+          <div class="pattern-example">"203 pts. A 1-point lead. Two races left."</div>
+        </div>
+      </li>
+      <li>
+        <span class="pattern-name">Em-dash context</span>
+        <div>
+          <div class="pattern-text">Use — to parenthesize technical context without breaking flow or requiring a new sentence.</div>
+          <div class="pattern-example">"Each driver earns points within their own category — Gr.1 or Gr.2 — then scores combine."</div>
+        </div>
+      </li>
+      <li>
+        <span class="pattern-name">Dot separator (mono)</span>
+        <div>
+          <div class="pattern-text">In monospace contexts (moment-stat, marquee), use · to chain stats. Reads as a data stream, not prose.</div>
+          <div class="pattern-example">"24–29 pts every round · 203 pts · 1-pt lead"</div>
+        </div>
+      </li>
+      <li>
+        <span class="pattern-name">Short declarative close</span>
+        <div>
+          <div class="pattern-text">End paragraphs with a short punchy sentence. Echoes the pit board aesthetic.</div>
+          <div class="pattern-example">"Eight rounds of clockwork built a 1-point lead."</div>
+        </div>
+      </li>
+      <li>
+        <span class="pattern-name">No hedging</span>
+        <div>
+          <div class="pattern-text">Avoid "currently," "at this point," "potentially," "could," "might." Either it's true or say what is true.</div>
+          <div class="pattern-example">"Sully leads." — not "Sully is currently in the lead."</div>
+        </div>
+      </li>
+      <li>
+        <span class="pattern-name">Section tags</span>
+        <div>
+          <div class="pattern-text">.callout-tag and .section-num use ALL CAPS + wide letter-spacing. Tags describe what follows without acting as a full sentence.</div>
+          <div class="pattern-example">"5/5 Rule · 2 Races Remaining (R9 &amp; R10)"</div>
+        </div>
+      </li>
+      <li>
+        <span class="pattern-name">Moment card titles</span>
+        <div>
+          <div class="pattern-text">Two-to-four words. Noun phrase or metaphor. Ends with a period. Never a question mark. Punchy.</div>
+          <div class="pattern-example">"The Clockwork Lead." · "The Swap." · "Night of the Hammer."</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ─────────────────────────────────
+  06 · PAGE ANATOMY
+───────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">06</div>
+      <h2>Page Anatomy</h2>
+    </div>
+
+    <p class="sub-head reveal">Every Page Follows This Shell</p>
+    <div class="anatomy-wrap reveal">
+      <div class="anatomy-row">
+        <div class="anatomy-label">Flag</div>
+        <div class="anatomy-desc"><strong>.flag</strong> — 18px animated checkered strip. Full viewport width. Always position 1. The brand mark before any word is read.</div>
+        <div class="anatomy-preview"><div class="demo-flag" style="width:100%"></div></div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Marquee</div>
+        <div class="anatomy-desc"><strong>.marquee + .marquee-track</strong> — Continuous ticker. Content duplicated. 38–52s loop. Carries season name, status, key data points. Sets context immediately.</div>
+        <div class="anatomy-preview" style="font-family:var(--body);font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-dim);">Hairpin Racing · S3 · Live</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Nav</div>
+        <div class="anatomy-desc"><strong>.nav</strong> inside .wrap — Single back-link (← Home). Uppercase label. Dimmed. Only interactive nav element.</div>
+        <div class="anatomy-preview" style="font-family:var(--body);font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-dim);">← League Home</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Header</div>
+        <div class="anatomy-desc"><strong>header &gt; .wrap</strong> — Status badge → H1 (word-split rise animation) → Subtitle → Meta grid (4 key facts). Sets season identity and scope.</div>
+        <div class="anatomy-preview" style="font-family:var(--display);font-size:20px;text-transform:uppercase;color:var(--accent);">Season 3</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Sections</div>
+        <div class="anatomy-desc"><strong>section &gt; .wrap</strong> — Each with .section-head (number + title) + content. Separated by border-bottom 1px. Numbered sequentially 01–08. Content is reveal/stagger animated.</div>
+        <div class="anatomy-preview" style="font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-dim);">01 · 02 · 03 · … · 08</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Footer</div>
+        <div class="anatomy-desc"><strong>footer</strong> — Centered. Mono-cap label + season/league name in Anton. Accent color on name. z-index 1 to sit above fixed bg layers.</div>
+        <div class="anatomy-preview" style="font-family:var(--display);font-size:16px;text-transform:uppercase;color:var(--accent);">Hairpin Racing</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Theme Toggle</div>
+        <div class="anatomy-desc"><strong>.theme-btn</strong> — Fixed bottom-right. Reads current [data-theme] and flips it. Persists to localStorage. Shared across all pages via same key 'hairpin-theme'.</div>
+        <div class="anatomy-preview" style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-dim);border:1px solid var(--line);padding:6px 10px;">Dark / Light</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">BG Layers</div>
+        <div class="anatomy-desc"><strong>body::before + body::after</strong> — Fixed, z-index 0, pointer-events none. ::before = two radial gradients (accent glow corners). ::after = drifting vertical line texture.</div>
+        <div class="anatomy-preview" style="font-family:var(--body);font-size:11px;color:var(--ink-dim);">Always behind content</div>
+      </div>
+    </div>
+
+    <p class="sub-head reveal">Responsive Breakpoints</p>
+    <div class="breakpoint-ruler reveal">
+      <div class="bp-col">
+        <div class="bp-label">≤ 480px</div>
+        <div class="bp-range">Small phones</div>
+        <ul class="bp-changes">
+          <li>Tables font-size drops to 11px</li>
+          <li>H1 uses smallest clamp value</li>
+          <li>Padding tightened to 16px</li>
+        </ul>
+      </div>
+      <div class="bp-col">
+        <div class="bp-label">≤ 720px</div>
+        <div class="bp-range">Most phones + small tablets</div>
+        <ul class="bp-changes">
+          <li>Header padding 36px (was 56px)</li>
+          <li>Meta grid 2-col (was 4)</li>
+          <li>Standings, how-grid, teams, settings: 1-col</li>
+          <li>Champ battle stacks vertically</li>
+          <li>Moment grid 1-col</li>
+          <li>CT tally hides Done columns</li>
+          <li>Callout padding 24px 20px</li>
+        </ul>
+      </div>
+      <div class="bp-col">
+        <div class="bp-label">&gt; 720px</div>
+        <div class="bp-range">Tablet landscape + desktop</div>
+        <ul class="bp-changes">
+          <li>All grids at full column count</li>
+          <li>Full padding on all components</li>
+          <li>max-width 960px centered</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="sub-head reveal">CSS Architecture</p>
+    <table class="component-table reveal">
+      <thead>
+        <tr><th>Layer</th><th>What it contains</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>:root tokens</td><td>All CSS custom properties. Zero magic numbers elsewhere.</td></tr>
+        <tr><td>Reset + Base</td><td>box-sizing, scroll-behavior, body font/bg/color, -webkit-font-smoothing</td></tr>
+        <tr><td>BG effects</td><td>body::before (radial glows), body::after (line texture), @keyframes lines</td></tr>
+        <tr><td>Page chrome</td><td>.flag, .marquee, .nav, header, footer, .theme-btn, .wrap</td></tr>
+        <tr><td>Reveal system</td><td>.reveal, .stagger, @keyframes fadeUp/fadeIn/rise + IntersectionObserver script</td></tr>
+        <tr><td>Components</td><td>One block per component, alphabetically after page chrome</td></tr>
+        <tr><td>Light theme</td><td>[data-theme="light"] block at the end — overrides only tokens + bg effects</td></tr>
+        <tr><td>Responsive</td><td>Single @media (max-width: 720px) block. Secondary (max-width: 480px) for edge cases.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Hairpin Racing League · Design System · 2026
+    <div class="sig">Design that documents itself.</div>
+  </div>
+</footer>
+
+<button class="theme-btn" aria-label="Toggle colour mode" onclick="(function(){var n=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=n;localStorage.setItem('hairpin-theme',n);})()">Dark / Light</button>
+
+<script>
+  // Intersection observer for reveal / stagger / chart
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal, .stagger, .chart-wrap').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
