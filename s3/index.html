@@ -670,6 +670,45 @@
   .ct-over { color: var(--accent) !important; font-weight: 700; }
   .ct-tight { color: var(--accent-2) !important; }
 
+  /* Analytics — By The Numbers */
+  .analytics-facts { list-style: none; padding: 0; margin: 0 0 40px; }
+  .analytics-facts li { display: flex; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .analytics-facts li:first-child { padding-top: 0; }
+  .fact-num { font-family: var(--display); font-size: 2.2rem; line-height: 1; color: var(--accent); min-width: 72px; flex-shrink: 0; }
+  .fact-text { font-size: 0.88rem; line-height: 1.6; color: var(--ink-dim); }
+  .fact-text strong { color: var(--ink); font-weight: 600; }
+  .analytics-sub-head { font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-dim); margin-bottom: 14px; }
+  .heat-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 16px; }
+  .heat-table { border-collapse: collapse; font-family: var(--mono); font-size: 0.72rem; white-space: nowrap; min-width: 580px; }
+  .heat-table th { padding: 6px 8px; text-align: center; color: var(--ink-dim); font-weight: 400; font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid var(--line); }
+  .heat-table th.h-driver { text-align: left; min-width: 130px; }
+  .heat-table td { padding: 5px 8px; text-align: center; border: 1px solid oklch(18% 0.005 25 / 60%); }
+  .heat-table td.h-name { text-align: left; padding: 5px 14px 5px 4px; color: var(--ink-dim); }
+  .pos-1 { background: oklch(48% 0.21 27); color: oklch(97% 0.01 27); font-weight: 700; }
+  .pos-2 { background: oklch(36% 0.15 27); color: oklch(91% 0.01 27); font-weight: 600; }
+  .pos-3 { background: oklch(28% 0.10 27); color: oklch(84% 0.02 27); }
+  .pos-4, .pos-5 { background: oklch(16% 0.005 25); color: var(--ink-dim); }
+  .pos-6, .pos-7, .pos-8 { background: oklch(13% 0.003 25); color: oklch(40% 0.01 25); }
+  .pos-dns { background: oklch(11% 0.002 25); color: oklch(28% 0.005 25); font-style: italic; }
+  .heat-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+  .heat-legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 0.63rem; color: var(--ink-dim); }
+  .heat-swatch { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+  .wins-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.78rem; margin-bottom: 40px; }
+  .wins-table th { padding: 6px 10px; text-align: left; color: var(--ink-dim); font-weight: 400; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--line); }
+  .wins-table td { padding: 8px 10px; border-bottom: 1px solid oklch(18% 0.005 25 / 60%); }
+  .wins-table td.wt-round { color: var(--ink-dim); font-size: 0.72rem; }
+  .wins-table td.wt-track { color: var(--ink-dim); font-size: 0.72rem; }
+  .wins-table .is-sully { color: var(--accent); font-weight: 700; }
+  .split-list { display: flex; flex-direction: column; gap: 8px; }
+  .split-row { display: grid; grid-template-columns: 130px 1fr; gap: 12px; align-items: center; }
+  .split-team { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-dim); text-align: right; }
+  .split-bar-outer { position: relative; height: 24px; background: var(--bg-2); border: 1px solid var(--line); overflow: hidden; }
+  .split-bar-fill { position: absolute; top: 0; left: 0; bottom: 0; background: var(--accent); opacity: 0.55; }
+  .split-labels { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 7px; pointer-events: none; }
+  .split-label-lo, .split-label-hi { font-family: var(--mono); font-size: 0.62rem; }
+  .split-label-lo { color: oklch(96% 0.01 27); }
+  .split-label-hi { color: var(--ink-dim); }
+
   /* Settings */
   .settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 24px; }
   .settings-row { background: var(--bg-2); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
@@ -1102,6 +1141,161 @@
   <section>
     <div class="section-head reveal">
       <div class="section-num">05</div>
+      <h2>By The Numbers</h2>
+    </div>
+
+    <ul class="analytics-facts stagger reveal">
+      <li>
+        <span class="fact-num">5</span>
+        <span class="fact-text"><strong>Sully won more class races than anyone.</strong> 5 of the season's 16 class victories. A. Zerpa took 4. The two championship rivals claimed more than half the class wins between them — yet the team gap is 1 point.</span>
+      </li>
+      <li>
+        <span class="fact-num">8/8</span>
+        <span class="fact-text"><strong>Sully and Dark Delacroix both podiumed in every single round.</strong> No finish outside the top 3 in class. Across 8 different tracks, different class assignments, different conditions — both perfect.</span>
+      </li>
+      <li>
+        <span class="fact-num">P8</span>
+        <span class="fact-text"><strong>Barry at Suzuka.</strong> Dead last in class — the only time all season he fell out of the top 5. The next round at Deep Forest Reverse: class win.</span>
+      </li>
+      <li>
+        <span class="fact-num">5–5</span>
+        <span class="fact-text"><strong>Class wins, split dead even.</strong> Sully-Sully: 5 class victories. Boltus-Zerpa: 5 class victories. Across 8 rounds and 16 class races, the two championship teams matched win for win. The gap is 1 point.</span>
+      </li>
+    </ul>
+
+    <div class="analytics-sub-head reveal">Class Position — All 8 Rounds</div>
+    <div class="heat-wrap reveal">
+      <table class="heat-table">
+        <thead>
+          <tr>
+            <th class="h-driver">Driver</th>
+            <th>R1<br><span style="opacity:0.55;font-size:0.6rem">Blue Moon</span></th>
+            <th>R2<br><span style="opacity:0.55;font-size:0.6rem">Bathurst</span></th>
+            <th>R3<br><span style="opacity:0.55;font-size:0.6rem">Dragon Trl</span></th>
+            <th>R4<br><span style="opacity:0.55;font-size:0.6rem">Suzuka</span></th>
+            <th>R5<br><span style="opacity:0.55;font-size:0.6rem">Deep Forest</span></th>
+            <th>R6<br><span style="opacity:0.55;font-size:0.6rem">Sarthe</span></th>
+            <th>R7<br><span style="opacity:0.55;font-size:0.6rem">Watkins Gln</span></th>
+            <th>R8<br><span style="opacity:0.55;font-size:0.6rem">Tokyo Exp</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="h-name">Sully</td><td class="pos-1">1</td><td class="pos-2">2</td><td class="pos-2">2</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-2">2</td></tr>
+          <tr><td class="h-name">Dark Delacroix</td><td class="pos-2">2</td><td class="pos-3">3</td><td class="pos-1">1</td><td class="pos-2">2</td><td class="pos-3">3</td><td class="pos-3">3</td><td class="pos-2">2</td><td class="pos-1">1</td></tr>
+          <tr><td class="h-name">Barry</td><td class="pos-2">2</td><td class="pos-1">1</td><td class="pos-2">2</td><td class="pos-8">8</td><td class="pos-1">1</td><td class="pos-2">2</td><td class="pos-2">2</td><td class="pos-4">4</td></tr>
+          <tr><td class="h-name">A. Zerpa</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-3">3</td><td class="pos-3">3</td><td class="pos-dns">—</td><td class="pos-1">1</td><td class="pos-dns">—</td><td class="pos-1">1</td></tr>
+          <tr><td class="h-name">PunkTree</td><td class="pos-3">3</td><td class="pos-5">5</td><td class="pos-3">3</td><td class="pos-3">3</td><td class="pos-5">5</td><td class="pos-2">2</td><td class="pos-5">5</td><td class="pos-2">2</td></tr>
+          <tr><td class="h-name">Jett</td><td class="pos-4">4</td><td class="pos-6">6</td><td class="pos-4">4</td><td class="pos-2">2</td><td class="pos-2">2</td><td class="pos-4">4</td><td class="pos-1">1</td><td class="pos-7">7</td></tr>
+          <tr><td class="h-name">Boltus</td><td class="pos-4">4</td><td class="pos-4">4</td><td class="pos-5">5</td><td class="pos-1">1</td><td class="pos-4">4</td><td class="pos-3">3</td><td class="pos-3">3</td><td class="pos-4">4</td></tr>
+          <tr><td class="h-name">TVDV</td><td class="pos-3">3</td><td class="pos-4">4</td><td class="pos-6">6</td><td class="pos-4">4</td><td class="pos-2">2</td><td class="pos-6">6</td><td class="pos-3">3</td><td class="pos-5">5</td></tr>
+          <tr><td class="h-name">PeekabooRacing</td><td class="pos-8">8</td><td class="pos-2">2</td><td class="pos-6">6</td><td class="pos-6">6</td><td class="pos-3">3</td><td class="pos-5">5</td><td class="pos-6">6</td><td class="pos-6">6</td></tr>
+          <tr><td class="h-name">CtillVR</td><td class="pos-6">6</td><td class="pos-5">5</td><td class="pos-7">7</td><td class="pos-7">7</td><td class="pos-6">6</td><td class="pos-4">4</td><td class="pos-4">4</td><td class="pos-3">3</td></tr>
+          <tr><td class="h-name">Ncardw11</td><td class="pos-5">5</td><td class="pos-7">7</td><td class="pos-4">4</td><td class="pos-4">4</td><td class="pos-5">5</td><td class="pos-7">7</td><td class="pos-4">4</td><td class="pos-5">5</td></tr>
+          <tr><td class="h-name">Pawl</td><td class="pos-6">6</td><td class="pos-7">7</td><td class="pos-1">1</td><td class="pos-5">5</td><td class="pos-6">6</td><td class="pos-6">6</td><td class="pos-7">7</td><td class="pos-8">8</td></tr>
+          <tr><td class="h-name">Speedysully</td><td class="pos-7">7</td><td class="pos-3">3</td><td class="pos-dns">—</td><td class="pos-6">6</td><td class="pos-8">8</td><td class="pos-7">7</td><td class="pos-7">7</td><td class="pos-3">3</td></tr>
+          <tr><td class="h-name">LART_Jesus</td><td class="pos-8">8</td><td class="pos-8">8</td><td class="pos-8">8</td><td class="pos-7">7</td><td class="pos-4">4</td><td class="pos-5">5</td><td class="pos-6">6</td><td class="pos-6">6</td></tr>
+          <tr><td class="h-name">Weasel61</td><td class="pos-5">5</td><td class="pos-8">8</td><td class="pos-5">5</td><td class="pos-5">5</td><td class="pos-7">7</td><td class="pos-8">8</td><td class="pos-8">8</td><td class="pos-8">8</td></tr>
+          <tr><td class="h-name">Leadfoot</td><td class="pos-7">7</td><td class="pos-6">6</td><td class="pos-dns">—</td><td class="pos-8">8</td><td class="pos-7">7</td><td class="pos-dns">—</td><td class="pos-5">5</td><td class="pos-7">7</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="heat-legend reveal">
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(48% 0.21 27)"></div> P1 — class win</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(36% 0.15 27)"></div> P2 — podium</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(28% 0.10 27)"></div> P3 — podium</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(16% 0.005 25)"></div> P4–5</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(13% 0.003 25)"></div> P6–8</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(11% 0.002 25)"></div> DNS / DNF</div>
+    </div>
+
+    <div class="analytics-sub-head reveal">Class Victories Per Round</div>
+    <div class="reveal table-scroll">
+      <table class="wins-table">
+        <thead>
+          <tr>
+            <th>Rnd</th>
+            <th>Track</th>
+            <th>Gr1 Winner</th>
+            <th>Gr2 Winner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="wt-round">R1</td><td class="wt-track">Blue Moon Bay (Rev)</td><td class="is-sully">Sully</td><td>A. Zerpa</td></tr>
+          <tr><td class="wt-round">R2</td><td class="wt-track">Bathurst Mt Panorama</td><td>A. Zerpa</td><td>Barry</td></tr>
+          <tr><td class="wt-round">R3</td><td class="wt-track">Dragon Trail Gardens</td><td>Dark Delacroix</td><td>Pawl</td></tr>
+          <tr><td class="wt-round">R4</td><td class="wt-track">Suzuka Full Course</td><td class="is-sully">Sully</td><td>Boltus</td></tr>
+          <tr><td class="wt-round">R5</td><td class="wt-track">Deep Forest (Rev)</td><td>Barry</td><td class="is-sully">Sully</td></tr>
+          <tr><td class="wt-round">R6</td><td class="wt-track">Circuit de la Sarthe</td><td class="is-sully">Sully</td><td>A. Zerpa</td></tr>
+          <tr><td class="wt-round">R7</td><td class="wt-track">Watkins Glen Intl</td><td>Jett</td><td class="is-sully">Sully</td></tr>
+          <tr><td class="wt-round">R8</td><td class="wt-track">Tokyo Expressway CCW</td><td>Dark Delacroix</td><td>A. Zerpa</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="analytics-sub-head reveal" style="margin-top:32px">Team Points Distribution</div>
+    <div class="split-list stagger reveal">
+      <div class="split-row">
+        <div class="split-team">Sully-Sully</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:83%"></div>
+          <div class="split-labels"><span class="split-label-lo">Sully 83%</span><span class="split-label-hi">Speedysully 17%</span></div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-team">Boltus-Zerpa</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:57%"></div>
+          <div class="split-labels"><span class="split-label-lo">A.Zerpa 57%</span><span class="split-label-hi">Boltus 43%</span></div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-team">Dark-Ctill</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:74%"></div>
+          <div class="split-labels"><span class="split-label-lo">Dark 74%</span><span class="split-label-hi">CtillVR 26%</span></div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-team">Barry-Pawl</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:73%"></div>
+          <div class="split-labels"><span class="split-label-lo">Barry 73%</span><span class="split-label-hi">Pawl 27%</span></div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-team">Peekaboo-Jett</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:63%"></div>
+          <div class="split-labels"><span class="split-label-lo">Jett 63%</span><span class="split-label-hi">Peekaboo 37%</span></div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-team">TVDV-Ncard</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:61%"></div>
+          <div class="split-labels"><span class="split-label-lo">TVDV 61%</span><span class="split-label-hi">Ncardw11 39%</span></div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-team">Punk-Lead</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:84%"></div>
+          <div class="split-labels"><span class="split-label-lo">PunkTree 84%</span><span class="split-label-hi">Leadfoot 16%</span></div>
+        </div>
+      </div>
+      <div class="split-row">
+        <div class="split-team">Weasel-Jesus</div>
+        <div class="split-bar-outer">
+          <div class="split-bar-fill" style="width:53%"></div>
+          <div class="split-labels"><span class="split-label-lo">Jesus 53%</span><span class="split-label-hi">Weasel 47%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">06</div>
       <h2>Championship Standings</h2>
     </div>
 
@@ -1172,7 +1366,7 @@
 
   <section>
     <div class="section-head reveal">
-      <div class="section-num">06</div>
+      <div class="section-num">07</div>
       <h2>Class Allocation</h2>
     </div>
     <div class="callout-inner reveal" style="margin-bottom:28px">
@@ -1271,7 +1465,7 @@
 
   <section>
     <div class="section-head reveal">
-      <div class="section-num">07</div>
+      <div class="section-num">08</div>
       <h2>The Teams</h2>
     </div>
     <div class="teams-grid stagger">
@@ -1361,7 +1555,7 @@
 
   <section>
     <div class="section-head reveal">
-      <div class="section-num">08</div>
+      <div class="section-num">09</div>
       <h2>Room Settings</h2>
     </div>
     <div class="settings-grid reveal">
