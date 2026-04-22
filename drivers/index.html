@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hairpin Racing — Driver Roster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;1,400&family=Azeret+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      const s = localStorage.getItem('hr-theme');
+      if (s === 'light') document.documentElement.setAttribute('data-theme','light');
+    })();
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        oklch(9% 0.006 80);
+      --bg-2:      oklch(11.5% 0.004 80);
+      --ink:       oklch(96% 0.003 80);
+      --ink-dim:   oklch(64% 0.004 80);
+      --line:      oklch(19% 0.005 80);
+      --accent:    oklch(86% 0.175 97);
+      --accent-2:  oklch(56% 0.215 28);
+      --display:   'Anton', sans-serif;
+      --body:      'Archivo', sans-serif;
+      --mono:      'Azeret Mono', ui-monospace, monospace;
+      --ease:      cubic-bezier(0.2, 0.8, 0.2, 1);
+      --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-theme="light"] {
+      --bg:      oklch(97% 0.006 80);
+      --bg-2:    oklch(93% 0.008 80);
+      --ink:     oklch(14% 0.01 80);
+      --ink-dim: oklch(44% 0.01 80);
+      --line:    oklch(84% 0.008 80);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--body);
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ===== Ticker ===== */
+    .ticker {
+      background: var(--accent);
+      color: #000;
+      overflow: hidden;
+      height: 28px;
+      display: flex;
+      align-items: center;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      white-space: nowrap;
+      animation: marquee 28s linear infinite;
+      will-change: transform;
+    }
+    .marquee-track span {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 0 28px;
+    }
+    .marquee-track .dot { padding: 0 4px; opacity: 0.4; }
+    @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+    @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+    /* ===== Nav ===== */
+    .site-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-dim);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--ink); }
+    .nav-brand {
+      font-family: var(--display);
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    .theme-btn {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--ink-dim);
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .theme-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+    /* ===== Header ===== */
+    .page-header {
+      padding: 64px 32px 48px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 0;
+    }
+    .header-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ink-dim);
+      margin-bottom: 12px;
+    }
+    .header-h1 {
+      font-family: var(--display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .header-h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .header-sub {
+      font-size: 0.95rem;
+      color: var(--ink-dim);
+      max-width: 52ch;
+      line-height: 1.6;
+    }
+    .header-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .header-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .meta-val {
+      font-family: var(--display);
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .meta-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-dim);
+    }
+
+    /* ===== DR / SR badge colors ===== */
+    .dr-A { color: oklch(68% 0.18 145); background: oklch(68% 0.18 145 / 12%); }
+    .dr-B { color: oklch(75% 0.16 85);  background: oklch(75% 0.16 85 / 12%);  }
+    .dr-C { color: oklch(68% 0.18 50);  background: oklch(68% 0.18 50 / 12%);  }
+    .dr-S { color: oklch(70% 0.18 280); background: oklch(70% 0.18 280 / 12%); }
+    .sr-S { color: oklch(62% 0.16 145); }
+
+    /* ===== Driver Grid ===== */
+    .grid-section {
+      padding: 0;
+    }
+    .grid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--line);
+    }
+    .grid-header-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-dim);
+    }
+    .grid-header-note {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: oklch(38% 0.01 80);
+      font-style: italic;
+    }
+
+    .driver-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--line);
+      gap: 1px;
+    }
+
+    .driver-card {
+      background: var(--bg-2);
+      padding: 20px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+    .driver-card::before {
+      content: attr(data-pos);
+      position: absolute;
+      right: 12px;
+      bottom: 36px;
+      font-family: var(--display);
+      font-size: 5.5rem;
+      line-height: 1;
+      color: var(--ink);
+      opacity: 0.038;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      letter-spacing: -0.04em;
+      transition: opacity 0.25s;
+    }
+    .driver-card:hover::before { opacity: 0.09; }
+    .driver-card > * { position: relative; z-index: 1; }
+    .driver-card:hover { background: oklch(from var(--bg-2) calc(l + 0.025) c h); }
+    [data-theme="light"] .driver-card { background: var(--bg); }
+    [data-theme="light"] .driver-card:hover { background: oklch(from var(--bg) calc(l - 0.02) c h); }
+
+    /* Podium position labels */
+    .card-pos-gold   { color: var(--accent); }
+    .card-pos-silver { color: oklch(72% 0.02 80); }
+    .card-pos-bronze { color: oklch(62% 0.08 55); }
+
+    /* Card: top row */
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .card-pos {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--ink-dim);
+    }
+    .card-badges {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .badge {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 2px 6px;
+      text-transform: uppercase;
+    }
+    .badge-sr {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      color: oklch(55% 0.14 145);
+    }
+
+    /* Card: name */
+    .card-name {
+      font-family: var(--display);
+      font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+    .card-gt7 {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--ink-dim);
+      margin-bottom: 1px;
+    }
+    .card-psn {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: oklch(42% 0.01 80);
+    }
+    .card-country {
+      font-size: 1rem;
+      line-height: 1;
+      letter-spacing: 0;
+      margin-top: 4px;
+    }
+
+    /* Card: divider */
+    .card-div {
+      height: 1px;
+      background: var(--line);
+      margin: 13px 0;
+    }
+
+    /* Card: stats */
+    .card-stats { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+    .stat-r {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .stat-k {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: oklch(44% 0.01 80);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .stat-v {
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      color: var(--ink);
+      text-align: right;
+    }
+    .stat-v.pts {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-v.dim { color: oklch(38% 0.01 80); font-style: italic; font-size: 0.64rem; }
+
+    /* Grid-high badge */
+    .stat-hi-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .stat-hi-badge {
+      font-family: var(--mono);
+      font-size: 0.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: var(--accent);
+      color: #000;
+      padding: 2px 5px;
+      flex-shrink: 0;
+    }
+
+    /* Collector bar — starts at 0, JS animates to target after card reveals */
+    .collector-wrap { margin: 4px 0 2px; }
+    .collector-track {
+      height: 2px;
+      background: var(--line);
+    }
+    .collector-fill {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      opacity: 0.7;
+      transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Card: link */
+    .card-link-wrap { margin-top: auto; padding-top: 14px; }
+    .card-gt7-link {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .card-gt7-link:hover { color: var(--accent); border-color: var(--accent); }
+    .card-no-link {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      color: oklch(32% 0.01 80);
+      font-style: italic;
+    }
+
+    /* ===== Scroll reveals ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .driver-card.reveal { transition-delay: calc(var(--i, 0) * 28ms); }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      border-top: 1px solid var(--line);
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 0;
+    }
+    .footer-note {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: oklch(35% 0.01 80);
+    }
+    .footer-brand {
+      font-family: var(--display);
+      font-size: 0.9rem;
+      color: var(--ink-dim);
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== Flag strip ===== */
+    .flag-strip {
+      height: 5px;
+      background-image: repeating-linear-gradient(
+        90deg,
+        var(--ink) 0px, var(--ink) 10px,
+        var(--bg) 10px, var(--bg) 20px
+      );
+      opacity: 0.12;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 860px) {
+      .driver-grid { grid-template-columns: repeat(2, 1fr); }
+      .page-header { padding: 40px 20px 32px; }
+      .site-nav { padding: 14px 20px; }
+      .grid-header { padding: 16px 20px; }
+    }
+    @media (max-width: 480px) {
+      .driver-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ticker -->
+  <div class="ticker" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Hairpin Racing</span><span class="dot">●</span>
+      <span>Season 3 · 16 Drivers</span><span class="dot">●</span>
+      <span>Multi-Class Series</span><span class="dot">●</span>
+      <span>Gran Turismo 7</span><span class="dot">●</span>
+      <span>Sully leads · 168 pts</span><span class="dot">●</span>
+      <span>2 rounds remaining</span><span class="dot">●</span>
+      <span>SR: S on 15 of 16 drivers</span><span class="dot">●</span>
+      <span>Barry: 370,095 drift pts — grid high</span><span class="dot">●</span>
+      <span>PunkTree: 100% car collection — only one on the grid</span><span class="dot">●</span>
+      <span>Peekaboo: 871 days logged in — most dedicated</span><span class="dot">●</span>
+      <span>Hairpin Racing</span><span class="dot">●</span>
+      <span>Season 3 · 16 Drivers</span><span class="dot">●</span>
+      <span>Multi-Class Series</span><span class="dot">●</span>
+      <span>Gran Turismo 7</span><span class="dot">●</span>
+      <span>Sully leads · 168 pts</span><span class="dot">●</span>
+      <span>2 rounds remaining</span><span class="dot">●</span>
+      <span>SR: S on 15 of 16 drivers</span><span class="dot">●</span>
+      <span>Barry: 370,095 drift pts — grid high</span><span class="dot">●</span>
+      <span>PunkTree: 100% car collection — only one on the grid</span><span class="dot">●</span>
+      <span>Peekaboo: 871 days logged in — most dedicated</span><span class="dot">●</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="site-nav">
+    <a href="../index.html" class="nav-back">← Hairpin Racing</a>
+    <span class="nav-brand">THE GRID</span>
+    <button class="theme-btn" id="themeBtn">Light</button>
+  </nav>
+
+  <!-- Header -->
+  <header class="page-header reveal">
+    <div class="header-eyebrow">Season 3 · Multi-Class · Gran Turismo 7</div>
+    <h1 class="header-h1">THE <em>GRID</em></h1>
+    <p class="header-sub">16 drivers. 10 rounds. One championship. GT7 profile stats and season standings for every driver on the grid.</p>
+    <div class="header-meta">
+      <div class="header-meta-item">
+        <span class="meta-val">16</span>
+        <span class="meta-label">Drivers</span>
+      </div>
+      <div class="header-meta-item">
+        <span class="meta-val">8</span>
+        <span class="meta-label">Teams</span>
+      </div>
+      <div class="header-meta-item">
+        <span class="meta-val">10</span>
+        <span class="meta-label">Rounds</span>
+      </div>
+      <div class="header-meta-item">
+        <span class="meta-val">S</span>
+        <span class="meta-label">SR — whole grid</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Grid -->
+  <section class="grid-section">
+    <div class="grid-header">
+      <span class="grid-header-label">Sorted by S3 individual points · after R8</span>
+      <span class="grid-header-note">GT7 stats live as of Apr 21 2026</span>
+    </div>
+
+    <div class="driver-grid">
+
+      <!-- P1 Sully -->
+      <article class="driver-card reveal" data-pos="1" style="--i:0">
+        <div class="card-top">
+          <span class="card-pos card-pos-gold">P1 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-A">DR · A</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Sully</div>
+        <div class="card-gt7">TRC_Sully</div>
+        <div class="card-psn">unSULLYed</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="168">168</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Sully-Sully</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">IA</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">571 · 99%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="99"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">182,786 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">326</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/020f187c-a6c1-454d-b5f0-be637ca6e19b/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P2 Dark Delacroix -->
+      <article class="driver-card reveal" data-pos="2" style="--i:1">
+        <div class="card-top">
+          <span class="card-pos card-pos-silver">P2 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-C">DR · C</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Dark Delacroix</div>
+        <div class="card-gt7">Dark Delacroix</div>
+        <div class="card-psn">Dark_Delacroix</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="130">130</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Dark-Ctill</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">IA</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">130 · 40%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="40"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">56,465 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">243</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/2da478b8-af34-4492-afe9-7574bdde8acb/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P3 Barry -->
+      <article class="driver-card reveal" data-pos="3" style="--i:2">
+        <div class="card-top">
+          <span class="card-pos card-pos-bronze">P3 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-A">DR · A</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Barry</div>
+        <div class="card-gt7">Barry</div>
+        <div class="card-psn">ALUPNYA79</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="121">121</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Barry-Pawl</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">A</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">240 · 67%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="67"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">120,846 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">446</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">196 · 3 wins</span>
+          </div>
+          <div class="stat-hi-row" style="margin-top:2px">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v" style="color:var(--accent)">370,095</span>
+            <span class="stat-hi-badge">grid high</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/a4dddea5-ed05-408b-b1a8-204ced75346d/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P4 A. Zerpa -->
+      <article class="driver-card reveal" data-pos="4" style="--i:3">
+        <div class="card-top">
+          <span class="card-pos">P4 · S3</span>
+          <div class="card-badges"></div>
+        </div>
+        <div class="card-name">A. Zerpa</div>
+        <div class="card-gt7" style="color:oklch(32% 0.01 80);font-style:italic">GT7 profile pending</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="115">115</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Boltus-Zerpa</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Class wins</span>
+            <span class="stat-v">4</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <span class="card-no-link">Profile not linked</span>
+        </div>
+      </article>
+
+      <!-- P5 PunkTree -->
+      <article class="driver-card reveal" data-pos="5" style="--i:4">
+        <div class="card-top">
+          <span class="card-pos">P5 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-B">DR · B</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">PunkTree</div>
+        <div class="card-gt7">Punk Tree</div>
+        <div class="card-psn">Punk_Tree</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="89">89</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Punk-Lead</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">B</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-hi-row">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v" style="color:var(--accent)">763 · 100%</span>
+            <span class="stat-hi-badge">only one</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="100"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">186,563 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">465</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">216 · 13 wins</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v">93,374</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/2540a31f-1857-4966-a95a-49c9c0561d95/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P6 Jett -->
+      <article class="driver-card reveal" data-pos="6" style="--i:5">
+        <div class="card-top">
+          <span class="card-pos">P6 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-A">DR · A</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Jett</div>
+        <div class="card-gt7">Jett</div>
+        <div class="card-psn">weaksauce412</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="88">88</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Peekaboo-Jett</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">IB</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">281 · 74%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="74"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">124,788 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">536</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/e3c9b16d-9f00-44b6-84a0-bd765a44f00b/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P7 Boltus -->
+      <article class="driver-card reveal" data-pos="7" style="--i:6">
+        <div class="card-top">
+          <span class="card-pos">P7 · S3</span>
+          <div class="card-badges"></div>
+        </div>
+        <div class="card-name">Boltus</div>
+        <div class="card-gt7" style="color:oklch(32% 0.01 80);font-style:italic">GT7 profile pending</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="87">87</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Boltus-Zerpa</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Class wins</span>
+            <span class="stat-v">1</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <span class="card-no-link">Profile not linked</span>
+        </div>
+      </article>
+
+      <!-- P8 TVDV -->
+      <article class="driver-card reveal" data-pos="8" style="--i:7">
+        <div class="card-top">
+          <span class="card-pos">P8 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-B">DR · B</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">TVDV</div>
+        <div class="card-gt7">TVDV</div>
+        <div class="card-psn">VDVBrothers</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="72">72</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">TVDV-Ncard</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">A</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">60 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">153 · 41%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="41"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">52,030 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">574</span>
+          </div>
+          <div class="stat-r" style="margin-top:2px">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v" style="color:var(--accent)">114,305</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/99d74dfd-0617-495d-9dfc-b11c02005d4d/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P9 PeekabooRacing -->
+      <article class="driver-card reveal" data-pos="9" style="--i:8">
+        <div class="card-top">
+          <span class="card-pos">P9 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-B">DR · B</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Peekaboo</div>
+        <div class="card-gt7">PeekabooRacing</div>
+        <div class="card-psn">clutch_n_load6</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="52">52</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Peekaboo-Jett</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">IA</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">149 · 48%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="48"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">126,500 km</span>
+          </div>
+          <div class="stat-hi-row">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v" style="color:var(--accent)">871</span>
+            <span class="stat-hi-badge">grid high</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">825 · 27 wins</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v">11,476</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/fd47a4d5-1b5a-48a4-8ab9-94d14a01137f/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P10 CtillVR -->
+      <article class="driver-card reveal" data-pos="10" style="--i:9">
+        <div class="card-top">
+          <span class="card-pos">P10 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-B">DR · B</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">CtillVR</div>
+        <div class="card-gt7">Ctill-VR</div>
+        <div class="card-psn">shenanigas69</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="46">46</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Dark-Ctill</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">S</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">68 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">110 · 30%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="30"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">53,519 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">376</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">205 · 16 wins</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Pole pos.</span>
+            <span class="stat-v">11</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v">6,818</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/6eccde57-3782-4ffc-80c2-5caf7ff8e0c1/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P11 Ncardw11 -->
+      <article class="driver-card reveal" data-pos="11" style="--i:10">
+        <div class="card-top">
+          <span class="card-pos">P11 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-B">DR · B</span>
+            <span class="badge-sr" style="color:oklch(68% 0.18 50)">SR · A</span>
+          </div>
+        </div>
+        <div class="card-name">Ncardw11</div>
+        <div class="card-gt7">Ncardw11</div>
+        <div class="card-psn">ncardw</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="46">46</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">TVDV-Ncard</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">IB</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">69 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">116 · 35%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="35"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">84,192 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">301</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/d57cadc0-1bc8-4180-936d-2f2132a3e794/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P12 Pawl -->
+      <article class="driver-card reveal" data-pos="12" style="--i:11">
+        <div class="card-top">
+          <span class="card-pos">P12 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-B">DR · B</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Pawl</div>
+        <div class="card-gt7">Pawl</div>
+        <div class="card-psn">krensmeyer</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="45">45</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Barry-Pawl</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">A</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">441 · 82%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="82"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">88,218 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">320</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">90 · 5 wins</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v">22,970</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/90ff596e-82c7-4e51-bc52-5d220e012f89/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P13 Speedysully -->
+      <article class="driver-card reveal" data-pos="13" style="--i:12">
+        <div class="card-top">
+          <span class="card-pos">P13 · S3</span>
+          <div class="card-badges"></div>
+        </div>
+        <div class="card-name">Speedysully</div>
+        <div class="card-gt7" style="color:oklch(32% 0.01 80);font-style:italic">GT7 profile pending</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="35">35</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Sully-Sully</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <span class="card-no-link">Profile not linked</span>
+        </div>
+      </article>
+
+      <!-- P14 LART_Jesus -->
+      <article class="driver-card reveal" data-pos="14" style="--i:13">
+        <div class="card-top">
+          <span class="card-pos">P14 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-C">DR · C</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">LART_Jesus</div>
+        <div class="card-gt7">LART_Jesus</div>
+        <div class="card-psn">michi_grifo</div>
+        <div class="card-country">🇲🇽</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="27">27</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Weasel-Jesus</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">IA</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">301 · 70%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="70"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">102,020 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">448</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">378 · 16 wins</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Pole pos.</span>
+            <span class="stat-v">16</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v">58,980</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/d416a2fa-8b60-42fe-8cb3-49a8e5317018/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P15 TheEliteWeasel61 -->
+      <article class="driver-card reveal" data-pos="15" style="--i:14">
+        <div class="card-top">
+          <span class="card-pos">P15 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-C">DR · C</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Weasel61</div>
+        <div class="card-gt7">TheEliteWeasel61</div>
+        <div class="card-psn">TheEliteWeasel61</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="24">24</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Weasel-Jesus</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">S</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">52 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">85 · 32%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="32"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">36,601 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">187</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">58 · 3 wins</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v">114</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/2bbbeb0c-1e0d-4ec2-a204-ad9e234efb3e/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+      <!-- P16 Leadfoot -->
+      <article class="driver-card reveal" data-pos="16" style="--i:15">
+        <div class="card-top">
+          <span class="card-pos">P16 · S3</span>
+          <div class="card-badges">
+            <span class="badge dr-B">DR · B</span>
+            <span class="badge-sr">SR · S</span>
+          </div>
+        </div>
+        <div class="card-name">Leadfoot</div>
+        <div class="card-gt7">Leadfoot GT</div>
+        <div class="card-psn">Twistted-wizard</div>
+        <div class="card-country">🇺🇸</div>
+        <div class="card-div"></div>
+        <div class="card-stats">
+          <div class="stat-r">
+            <span class="stat-k">S3 pts</span>
+            <span class="stat-v pts" data-pts="17">17</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Team</span>
+            <span class="stat-v">Punk-Lead</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">License</span>
+            <span class="stat-v">S</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Collector</span>
+            <span class="stat-v">70 / 70</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Cars</span>
+            <span class="stat-v">308 · 76%</span>
+          </div>
+          <div class="collector-wrap">
+            <div class="collector-track"><div class="collector-fill" data-fill="76"></div></div>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Distance</span>
+            <span class="stat-v">83,783 km</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Days in</span>
+            <span class="stat-v">346</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Races</span>
+            <span class="stat-v">111 · 8 wins</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Pole pos.</span>
+            <span class="stat-v">18</span>
+          </div>
+          <div class="stat-r">
+            <span class="stat-k">Drift pts</span>
+            <span class="stat-v">28,300</span>
+          </div>
+        </div>
+        <div class="card-link-wrap">
+          <a class="card-gt7-link" href="https://www.gran-turismo.com/nz/gt7/user/mymenu/5513ab96-91ec-4a31-ab50-4c4d73609b90/profile" target="_blank" rel="noopener">GT7 Profile ↗</a>
+        </div>
+      </article>
+
+    </div><!-- /driver-grid -->
+  </section>
+
+  <!-- Flag strip -->
+  <div class="flag-strip"></div>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span class="footer-note">GT7 stats as of Apr 21 2026 · S3 standings after R8 · 2 rounds remaining</span>
+    <span class="footer-brand">HAIRPIN RACING</span>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('hr-theme', t);
+      btn.textContent = t === 'dark' ? 'Light' : 'Dark';
+    }
+    btn.addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    const saved = localStorage.getItem('hr-theme');
+    if (saved) applyTheme(saved);
+    else btn.textContent = 'Light';
+
+    // Count-up animation for pts numbers
+    function countUp(el) {
+      const target = parseInt(el.dataset.pts, 10);
+      if (!target) return;
+      const duration = Math.min(800, 250 + target * 1.8);
+      const start = performance.now();
+      (function step(now) {
+        const p = Math.min(1, (now - start) / duration);
+        const ease = 1 - Math.pow(1 - p, 4); // ease-out-quart
+        el.textContent = Math.round(ease * target);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      })(start);
+    }
+
+    // Scroll reveals + card-specific animations
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        el.classList.add('in');
+        io.unobserve(el);
+
+        if (el.classList.contains('driver-card') && !mediaQuery.matches) {
+          // Animate collector bars into view
+          setTimeout(() => {
+            el.querySelectorAll('.collector-fill[data-fill]').forEach(fill => {
+              fill.style.width = fill.dataset.fill + '%';
+            });
+          }, 150);
+          // Count-up pts
+          setTimeout(() => {
+            el.querySelectorAll('.stat-v.pts[data-pts]').forEach(countUp);
+          }, 100);
+        } else if (el.classList.contains('driver-card')) {
+          // Reduced motion: set bars immediately
+          el.querySelectorAll('.collector-fill[data-fill]').forEach(fill => {
+            fill.style.width = fill.dataset.fill + '%';
+          });
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+
+</body>
+</html>
