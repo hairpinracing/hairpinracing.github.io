@@ -114,7 +114,7 @@
   }
 
   header {
-    padding: 72px 0 56px;
+    padding: 80px 0 56px;
     border-bottom: 1px solid var(--line);
   }
 
@@ -132,12 +132,14 @@
   }
   .eyebrow::before {
     content: "";
-    width: 0; height: 1px;
+    width: 28px; height: 1px;
     background: var(--accent);
     display: inline-block;
+    transform: scaleX(0);
+    transform-origin: left center;
     animation: growLine 0.8s var(--ease-out) 0.3s forwards;
   }
-  @keyframes growLine { to { width: 28px; } }
+  @keyframes growLine { to { transform: scaleX(1); } }
   @keyframes fadeIn { to { opacity: 1; } }
 
   h1 {
@@ -187,7 +189,7 @@
   }
   .stats-strip > div {
     background: var(--bg);
-    padding: 14px 16px;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -231,8 +233,7 @@
     transform: translateY(20px);
     animation: fadeUp 0.6s var(--ease-out) forwards;
   }
-  .season-card:nth-child(1) { animation-delay: 0.7s; }
-  .season-card:nth-child(2) { animation-delay: 0.85s; border-right: none; }
+  /* animation delays set per-card via inline style */
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
   /* Active card: more space, larger number, brighter */
@@ -381,6 +382,12 @@
   .season-card.active .arrow { color: var(--accent-2); }
   .season-card.upcoming .arrow { color: var(--accent); }
   .season-card:hover .arrow { opacity: 1; transform: translateX(0); }
+  .season-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .season-card:focus-visible::before { opacity: 1; }
+  .season-card:focus-visible .arrow { opacity: 1; transform: translateX(0); }
 
   footer {
     padding: 48px 0 36px;
@@ -434,6 +441,131 @@
     background: oklch(50% 0.17 97 / 0.06);
   }
 
+  /* Series section headers */
+  .series-block { margin-top: 40px; }
+  .series-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 14px 0 12px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .series-header-name {
+    font-family: var(--body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .series-header-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.06em;
+  }
+
+  /* 4-column grid for multi-class */
+  .seasons-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--line);
+    border-top: none;
+  }
+  /* override large padding for cards in 4-col grid */
+  .seasons-4 .season-card.active { padding: 36px 28px; }
+  .seasons-4 .season-card { border-right: 1px solid var(--line); }
+  .seasons-4 .season-card:last-child { border-right: none; }
+  .seasons-4 .season-card.active .num { font-size: clamp(44px, 7vw, 80px); }
+  .seasons-4 .progress-label { opacity: 1; }
+
+  /* 2-column grid for GR3 */
+  .seasons-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-top: none;
+  }
+  .seasons-2 .season-card { border-right: 1px solid var(--line); }
+  .seasons-2 .season-card:last-child { border-right: none; }
+
+  /* Completed season card */
+  .season-card.done .status {
+    color: var(--ink-dim);
+    border: 1px solid oklch(64% 0.004 80 / 0.30);
+    background: transparent;
+  }
+  .season-card.done .num { color: var(--ink-dim); }
+  .season-card.done::before {
+    background: linear-gradient(135deg, oklch(64% 0.004 80 / 0.06), transparent 60%);
+  }
+  /* Archived card — no dedicated page yet */
+  .season-card.archived {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.28;
+  }
+  .season-card.archived .arrow { display: none; }
+
+  /* GR3 S1 done card accent (red) */
+  .season-card.gr3-done .status {
+    color: oklch(56% 0.215 28 / 0.7);
+    border: 1px solid oklch(56% 0.215 28 / 0.25);
+    background: oklch(56% 0.215 28 / 0.04);
+  }
+  .season-card.gr3-done .num { color: var(--ink-dim); }
+  .season-card.gr3-done::before {
+    background: linear-gradient(135deg, oklch(56% 0.215 28 / 0.05), transparent 60%);
+  }
+  .season-card.gr3-done .arrow { color: oklch(56% 0.215 28 / 0.7); }
+
+  /* GR3 S2 upcoming card accent (yellow) */
+  .season-card.gr3-upcoming .status {
+    color: var(--accent);
+    border: 1px solid oklch(86% 0.175 97 / 0.40);
+    background: oklch(86% 0.175 97 / 0.06);
+  }
+  .season-card.gr3-upcoming .num { color: var(--accent); }
+  .season-card.gr3-upcoming .arrow { color: var(--accent); }
+
+  /* Utility link (drivers) */
+  .utility-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 13px 24px;
+    text-decoration: none;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-top: none;
+    background: var(--bg-2);
+    transition: background 0.25s var(--ease);
+    position: relative; z-index: 1;
+  }
+  .utility-card:hover { background: oklch(from var(--bg-2) calc(l + 0.018) c h); }
+  .utility-card-left { display: flex; flex-direction: column; gap: 2px; }
+  .utility-card-label {
+    font-family: var(--body); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .utility-card-title {
+    font-family: var(--display); font-size: 1.2rem;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .utility-card-sub {
+    font-family: var(--mono); font-size: 10px; color: var(--ink-dim); letter-spacing: 0.04em;
+  }
+  .utility-card .arrow {
+    font-size: 18px; opacity: 0.4;
+    transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .utility-card:hover .arrow { opacity: 1; transform: translateX(4px); }
+
   /* Theme toggle */
   .theme-btn {
     position: fixed;
@@ -448,19 +580,39 @@
     color: var(--ink-dim);
     background: var(--bg-2);
     border: 1px solid var(--line);
-    padding: 7px 12px;
+    padding: 10px 16px;
+    min-height: 44px;
     cursor: pointer;
     transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
   }
   .theme-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+  .theme-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    color: var(--ink);
+    border-color: var(--ink-dim);
+  }
 
+  @media (max-width: 760px) {
+    .seasons-4 { grid-template-columns: repeat(2, 1fr); }
+    .seasons-4 .season-card:nth-child(2) { border-right: none; }
+    .seasons-4 .season-card:nth-child(1),
+    .seasons-4 .season-card:nth-child(2) { border-bottom: 1px solid var(--line); }
+    .seasons-4 .season-card.active { padding: 40px 36px; }
+    .seasons-4 .season-card.active .num { font-size: clamp(56px, 10vw, 96px); }
+  }
   @media (max-width: 600px) {
     .stats-strip { grid-template-columns: repeat(2, 1fr); }
-    .seasons { grid-template-columns: 1fr; }
-    .season-card { border-right: none; border-bottom: 1px solid var(--line); }
-    .season-card:last-child { border-bottom: none; }
-    .season-card:hover { padding-left: 36px; }
-    /* Reset active card overrides — both full-width on mobile */
+    .seasons-4 { grid-template-columns: 1fr; }
+    .seasons-4 .season-card { border-right: none; border-bottom: 1px solid var(--line); }
+    .seasons-4 .season-card:last-child { border-bottom: none; }
+    .seasons-4 .season-card:nth-child(1),
+    .seasons-4 .season-card:nth-child(2) { border-bottom: 1px solid var(--line); }
+    .seasons-2 { grid-template-columns: 1fr; }
+    .seasons-2 .season-card { border-right: none; border-bottom: 1px solid var(--line); }
+    .seasons-2 .season-card:last-child { border-bottom: none; }
+    .season-card { border-right: none; }
+    .season-card:hover { padding-left: 40px; }
     .season-card.active { padding: 40px 36px; }
     .season-card.active .num { font-size: clamp(56px, 12vw, 96px); color: var(--ink-dim); }
     .season-card.upcoming .num { font-size: clamp(56px, 12vw, 96px); }
@@ -472,6 +624,7 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+    html { scroll-behavior: auto; }
     h1 .word > span, .subtitle > span { transform: none !important; }
     .progress-fill { transform: scaleX(0.8) !important; }
     .progress-label { opacity: 1 !important; }
@@ -482,79 +635,129 @@
 
 <div class="flag"></div>
 
-<div class="marquee">
+<div class="marquee" aria-hidden="true">
   <div class="marquee-track">
     <span><b>Hairpin Racing</b></span><span class="dot">●</span>
-    <span>Multi-Class League</span><span class="dot">●</span>
     <span>Gran Turismo 7</span><span class="dot">●</span>
-    <span>Tuesdays 9 PM ET</span><span class="dot">●</span>
-    <span>Gr1 · Gr2 · Gr3 · Gr4</span><span class="dot">●</span>
-    <span>Teams of 2</span><span class="dot">●</span>
+    <span>Multi-Class — Tuesdays 9 PM ET</span><span class="dot">●</span>
+    <span>Gr1 · Gr2 · Gr3 · Gr4 · Teams of 2</span><span class="dot">●</span>
+    <span>S3 Ongoing · S4 Pre-Season</span><span class="dot">●</span>
+    <span>Wednesday Night Gr.3 BOP</span><span class="dot">●</span>
+    <span>S1 Champion: Barry · Won by 1 pt</span><span class="dot">●</span>
+    <span>S2 Registration Open · Apr 29</span><span class="dot">●</span>
     <span><b>Hairpin Racing</b></span><span class="dot">●</span>
-    <span>Multi-Class League</span><span class="dot">●</span>
     <span>Gran Turismo 7</span><span class="dot">●</span>
-    <span>Tuesdays 9 PM ET</span><span class="dot">●</span>
-    <span>Gr1 · Gr2 · Gr3 · Gr4</span><span class="dot">●</span>
-    <span>Teams of 2</span><span class="dot">●</span>
+    <span>Multi-Class — Tuesdays 9 PM ET</span><span class="dot">●</span>
+    <span>Gr1 · Gr2 · Gr3 · Gr4 · Teams of 2</span><span class="dot">●</span>
+    <span>S3 Ongoing · S4 Pre-Season</span><span class="dot">●</span>
+    <span>Wednesday Night Gr.3 BOP</span><span class="dot">●</span>
+    <span>S1 Champion: Barry · Won by 1 pt</span><span class="dot">●</span>
+    <span>S2 Registration Open · Apr 29</span><span class="dot">●</span>
   </div>
 </div>
 
-<div class="wrap">
+<main class="wrap">
   <header>
     <div class="eyebrow">Gran Turismo 7 · Discord League</div>
     <h1>
       <span class="word w1"><span>Hairpin</span></span><br />
       <span class="word w2"><span>Racing.</span></span>
     </h1>
-    <div class="subtitle"><span>Multi-Class League · Season Archive</span></div>
+    <div class="subtitle"><span>Multi-Class · Gr.3 BOP · Tue &amp; Wed Nights</span></div>
   </header>
 
   <div class="stats-strip">
-    <div><span class="k">Seasons</span><span class="v">3</span></div>
-    <div><span class="k">Classes</span><span class="v">Gr1–Gr4</span></div>
-    <div><span class="k">Race Night</span><span class="v">Tuesdays</span></div>
+    <div><span class="k">Series</span><span class="v">2</span></div>
+    <div><span class="k">Seasons</span><span class="v">6</span></div>
+    <div><span class="k">Race Nights</span><span class="v">Tue &amp; Wed</span></div>
     <div><span class="k">Platform</span><span class="v">GT7</span></div>
   </div>
 
-  <a class="season-card" href="drivers/" style="background:oklch(from var(--bg-2) calc(l + 0.015) c h);flex-direction:row;align-items:center;justify-content:space-between;gap:16px;padding:18px 24px;">
-    <div style="display:flex;flex-direction:column;gap:3px;">
-      <div class="status" style="margin-bottom:0">● Season 3</div>
-      <span style="font-family:var(--display);font-size:1.3rem;letter-spacing:0.04em;color:var(--ink)">THE GRID</span>
-      <span style="font-family:var(--mono);font-size:0.65rem;color:var(--ink-dim)">16 driver profiles · GT7 stats</span>
+  <!-- ══ MULTI-CLASS ══ -->
+  <div class="series-block">
+    <div class="series-header">
+      <span class="series-header-name">Multi-Class Series</span>
+      <span class="series-header-meta">Tuesday Nights · 9 PM ET · Gr1 / Gr2 / Gr3 / Gr4 · Teams of 2</span>
     </div>
-    <div class="arrow">→</div>
-  </a>
-
-  <div class="seasons">
-    <a class="season-card active" href="s3/">
-      <div class="status">● Ongoing</div>
-      <span class="num">Season<br/>3</span>
-      <span class="label">Multi-Class</span>
-      <div class="meta-row">
-        <div class="meta-item">Tuesdays · 9:00 PM ET</div>
-        <div class="meta-item">Wraps Apr 28</div>
+    <div class="seasons-4">
+      <div class="season-card archived" style="animation-delay:0.70s">
+        <div class="status">◎ Archived</div>
+        <span class="num">S1</span>
+        <span class="label">Multi-Class</span>
+        <div class="meta-row">
+          <div class="meta-item">Page not built yet</div>
+        </div>
       </div>
-      <div class="season-progress">
-        <div class="progress-track"><div class="progress-fill"></div></div>
-        <span class="progress-label">Round 9 of 10 · Autopolis tonight</span>
+      <div class="season-card archived" style="animation-delay:0.80s">
+        <div class="status">◎ Archived</div>
+        <span class="num">S2</span>
+        <span class="label">Multi-Class</span>
+        <div class="meta-row">
+          <div class="meta-item">Page not built yet</div>
+        </div>
       </div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="season-card upcoming" href="s4/">
-      <div class="status">◈ Pre-Season</div>
-      <span class="num">Season<br/>4</span>
-      <span class="label">Multi-Class</span>
-      <div class="meta-row">
-        <div class="meta-item">10 Races · 8 Teams</div>
-        <div class="meta-item">Starts mid-May</div>
-      </div>
-      <div class="arrow">→</div>
-    </a>
+      <a class="season-card active" href="s3/" style="animation-delay:0.90s">
+        <div class="status">● Ongoing</div>
+        <span class="num">S3</span>
+        <span class="label">Multi-Class</span>
+        <div class="meta-row">
+          <div class="meta-item">Tuesdays · 9 PM ET</div>
+          <div class="meta-item">Wraps Apr 28</div>
+        </div>
+        <div class="season-progress">
+          <div class="progress-track"><div class="progress-fill"></div></div>
+          <span class="progress-label">R9 of 10 done</span>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+      <a class="season-card upcoming" href="s4/" style="animation-delay:1.00s">
+        <div class="status">◈ Pre-Season</div>
+        <span class="num">S4</span>
+        <span class="label">Multi-Class</span>
+        <div class="meta-row">
+          <div class="meta-item">10 Races · 8 Teams</div>
+          <div class="meta-item">Starts mid-May</div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+    </div>
   </div>
-</div>
+
+  <!-- ══ WEDNESDAY NIGHT GR.3 BOP ══ -->
+  <div class="series-block">
+    <div class="series-header">
+      <span class="series-header-name">Wednesday Night Gr.3 BOP</span>
+      <span class="series-header-meta">Wednesday Nights · 9 PM EST · Single Class · BOP · 9 Tracks</span>
+    </div>
+    <div class="seasons-2">
+      <a class="season-card gr3-done" href="wednesday-gr3/" style="animation-delay:1.10s">
+        <div class="status">✓ Complete</div>
+        <span class="num">S1</span>
+        <span class="label">Gr.3 BOP</span>
+        <div class="meta-row">
+          <div class="meta-item">Champion: Barry</div>
+          <div class="meta-item">159 pts · Won by 1</div>
+          <div class="meta-item">25 drivers · 9 rounds</div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+      <a class="season-card gr3-upcoming" href="wednesday-gr3/s2/" style="animation-delay:1.20s">
+        <div class="status">● Reg Open</div>
+        <span class="num">S2</span>
+        <span class="label">Gr.3 BOP</span>
+        <div class="meta-row">
+          <div class="meta-item">Starts Apr 29, 2026</div>
+          <div class="meta-item">8 drivers confirmed</div>
+          <div class="meta-item">Same format · 9 weeks</div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+    </div>
+  </div>
+</main>
 
 <footer>
-  Hairpin Racing · GT7 Multi-Class League
+  Hairpin Racing · GT7 · Multi-Class &amp; Wednesday Night Gr.3 BOP
   <div class="sig">See you on track.</div>
 </footer>
 

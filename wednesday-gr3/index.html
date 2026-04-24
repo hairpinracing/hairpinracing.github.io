@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hairpin Racing — Wednesday Night Gr.3 BOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Azeret+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<script>(function(){var t=localStorage.getItem('hairpin-theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;})();</script>
+<style>
+  :root {
+    --bg: oklch(9% 0.008 25);
+    --bg-2: oklch(11.5% 0.006 25);
+    --ink: oklch(96% 0.003 75);
+    --ink-dim: oklch(64% 0.005 75);
+    --line: oklch(19% 0.007 25);
+    --accent: oklch(56% 0.215 28);
+    --accent-2: oklch(86% 0.175 97);
+    --mono: 'Azeret Mono', ui-monospace, monospace;
+    --body: 'Archivo', system-ui, sans-serif;
+    --display: 'Anton', 'Archivo', sans-serif;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --eu: oklch(68% 0.16 245);
+    --as: oklch(72% 0.18 145);
+    --ok: oklch(70% 0.18 145);
+    color-scheme: dark light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% -10%, oklch(56% 0.215 28 / 12%), transparent 40%),
+      radial-gradient(circle at 95% 105%, oklch(86% 0.175 97 / 4%), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(90deg, transparent 0, transparent 49.5%, oklch(100% 0 0 / 2.5%) 50%, transparent 50.5%, transparent 100%);
+    background-size: 80px 100%;
+    pointer-events: none;
+    z-index: 0;
+    animation: lines 14s linear infinite;
+  }
+  @keyframes lines { from { background-position: 0 0; } to { background-position: -320px 0; } }
+
+  .flag {
+    height: 18px;
+    background: repeating-conic-gradient(oklch(97% 0 0) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px;
+    animation: flagmove 3s linear infinite;
+    position: relative; z-index: 1;
+  }
+  @keyframes flagmove { from { background-position: 0 0; } to { background-position: 72px 0; } }
+
+  .marquee {
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    padding: 10px 0;
+    position: relative; z-index: 1;
+  }
+  .marquee-track {
+    display: flex; gap: 48px; white-space: nowrap;
+    animation: scroll 42s linear infinite;
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    width: max-content;
+  }
+  .marquee-track span.dot { color: var(--accent); }
+  .marquee-track b { color: var(--ink); }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  .nav { padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .nav a {
+    font-family: var(--body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s var(--ease);
+  }
+  .nav a:hover { color: var(--accent); }
+  .nav a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    color: var(--accent);
+  }
+  .nav a::before { content: "←"; font-weight: 400; letter-spacing: 0; }
+
+  header { padding: 56px 0 48px; border-bottom: 1px solid var(--line); }
+
+  .status-badge {
+    font-family: var(--body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    border: 1px solid oklch(86% 0.175 97 / 40%);
+    background: oklch(86% 0.175 97 / 8%);
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeIn 0.6s var(--ease-out) 0.1s forwards;
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(64px, 12vw, 144px);
+    line-height: 0.85;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+  }
+  h1 .word { display: inline-block; overflow: hidden; vertical-align: top; }
+  h1 .word > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise 0.9s var(--ease-out) forwards;
+  }
+  h1 .w1 > span { animation-delay: 0.15s; }
+  h1 .w2 > span { animation-delay: 0.35s; color: var(--accent); }
+  @keyframes rise { to { transform: translateY(0); } }
+
+  .subtitle {
+    font-family: var(--display);
+    font-size: clamp(24px, 4vw, 40px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+    margin: 0 0 28px;
+    text-transform: uppercase;
+    overflow: hidden;
+  }
+  .subtitle > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise 0.9s var(--ease-out) 0.5s forwards;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-top: 24px;
+  }
+  .meta > div {
+    background: var(--bg);
+    padding: 16px 18px;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 0.6s var(--ease-out) forwards;
+  }
+  .meta > div:nth-child(1) { animation-delay: 0.7s; }
+  .meta > div:nth-child(2) { animation-delay: 0.8s; }
+  .meta > div:nth-child(3) { animation-delay: 0.9s; }
+  .meta > div:nth-child(4) { animation-delay: 1.0s; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .meta .k { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 4px; }
+  .meta .v { font-family: var(--display); font-size: 22px; letter-spacing: 0.02em; text-transform: uppercase; }
+
+  section { border-bottom: 1px solid var(--line); padding: 56px 0; }
+
+  .section-head { display: flex; align-items: baseline; gap: 20px; margin-bottom: 36px; }
+  .section-num { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--ink-dim); text-transform: uppercase; flex-shrink: 0; }
+  .section-head h2 { font-family: var(--display); font-size: clamp(28px, 5vw, 48px); font-weight: 400; letter-spacing: 0.02em; text-transform: uppercase; margin: 0; line-height: 1; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
+  .reveal.in { opacity: 1; transform: none; }
+  .stagger > * { opacity: 0; transform: translateY(16px); transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out); }
+  .stagger.in > *:nth-child(1)  { transition-delay: 0.05s; }
+  .stagger.in > *:nth-child(2)  { transition-delay: 0.10s; }
+  .stagger.in > *:nth-child(3)  { transition-delay: 0.15s; }
+  .stagger.in > *:nth-child(4)  { transition-delay: 0.20s; }
+  .stagger.in > *:nth-child(5)  { transition-delay: 0.25s; }
+  .stagger.in > *:nth-child(6)  { transition-delay: 0.30s; }
+  .stagger.in > *:nth-child(7)  { transition-delay: 0.35s; }
+  .stagger.in > *:nth-child(8)  { transition-delay: 0.40s; }
+  .stagger.in > *:nth-child(9)  { transition-delay: 0.45s; }
+  .stagger.in > *:nth-child(10) { transition-delay: 0.50s; }
+  .stagger.in > * { opacity: 1; transform: none; }
+
+  /* Callout */
+  .callout-inner {
+    border: 1px solid oklch(56% 0.215 28 / 35%);
+    background: oklch(56% 0.215 28 / 4%);
+    padding: 36px 40px;
+  }
+  .callout-tag { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: block; }
+  .callout-inner p { font-family: var(--display); font-size: clamp(22px, 3.5vw, 34px); line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase; margin: 0; color: var(--ink); max-width: 720px; }
+  .callout-sub { font-family: var(--body); font-size: 14px; color: var(--ink-dim); line-height: 1.7; text-transform: none; margin: 16px 0 0; letter-spacing: 0; max-width: 65ch; }
+  .callout-hl { color: var(--accent); }
+
+  /* S2 teaser callout */
+  .s2-callout {
+    border: 1px solid oklch(86% 0.175 97 / 35%);
+    background: oklch(86% 0.175 97 / 4%);
+    padding: 36px 40px;
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: background 0.2s var(--ease);
+  }
+  .s2-callout:hover,
+  .s2-callout:focus-visible {
+    background: oklch(86% 0.175 97 / 7%);
+    outline: none;
+  }
+  .s2-callout .callout-tag { color: var(--accent-2); margin-bottom: 8px; }
+  .s2-callout p { font-family: var(--display); font-size: clamp(20px, 3vw, 30px); line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase; margin: 0; color: var(--ink); max-width: 720px; }
+  .s2-callout .callout-sub { margin-top: 10px; }
+  .s2-callout .arrow { font-size: 24px; color: var(--accent-2); flex-shrink: 0; opacity: 0.7; transition: transform 0.2s var(--ease); }
+  .s2-callout:hover .arrow,
+  .s2-callout:focus-visible .arrow { transform: translateX(4px); }
+
+  /* Section intro paragraphs */
+  .section-intro { color: var(--ink-dim); font-size: 14px; margin-bottom: 24px; max-width: 65ch; }
+  .section-intro.tight { margin-bottom: 28px; max-width: 60ch; }
+  .s2-callout .callout-hl { color: var(--accent-2); }
+
+  /* How It Works */
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .how-item { background: var(--bg-2); padding: 28px 24px; }
+  .how-num { font-family: var(--display); font-size: 48px; color: oklch(56% 0.215 28 / 12%); line-height: 1; margin-bottom: 8px; }
+  .how-title { font-family: var(--display); font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .how-desc { font-size: 14px; color: var(--ink-dim); line-height: 1.65; }
+
+  /* Schedule */
+  .table-scroll { overflow-x: auto; }
+  .schedule-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--line); }
+  .schedule-table th { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--bg); }
+  .schedule-table td { padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .schedule-table tr:last-child td { border-bottom: none; }
+  .schedule-table tr.done td { opacity: 0.5; }
+  .schedule-table tr.unarchived td { opacity: 0.32; }
+  .round-num { font-family: var(--mono); color: var(--ink-dim); font-size: 12px; letter-spacing: 0.05em; white-space: nowrap; }
+  .track-name { color: var(--ink); font-family: var(--body); font-size: 14px; font-weight: 500; }
+  .date-col { font-family: var(--body); color: var(--ink-dim); font-size: 12px; letter-spacing: 0.04em; white-space: nowrap; }
+  .winner-col { font-family: var(--body); font-size: 12px; color: var(--ink); font-weight: 500; }
+  .status-done { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+  .status-done::before { content: "✓  "; }
+  .status-unarchived { font-family: var(--body); font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); opacity: 0.5; font-style: italic; }
+  .status-upcoming { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); animation: pulse 1.5s ease-in-out infinite; }
+  .status-upcoming::before { content: "●  "; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  /* Final / highlight rounds */
+  .schedule-table tr.round-final { background: oklch(56% 0.215 28 / 4%); }
+  .schedule-table tr.round-final .round-num { color: var(--accent); }
+  .schedule-table tr.round-final .winner-col { color: var(--accent); font-weight: 600; }
+
+  /* Key Moments */
+  .moment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 36px; }
+  .moment-card { background: var(--bg-2); padding: 28px 26px; }
+  .moment-round { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .moment-title { font-family: var(--display); font-size: 20px; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px; }
+  .moment-desc { font-size: 13px; color: var(--ink-dim); line-height: 1.65; }
+  .moment-stat { font-family: var(--display); font-size: 36px; line-height: 1; color: var(--accent); margin-bottom: 6px; }
+
+  /* Results table */
+  .rounds-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--line); margin-top: 36px; }
+  .rounds-table th { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg); white-space: nowrap; }
+  .rounds-table td { padding: 13px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .rounds-table tr:last-child td { border-bottom: none; }
+  .rt-round { font-family: var(--mono); color: var(--ink-dim); font-size: 11px; white-space: nowrap; }
+  .rt-winner { font-family: var(--body); font-weight: 600; color: var(--accent); }
+  .rt-driver { font-family: var(--body); font-size: 13px; color: var(--ink-dim); }
+  .rt-fl { font-family: var(--mono); font-size: 11px; color: var(--accent-2); }
+  .rt-unarchived td { opacity: 0.28; font-style: italic; }
+  .rounds-table tr.round-final { background: oklch(56% 0.215 28 / 5%); border-top: 1px solid oklch(56% 0.215 28 / 30%); }
+  .rounds-table tr.round-final .rt-round { color: var(--accent); }
+  .rounds-table tr.round-final .rt-driver:first-child { color: var(--accent); font-weight: 600; }
+
+  /* Analytics */
+  .analytics-facts { list-style: none; padding: 0; margin: 0 0 40px; }
+  .analytics-facts li { display: flex; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .analytics-facts li:first-child { padding-top: 0; }
+  .fact-num { font-family: var(--display); font-size: 2.2rem; line-height: 1; color: var(--accent); min-width: 72px; flex-shrink: 0; }
+  .fact-text { font-size: 0.88rem; line-height: 1.6; color: var(--ink-dim); }
+  .fact-text strong { color: var(--ink); font-weight: 600; }
+
+  /* Standings */
+  .standings-wrap { display: grid; grid-template-columns: 1fr; gap: 1px; }
+  .standings-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--line); }
+  .standings-table th { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--bg); }
+  .standings-table th.th-pts { text-align: right; }
+  .standings-table td { padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .standings-table tr:last-child td { border-bottom: none; }
+  .st-rank { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); width: 36px; }
+  .st-name { font-family: var(--body); font-size: 15px; font-weight: 500; }
+  .st-pts { font-family: var(--mono); font-size: 15px; text-align: right; }
+  .st-note { font-family: var(--body); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.06em; }
+  .standings-table td.st-note { text-align: right; }
+  .st-note-champ { color: var(--accent) !important; }
+  .standings-table tr.podium-1 td { background: oklch(56% 0.215 28 / 6%); }
+  .standings-table tr.podium-1 .st-rank { color: var(--accent); font-weight: 700; font-size: 14px; }
+  .standings-table tr.podium-1 .st-name { color: var(--accent); font-weight: 700; }
+  .standings-table tr.podium-1 .st-pts { color: var(--accent); }
+  .standings-table tr.podium-2 .st-rank,
+  .standings-table tr.podium-3 .st-rank { color: var(--ink); font-weight: 600; }
+
+  /* Championship box */
+  .champ-picture {
+    border: 1px solid oklch(56% 0.215 28 / 35%);
+    background: oklch(56% 0.215 28 / 4%);
+    margin-bottom: 28px;
+  }
+  .champ-head {
+    font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent);
+    padding: 12px 20px; border-bottom: 1px solid oklch(56% 0.215 28 / 20%);
+  }
+  .champ-battle { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .champ-side { padding: 24px 22px; }
+  .champ-side.chasing-side { text-align: right; }
+  .champ-status { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 4px; }
+  .leader-side .champ-status { color: var(--accent); }
+  .champ-name { font-family: var(--display); font-size: clamp(18px, 2.8vw, 28px); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .leader-side .champ-name { color: var(--accent); }
+  .champ-score { font-family: var(--mono); font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.02em; line-height: 1; }
+  .champ-middle {
+    padding: 24px 32px;
+    border-left: 1px solid oklch(56% 0.215 28 / 20%);
+    border-right: 1px solid oklch(56% 0.215 28 / 20%);
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .champ-margin { font-family: var(--display); font-size: clamp(52px, 8vw, 88px); line-height: 1; color: var(--accent); }
+  .champ-margin-label { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim); margin-top: 2px; }
+  .champ-facts { border-top: 1px solid oklch(56% 0.215 28 / 20%); display: flex; gap: 0; }
+  .champ-fact { flex: 1; padding: 14px 20px; border-right: 1px solid oklch(56% 0.215 28 / 20%); }
+  .champ-fact:last-child { border-right: none; }
+  .champ-fact-k { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 3px; }
+  .champ-fact-v { font-family: var(--mono); font-size: 14px; color: var(--ink); }
+
+  /* Drivers grid */
+  .drivers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .driver-card { background: var(--bg-2); padding: 22px 20px; }
+  .driver-name { font-family: var(--display); font-size: 17px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .driver-psn { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.06em; margin-bottom: 6px; }
+  .driver-tag { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 7px; display: inline-block; }
+  .driver-tag.champion { color: var(--accent); border: 1px solid oklch(56% 0.215 28 / 40%); background: oklch(56% 0.215 28 / 8%); }
+  .driver-tag.reserve { color: var(--ink-dim); border: 1px solid oklch(64% 0.005 75 / 30%); }
+
+  /* Car grid */
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .region-col { background: var(--bg-2); padding: 0; }
+  .region-head { padding: 12px 18px; border-bottom: 1px solid var(--line); }
+  .region-head-label { font-family: var(--body); font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 3px; }
+  .region-head-name { font-family: var(--display); font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .region-head-name.eu { color: var(--eu); }
+  .region-head-name.as { color: var(--as); }
+  .region-head-name.am { color: var(--accent); }
+  .region-cars { list-style: none; margin: 0; padding: 0; }
+  .region-cars li { padding: 11px 18px; border-bottom: 1px solid var(--line); font-family: var(--body); font-size: 13px; color: var(--ink-dim); display: flex; align-items: center; gap: 8px; }
+  .region-cars li:last-child { border-bottom: none; }
+  .region-cars li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; background: var(--line); }
+  .region-col.eu .region-cars li::before { background: color-mix(in oklch, var(--eu) 60%, transparent); }
+  .region-col.as .region-cars li::before { background: color-mix(in oklch, var(--as) 60%, transparent); }
+  .region-col.am .region-cars li::before { background: color-mix(in oklch, var(--accent) 70%, transparent); }
+  [data-theme="light"] .region-cars li { border-color: oklch(83% 0.006 25 / 70%); }
+
+  /* Points table */
+  .pts-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; border: 1px solid var(--line); }
+  .pts-table th { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: center; background: var(--bg); }
+  .pts-table th:first-child { text-align: left; }
+  .pts-table td { padding: 10px 10px; text-align: center; border-right: 1px solid var(--line); color: var(--ink-dim); }
+  .pts-table td:first-child { text-align: left; font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); padding-left: 14px; border-right: 1px solid var(--line); }
+  .pts-table td:last-child { border-right: none; }
+  .pts-table .pts-p1 { color: var(--accent); font-weight: 700; font-size: 15px; }
+  .pts-table .pts-p2 { color: var(--ink); font-weight: 600; }
+  .pts-table .pts-p3 { color: var(--ink); font-weight: 500; }
+  .pts-fl { font-family: var(--body); font-size: 12px; color: var(--accent-2); margin-top: 10px; letter-spacing: 0.04em; }
+
+  /* Settings */
+  .settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 24px; }
+  .settings-row { background: var(--bg-2); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .settings-key { font-family: var(--body); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
+  .settings-val { font-family: var(--mono); font-size: 12px; color: var(--ink); text-transform: uppercase; letter-spacing: 0.08em; text-align: right; }
+  .settings-val.ok { color: var(--ok); }
+  .settings-val.no { color: var(--accent); }
+
+  .assists-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .assist-group h3 { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .assist-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .assist-list li { font-family: var(--body); font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--ink-dim); }
+  .assist-list li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .assist-list.no li::before { background: var(--accent); }
+  .assist-list.ok li::before { background: var(--ok); }
+
+  footer { padding: 48px 0 36px; text-align: center; font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.25em; color: var(--ink-dim); text-transform: uppercase; position: relative; z-index: 1; }
+  footer .sig { color: var(--accent); margin-top: 8px; font-family: var(--display); font-size: 22px; letter-spacing: 0.04em; }
+
+  /* Light theme */
+  [data-theme="light"] {
+    --bg: oklch(97% 0.004 25);
+    --bg-2: oklch(92.5% 0.005 25);
+    --ink: oklch(11% 0.008 25);
+    --ink-dim: oklch(47% 0.007 75);
+    --line: oklch(83% 0.006 25);
+    --accent: oklch(50% 0.215 28);
+    --accent-2: oklch(52% 0.17 97);
+    --eu: oklch(42% 0.16 245);
+    --as: oklch(38% 0.18 145);
+    --ok: oklch(38% 0.18 145);
+    color-scheme: light;
+  }
+  [data-theme="light"] body::before {
+    background:
+      radial-gradient(circle at 15% -10%, oklch(50% 0.215 28 / 7%), transparent 40%),
+      radial-gradient(circle at 95% 105%, oklch(52% 0.17 97 / 5%), transparent 40%);
+  }
+  [data-theme="light"] body::after {
+    background-image: linear-gradient(90deg, transparent 0, transparent 49.5%, oklch(0% 0 0 / 2%) 50%, transparent 50.5%, transparent 100%);
+  }
+  [data-theme="light"] .flag {
+    background: repeating-conic-gradient(oklch(18% 0.008 25) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px;
+  }
+
+  /* Theme toggle */
+  .theme-btn {
+    position: fixed; bottom: 20px; right: 20px; z-index: 100;
+    font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--ink-dim); background: var(--bg-2); border: 1px solid var(--line);
+    padding: 7px 12px; cursor: pointer;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .theme-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+  .theme-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    color: var(--ink);
+    border-color: var(--ink-dim);
+  }
+
+  @media (max-width: 720px) {
+    header { padding: 36px 0 28px; }
+    section { padding: 36px 0; }
+    footer { padding: 32px 0 24px; }
+    .meta { grid-template-columns: repeat(2, 1fr); }
+    .how-grid { grid-template-columns: 1fr; }
+    .moment-grid { grid-template-columns: 1fr; }
+    .drivers-grid { grid-template-columns: repeat(2, 1fr); }
+    .assists-grid { grid-template-columns: 1fr; }
+    .settings-grid { grid-template-columns: 1fr; }
+    .callout-inner, .s2-callout { padding: 24px 20px; }
+    .champ-battle { grid-template-columns: 1fr; }
+    .champ-side.chasing-side { text-align: left; }
+    .champ-middle {
+      border-left: none; border-right: none;
+      border-top: 1px solid oklch(56% 0.215 28 / 20%);
+      border-bottom: 1px solid oklch(56% 0.215 28 / 20%);
+      padding: 14px 22px;
+    }
+    .champ-facts { flex-wrap: wrap; }
+    .region-grid { grid-template-columns: 1fr; }
+    .schedule-table .date-col { display: none; }
+    .schedule-table thead th:nth-child(2) { display: none; }
+    .pts-table th, .pts-table td { padding: 7px 5px; font-size: 11px; }
+    .rounds-table th:nth-child(4), .rounds-table td:nth-child(4),
+    .rounds-table th:nth-child(5), .rounds-table td:nth-child(5) { display: none; }
+    .pts-table th:nth-child(n+10), .pts-table td:nth-child(n+10) { display: none; }
+  }
+  @media (max-width: 480px) {
+    .section-head { gap: 12px; margin-bottom: 28px; }
+    .wrap { padding: 0 16px; }
+    .drivers-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    h1 .word > span, .subtitle > span { transform: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="flag"></div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
+    <span>Season 1 — Complete</span><span class="dot">●</span>
+    <span>Champion: Barry</span><span class="dot">●</span>
+    <span>Won by 1 Point</span><span class="dot">●</span>
+    <span>Season 2 — Apr 29, 2026</span><span class="dot">●</span>
+    <span>25 Drivers · 9 Rounds</span><span class="dot">●</span>
+    <span>Wednesdays 9PM EST</span><span class="dot">●</span>
+    <span>BOP · Single Class</span><span class="dot">●</span>
+    <span>9 Cars · 9 Tracks</span><span class="dot">●</span>
+    <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
+    <span>Season 1 — Complete</span><span class="dot">●</span>
+    <span>Champion: Barry</span><span class="dot">●</span>
+    <span>Won by 1 Point</span><span class="dot">●</span>
+    <span>25 Drivers · 9 Rounds</span><span class="dot">●</span>
+    <span>Wednesdays 9PM EST</span><span class="dot">●</span>
+    <span>BOP · Single Class</span><span class="dot">●</span>
+    <span>9 Cars · 9 Tracks</span><span class="dot">●</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <nav class="nav"><a href="../">Hairpin Racing</a></nav>
+
+  <header>
+    <div class="status-badge">✓ Season 1 · Complete</div>
+    <h1>
+      <span class="word w1"><span>Wednesday</span></span><br />
+      <span class="word w2"><span>Gr.3.</span></span>
+    </h1>
+    <div class="subtitle"><span>BOP Series · Gran Turismo 7</span></div>
+    <div class="meta">
+      <div><div class="k">Night</div><div class="v">Wednesdays</div></div>
+      <div><div class="k">Race Time</div><div class="v">9PM EST</div></div>
+      <div><div class="k">Champion</div><div class="v">Barry</div></div>
+      <div><div class="k">Margin</div><div class="v">1 Point</div></div>
+    </div>
+  </header>
+
+  <!-- 01: THE SEASON -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">01</div>
+      <h2>The Season</h2>
+    </div>
+    <div class="callout-inner reveal">
+      <span class="callout-tag">Wednesday Night Gr.3 BOP · Season 1 · Complete</span>
+      <p>Nine weeks. Nine cars. Nine circuits.<br/>One champion. One point.</p>
+      <p class="callout-sub">
+        From late January through April 2026, the Wednesday Night Gr.3 BOP Series ran a
+        9-week championship across American, European, and Asian circuits — one Gr.3 car
+        per track, no repeats. Every driver on the same footing: BOP on, tuning locked to
+        brake balance only.
+        <span class="callout-hl">Barry took the title by a single point</span>
+        over RawRacingVR — and the battle for 3rd was just as close,
+        with Weaksauce412 edging TVDV by one point as well.
+      </p>
+    </div>
+
+    <a class="s2-callout reveal" href="s2/">
+      <div>
+        <span class="callout-tag">● Season 2 — Registration Open · Starts Apr 29</span>
+        <p>The championship returns.<br/>Season 2 is here.</p>
+        <p class="callout-sub">8 drivers confirmed · Same format · Starts Wednesday, April 29</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+  </section>
+
+  <!-- 02: HOW IT WORKS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">02</div>
+      <h2>How It Works</h2>
+    </div>
+    <div class="how-grid stagger">
+      <div class="how-item">
+        <div class="how-num">01</div>
+        <div class="how-title">Pure BOP Racing</div>
+        <div class="how-desc">All drivers in the same Gr.3 class with Balance of Performance active. Tuning is locked to brake balance only — no setup advantage, just pace and racecraft.</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">02</div>
+        <div class="how-title">Nine Cars, Nine Tracks</div>
+        <div class="how-desc">Three regions — Americas, Europe, Asia — three cars each. One car per track, no repeats across the season. Every race is a fresh machine on a fresh circuit.</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">03</div>
+        <div class="how-title">Full Race Format</div>
+        <div class="how-desc">Grid start with fastest-first grid order. Mandatory tire compound change. Fuel consumption &amp; tire wear at 6×. Refuel rate: 10L/sec. Randomized time of day and weather cycles. Light damage, no ghosting. 15 min practice beforehand.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03: RACE SCHEDULE -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">03</div>
+      <h2>Race Schedule</h2>
+    </div>
+    <div class="reveal table-scroll">
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th scope="col">Round</th>
+            <th scope="col">Date</th>
+            <th scope="col">Track</th>
+            <th scope="col">Dur.</th>
+            <th scope="col">Tire</th>
+            <th scope="col">Weather</th>
+            <th scope="col">Winner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="done"><td class="round-num">R1</td><td class="date-col">Feb 4</td><td class="track-name">Red Bull Ring</td><td class="date-col">34 min</td><td class="date-col">RH</td><td class="date-col">Random</td><td class="winner-col">heloskickass VR</td></tr>
+          <tr class="done"><td class="round-num">R2</td><td class="date-col">Feb 11</td><td class="track-name">Yas Marina Circuit</td><td class="date-col">26 min</td><td class="date-col">RS</td><td class="date-col">Clear</td><td class="winner-col">t0pher</td></tr>
+          <tr class="done"><td class="round-num">R3</td><td class="date-col">Feb 18</td><td class="track-name">Spa 24h Layout</td><td class="date-col">23 min</td><td class="date-col">RH</td><td class="date-col">Random</td><td class="winner-col">RawRacingVR</td></tr>
+          <tr class="done"><td class="round-num">R4</td><td class="date-col">Feb 25</td><td class="track-name">Autopolis Intl</td><td class="date-col">27 min</td><td class="date-col">RS</td><td class="date-col">Random</td><td class="winner-col">iCrazy</td></tr>
+          <tr class="done"><td class="round-num">R5</td><td class="date-col">Mar 4</td><td class="track-name">Deep Forest Raceway</td><td class="date-col">34 min</td><td class="date-col">RH</td><td class="date-col">Clear</td><td class="winner-col">t0pher</td></tr>
+          <tr class="done"><td class="round-num">R6</td><td class="date-col">Mar 11</td><td class="track-name">Watkins Glen Long</td><td class="date-col">28 min</td><td class="date-col">RS</td><td class="date-col">Random</td><td class="winner-col">Barry</td></tr>
+          <tr class="done"><td class="round-num">R7</td><td class="date-col">Mar 18</td><td class="track-name">Autódromo de Interlagos</td><td class="date-col">31 min</td><td class="date-col">RS</td><td class="date-col">Random</td><td class="winner-col">Weaksauce412</td></tr>
+          <tr class="done"><td class="round-num">R8</td><td class="date-col">Mar 25</td><td class="track-name">Road Atlanta</td><td class="date-col">37 min</td><td class="date-col">RH</td><td class="date-col">Random</td><td class="winner-col">t0pher</td></tr>
+          <tr class="done round-final"><td class="round-num">R9</td><td class="date-col">Apr 1</td><td class="track-name">Mount Panorama</td><td class="date-col">24 min</td><td class="date-col">RH</td><td class="date-col">Random</td><td class="winner-col">Barry ★</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04: THE CARS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">04</div>
+      <h2>The Cars</h2>
+    </div>
+    <p class="reveal section-intro">
+      Nine Gr.3 machines split across three regions. One car assigned per track — no car repeats across the season. Drivers experienced every corner of the grid.
+    </p>
+    <div class="region-grid reveal">
+      <div class="region-col eu">
+        <div class="region-head">
+          <div class="region-head-label">European Tracks</div>
+          <div class="region-head-name eu">European</div>
+        </div>
+        <ul class="region-cars">
+          <li>Ferrari 458 GT3</li>
+          <li>McLaren 650s GT3</li>
+          <li>Porsche 911 GT3 R</li>
+        </ul>
+      </div>
+      <div class="region-col as">
+        <div class="region-head">
+          <div class="region-head-label">Asian Tracks</div>
+          <div class="region-head-name as">Asian</div>
+        </div>
+        <ul class="region-cars">
+          <li>Toyota GR Supra GT3</li>
+          <li>Subaru BRZ GT300</li>
+          <li>Honda NSX GT3</li>
+        </ul>
+      </div>
+      <div class="region-col am">
+        <div class="region-head">
+          <div class="region-head-label">American Tracks</div>
+          <div class="region-head-name am">American</div>
+        </div>
+        <ul class="region-cars">
+          <li>Dodge Viper GT3</li>
+          <li>Ford Mustang GT3</li>
+          <li>Chevrolet Corvette GT3</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05: POINTS SYSTEM -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">05</div>
+      <h2>Points System</h2>
+    </div>
+    <div class="reveal table-scroll">
+      <table class="pts-table">
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">1st</th><th scope="col">2nd</th><th scope="col">3rd</th><th scope="col">4th</th><th scope="col">5th</th>
+            <th scope="col">6th</th><th scope="col">7th</th><th scope="col">8th</th><th scope="col">9th</th><th scope="col">10th</th>
+            <th scope="col">11th</th><th scope="col">12th</th><th scope="col">13th</th><th scope="col">14th</th><th scope="col">15th</th><th scope="col">16th</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Points</td>
+            <td class="pts-p1">25</td><td class="pts-p2">22</td><td class="pts-p3">20</td>
+            <td>18</td><td>16</td><td>14</td><td>12</td><td>10</td>
+            <td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="pts-fl reveal">+1 point awarded for Fastest Lap</p>
+  </section>
+
+  <!-- 06: ROUND BY ROUND -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">06</div>
+      <h2>Round by Round</h2>
+    </div>
+
+    <div class="reveal table-scroll">
+      <table class="rounds-table">
+        <thead>
+          <tr>
+            <th scope="col">Round</th>
+            <th scope="col">Date</th>
+            <th scope="col">Winner</th>
+            <th scope="col">2nd</th>
+            <th scope="col">3rd</th>
+            <th scope="col">Fastest Lap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rt-round">R1</td>
+            <td class="rt-driver">Feb 4</td>
+            <td class="rt-winner">heloskickass VR</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-fl">—</td>
+          </tr>
+          <tr>
+            <td class="rt-round">R2</td>
+            <td class="rt-driver">Feb 11</td>
+            <td class="rt-winner">t0pher</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-fl">—</td>
+          </tr>
+          <tr>
+            <td class="rt-round">R3</td>
+            <td class="rt-driver">Feb 18</td>
+            <td class="rt-winner">RawRacingVR</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-fl">—</td>
+          </tr>
+          <tr>
+            <td class="rt-round">R4</td>
+            <td class="rt-driver">Feb 25</td>
+            <td class="rt-winner">iCrazy</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-driver">—</td>
+            <td class="rt-fl">—</td>
+          </tr>
+          <tr>
+            <td class="rt-round">R5</td>
+            <td class="rt-driver">Mar 4</td>
+            <td class="rt-winner">t0pher</td>
+            <td class="rt-driver">RawRacingVR</td>
+            <td class="rt-driver">Chief Sandbagger</td>
+            <td class="rt-fl">Barry</td>
+          </tr>
+          <tr>
+            <td class="rt-round">R6</td>
+            <td class="rt-driver">Mar 11</td>
+            <td class="rt-winner">Barry</td>
+            <td class="rt-driver">TVDV</td>
+            <td class="rt-driver">Weaksauce412</td>
+            <td class="rt-fl">Barry</td>
+          </tr>
+          <tr>
+            <td class="rt-round">R7</td>
+            <td class="rt-driver">Mar 18</td>
+            <td class="rt-winner">Weaksauce412</td>
+            <td class="rt-driver">Barry</td>
+            <td class="rt-driver">TVDV</td>
+            <td class="rt-fl">Weaksauce412</td>
+          </tr>
+          <tr>
+            <td class="rt-round">R8</td>
+            <td class="rt-driver">Mar 25</td>
+            <td class="rt-winner">t0pher</td>
+            <td class="rt-driver">Just-Rustic</td>
+            <td class="rt-driver">AceAndrews</td>
+            <td class="rt-fl">Barry</td>
+          </tr>
+          <tr class="round-final">
+            <td class="rt-round">R9</td>
+            <td class="rt-driver">Apr 1 · Final</td>
+            <td class="rt-winner">Barry</td>
+            <td class="rt-driver">mxer699</td>
+            <td class="rt-driver">vdvbrothers</td>
+            <td class="rt-fl">vdvbrothers</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="moment-grid stagger">
+      <div class="moment-card">
+        <div class="moment-stat">1 pt</div>
+        <div class="moment-round">Season Finale · R9</div>
+        <div class="moment-title">The One-Point Thriller</div>
+        <div class="moment-desc">Barry (159) clinched the title over RawRacingVR (158) by a single point. Meanwhile Weaksauce412 (152) held off TVDV (151) by exactly one point for the final podium. Four drivers. Two separate 1-point battles. Nine races.</div>
+      </div>
+      <div class="moment-card">
+        <div class="moment-stat">3×</div>
+        <div class="moment-round">R2, R5 &amp; R8 · Reserve Driver</div>
+        <div class="moment-title">t0pher's Triple</div>
+        <div class="moment-desc">t0pher (D. Earnhardt) joined as a reserve and delivered three race wins across the season — R2 at Yas Marina, R5 at Deep Forest, R8 at Road Atlanta — stealing vital points from the title contenders each time.</div>
+      </div>
+      <div class="moment-card">
+        <div class="moment-stat">W+FL</div>
+        <div class="moment-round">R7 · Mar 18, 2026</div>
+        <div class="moment-title">Weaksauce's Masterclass</div>
+        <div class="moment-desc">Weaksauce412 took the race win and fastest lap in R7 — a dominant performance that kept the championship battle alive going into the final two rounds.</div>
+      </div>
+      <div class="moment-card">
+        <div class="moment-stat">3×FL</div>
+        <div class="moment-round">R5, R6, R8</div>
+        <div class="moment-title">Barry's Pace</div>
+        <div class="moment-desc">Barry claimed the fastest lap in three rounds (R5, R6, R8) — even in races where he didn't win. Those three bonus points proved priceless in a championship decided by a single point.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07: BY THE NUMBERS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">07</div>
+      <h2>By The Numbers</h2>
+    </div>
+    <ul class="analytics-facts reveal">
+      <li>
+        <div class="fact-num">1</div>
+        <div class="fact-text">
+          <strong>Point between 1st and 2nd — and again between 3rd and 4th.</strong>
+          Barry (159) over RawRacingVR (158) for the title. Weaksauce412 (152) over TVDV (151) for the final podium spot. Two separate 1-point battles across the same 9-race season.
+        </div>
+      </li>
+      <li>
+        <div class="fact-num">3</div>
+        <div class="fact-text">
+          <strong>Race wins for t0pher (D. Earnhardt) — as a reserve driver.</strong>
+          R2 at Yas Marina, R5 at Deep Forest, R8 at Road Atlanta. He didn't race the full season, but when he showed up, he won.
+        </div>
+      </li>
+      <li>
+        <div class="fact-num">4</div>
+        <div class="fact-text">
+          <strong>Different race winners across the 9 rounds.</strong>
+          heloskickass VR, t0pher (3×), RawRacingVR, iCrazy, Barry (2×), and Weaksauce412 each took a win — no single driver dominated.
+        </div>
+      </li>
+      <li>
+        <div class="fact-num">9</div>
+        <div class="fact-text">
+          <strong>Different car-track combinations across the season.</strong>
+          Three regions, three cars per region — Americas, Europe, Asia — with no car or track repeated. Every Wednesday was a fresh challenge.
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 08: CHAMPIONSHIP STANDINGS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">08</div>
+      <h2>Championship Standings</h2>
+    </div>
+
+    <div class="champ-picture reveal">
+      <div class="champ-head">Season 1 Championship · Final</div>
+      <div class="champ-battle">
+        <div class="champ-side leader-side">
+          <div class="champ-status">Champion</div>
+          <div class="champ-name">Barry</div>
+          <div class="champ-score"><span aria-hidden="true">🏆</span> 159</div>
+        </div>
+        <div class="champ-middle">
+          <div class="champ-margin">1</div>
+          <div class="champ-margin-label">Point Gap</div>
+        </div>
+        <div class="champ-side chasing-side">
+          <div class="champ-status">Runner-Up</div>
+          <div class="champ-name">RawRacingVR</div>
+          <div class="champ-score">158</div>
+        </div>
+      </div>
+      <div class="champ-facts">
+        <div class="champ-fact">
+          <div class="champ-fact-k">3rd Place</div>
+          <div class="champ-fact-v">Weaksauce412 — 152 pts (−6 from 2nd)</div>
+        </div>
+        <div class="champ-fact">
+          <div class="champ-fact-k">4th Place</div>
+          <div class="champ-fact-v">TVDV — 151 pts (−1 from 3rd)</div>
+        </div>
+        <div class="champ-fact">
+          <div class="champ-fact-k">Gap 1st → 4th</div>
+          <div class="champ-fact-v">8 points · two 1-pt battles</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal table-scroll">
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th scope="col" style="width:40px">#</th>
+            <th scope="col">Driver</th>
+            <th scope="col" class="th-pts">Pts</th>
+            <th scope="col" class="th-pts">Gap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="podium-1">
+            <td class="st-rank"><span aria-hidden="true">🏆</span></td>
+            <td class="st-name">Barry</td>
+            <td class="st-pts">159</td>
+            <td class="st-note st-note-champ">Champion</td>
+          </tr>
+          <tr class="podium-2">
+            <td class="st-rank">2</td>
+            <td class="st-name">RawRacingVR</td>
+            <td class="st-pts">158</td>
+            <td class="st-note">−1</td>
+          </tr>
+          <tr class="podium-3">
+            <td class="st-rank">3</td>
+            <td class="st-name">Weaksauce412</td>
+            <td class="st-pts">152</td>
+            <td class="st-note">−7</td>
+          </tr>
+          <tr>
+            <td class="st-rank">4</td>
+            <td class="st-name">TVDV</td>
+            <td class="st-pts">151</td>
+            <td class="st-note">−8</td>
+          </tr>
+          <tr>
+            <td class="st-rank">5</td>
+            <td class="st-name">t0pher <span class="st-note">· 3 wins</span></td>
+            <td class="st-pts">115</td>
+            <td class="st-note">−44</td>
+          </tr>
+          <tr>
+            <td class="st-rank">6</td>
+            <td class="st-name">Boltus</td>
+            <td class="st-pts">90</td>
+            <td class="st-note">−69</td>
+          </tr>
+          <tr>
+            <td class="st-rank">7</td>
+            <td class="st-name">Ctill-VR</td>
+            <td class="st-pts">75</td>
+            <td class="st-note">−84</td>
+          </tr>
+          <tr>
+            <td class="st-rank">8</td>
+            <td class="st-name">Fri9875</td>
+            <td class="st-pts">70</td>
+            <td class="st-note">−89</td>
+          </tr>
+          <tr>
+            <td class="st-rank">8</td>
+            <td class="st-name">TRC_Sully</td>
+            <td class="st-pts">70</td>
+            <td class="st-note">−89</td>
+          </tr>
+          <tr>
+            <td class="st-rank">10</td>
+            <td class="st-name">Ncardw11</td>
+            <td class="st-pts">68</td>
+            <td class="st-note">−91</td>
+          </tr>
+          <tr>
+            <td class="st-rank">11</td>
+            <td class="st-name">Dark Delacroix</td>
+            <td class="st-pts">59</td>
+            <td class="st-note">−100</td>
+          </tr>
+          <tr>
+            <td class="st-rank">12</td>
+            <td class="st-name">Peekaboo Racing</td>
+            <td class="st-pts">55</td>
+            <td class="st-note">−104</td>
+          </tr>
+          <tr>
+            <td class="st-rank">13</td>
+            <td class="st-name">heloskickass VR <span class="st-note">· R1 win</span></td>
+            <td class="st-pts">48</td>
+            <td class="st-note">−111</td>
+          </tr>
+          <tr>
+            <td class="st-rank">14</td>
+            <td class="st-name">iCrazy <span class="st-note">· R4 win</span></td>
+            <td class="st-pts">47</td>
+            <td class="st-note">−112</td>
+          </tr>
+          <tr>
+            <td class="st-rank">15</td>
+            <td class="st-name">Rollingsmoke</td>
+            <td class="st-pts">46</td>
+            <td class="st-note">−113</td>
+          </tr>
+          <tr>
+            <td class="st-rank">16</td>
+            <td class="st-name">Shakesbake</td>
+            <td class="st-pts">22</td>
+            <td class="st-note">−137</td>
+          </tr>
+          <tr>
+            <td class="st-rank">16</td>
+            <td class="st-name">WERA-Bailey</td>
+            <td class="st-pts">22</td>
+            <td class="st-note">−137</td>
+          </tr>
+          <tr>
+            <td class="st-rank">16</td>
+            <td class="st-name">Just Rustic</td>
+            <td class="st-pts">22</td>
+            <td class="st-note">−137</td>
+          </tr>
+          <tr>
+            <td class="st-rank">19</td>
+            <td class="st-name">Ace</td>
+            <td class="st-pts">20</td>
+            <td class="st-note">−139</td>
+          </tr>
+          <tr>
+            <td class="st-rank">20</td>
+            <td class="st-name">Leadfoot GT</td>
+            <td class="st-pts">14</td>
+            <td class="st-note">−145</td>
+          </tr>
+          <tr>
+            <td class="st-rank">20</td>
+            <td class="st-name">TAR_Snake</td>
+            <td class="st-pts">14</td>
+            <td class="st-note">−145</td>
+          </tr>
+          <tr>
+            <td class="st-rank">22</td>
+            <td class="st-name">Five</td>
+            <td class="st-pts">12</td>
+            <td class="st-note">−147</td>
+          </tr>
+          <tr>
+            <td class="st-rank">23</td>
+            <td class="st-name">ShabbaRanks</td>
+            <td class="st-pts">5</td>
+            <td class="st-note">−154</td>
+          </tr>
+          <tr>
+            <td class="st-rank">23</td>
+            <td class="st-name">Jesus</td>
+            <td class="st-pts">5</td>
+            <td class="st-note">−154</td>
+          </tr>
+          <tr>
+            <td class="st-rank">23</td>
+            <td class="st-name">EliteWeasel</td>
+            <td class="st-pts">5</td>
+            <td class="st-note">−154</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 09: THE DRIVERS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">09</div>
+      <h2>The Drivers</h2>
+    </div>
+    <p class="reveal section-intro tight">Registered participants for Season 1. The grid filled fast — registration closed early with reserves taken on.</p>
+    <div class="drivers-grid stagger">
+      <div class="driver-card">
+        <div class="driver-name">Barry</div>
+        <div class="driver-psn">PSN: ALUPNYA79</div>
+        <span class="driver-tag champion">🏆 S1 Champion</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">RawRacingVR</div>
+        <div class="driver-psn">PSN: yeahhiknow</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Weaksauce412</div>
+        <div class="driver-psn">PSN: Weaksauce412</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">TVDV</div>
+        <div class="driver-psn">PSN: VDVBROTHERS</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">t0pher</div>
+        <div class="driver-psn">PSN: LastShot · GT7: D. Earnhardt</div>
+        <span class="driver-tag reserve">Reserve</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Chief Sandbagger</div>
+        <div class="driver-psn">PSN: Dark_Delacroix</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Ctill-VR</div>
+        <div class="driver-psn">PSN: shenanigas69</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Ncardw</div>
+        <div class="driver-psn">PSN: Ncardw11</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Sully</div>
+        <div class="driver-psn">PSN: unsullyed</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Leadfoot GT</div>
+        <div class="driver-psn">PSN: Twistted wizard</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Rollinsmoke</div>
+        <div class="driver-psn">PSN: Wreathafrankin</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Fri9875</div>
+        <div class="driver-psn">PSN: Fri9875</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Focalenergy</div>
+        <div class="driver-psn">PSN: Focalenergy</div>
+        <span class="driver-tag reserve">Reserve</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Peekaboo Racing</div>
+        <div class="driver-psn">PSN: clutch_n_load6</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Boltus</div>
+        <div class="driver-psn">PSN: Zack_Bolton02</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">heloskickass VR</div>
+        <div class="driver-psn">PSN: heloskickass</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">PunkTree</div>
+        <div class="driver-psn">PSN: BeerBaconMetal</div>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">WERA-Bailey</div>
+        <div class="driver-psn">PSN: unmatched26</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10: ROOM SETTINGS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">10</div>
+      <h2>Room Settings</h2>
+    </div>
+    <div class="settings-grid reveal">
+      <div class="settings-row"><span class="settings-key">Car Category</span><span class="settings-val">Gr.3</span></div>
+      <div class="settings-row"><span class="settings-key">Balance of Performance</span><span class="settings-val ok">On</span></div>
+      <div class="settings-row"><span class="settings-key">Tuning</span><span class="settings-val">Brake Balance Only</span></div>
+      <div class="settings-row"><span class="settings-key">Tire Compound</span><span class="settings-val">Mandatory Change</span></div>
+      <div class="settings-row"><span class="settings-key">Fuel Consumption</span><span class="settings-val">6×</span></div>
+      <div class="settings-row"><span class="settings-key">Tire Wear</span><span class="settings-val">6×</span></div>
+      <div class="settings-row"><span class="settings-key">Refuel Rate</span><span class="settings-val">10L / sec</span></div>
+      <div class="settings-row"><span class="settings-key">Start Type</span><span class="settings-val">Grid Start</span></div>
+      <div class="settings-row"><span class="settings-key">Grid Order</span><span class="settings-val">Fastest First</span></div>
+      <div class="settings-row"><span class="settings-key">Slipstream</span><span class="settings-val">Real</span></div>
+      <div class="settings-row"><span class="settings-key">Off-Track Grip</span><span class="settings-val">Real</span></div>
+      <div class="settings-row"><span class="settings-key">Time of Day</span><span class="settings-val">Random Cycle</span></div>
+      <div class="settings-row"><span class="settings-key">Damage</span><span class="settings-val">Light</span></div>
+      <div class="settings-row"><span class="settings-key">Ghosting</span><span class="settings-val no">Off</span></div>
+      <div class="settings-row"><span class="settings-key">Wall Collision Penalty</span><span class="settings-val no">Off</span></div>
+      <div class="settings-row"><span class="settings-key">Shortcut Penalty</span><span class="settings-val">Weak</span></div>
+      <div class="settings-row"><span class="settings-key">Pit Lane Cutting</span><span class="settings-val ok">On</span></div>
+      <div class="settings-row"><span class="settings-key">Flag Rules</span><span class="settings-val ok">On</span></div>
+      <div class="settings-row"><span class="settings-key">Auto Reset</span><span class="settings-val no">Off</span></div>
+      <div class="settings-row"><span class="settings-key">Practice</span><span class="settings-val">15 min · Randomized</span></div>
+    </div>
+    <div class="assists-grid reveal">
+      <div class="assist-group">
+        <h3>Prohibited Assists</h3>
+        <ul class="assist-list no">
+          <li>Counter-Steering Assist</li>
+          <li>Active Stability Management (ASM)</li>
+          <li>Driving Line</li>
+          <li>Auto Drive</li>
+        </ul>
+      </div>
+      <div class="assist-group">
+        <h3>Allowed Assists</h3>
+        <ul class="assist-list ok">
+          <li>Traction Control — No Limit</li>
+          <li>ABS — No Limit</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main><!-- /.wrap -->
+
+<footer>
+  <div>Hairpin Racing · Wednesday Night Gr.3 BOP Series</div>
+  <div class="sig">Season 2 — Registration Open · April 29, 2026</div>
+</footer>
+
+<button class="theme-btn" onclick="(function(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('hairpin-theme',t);})()">Toggle Theme</button>
+
+<script>
+(function () {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal, .stagger, .chart-wrap').forEach(el => io.observe(el));
+})();
+</script>
+
+</body>
+</html>
