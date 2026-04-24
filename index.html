@@ -368,6 +368,18 @@
     content: "—";
     color: var(--line);
   }
+  .season-card .meta-admin {
+    margin-top: 10px;
+    color: var(--ink-dim);
+  }
+  .season-card .meta-admin::before { content: none; }
+  .season-card .meta-admin .adm-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
 
   .season-card .arrow {
     position: absolute;
@@ -442,21 +454,21 @@
   }
 
   /* Series section headers */
-  .series-block { margin-top: 40px; }
+  .series-block { margin-top: 48px; }
   .series-header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    padding: 14px 0 12px;
+    padding: 16px 0 14px;
     border-top: 1px solid var(--line);
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
   }
   .series-header-name {
     font-family: var(--body);
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink);
   }
@@ -703,6 +715,7 @@
         <div class="meta-row">
           <div class="meta-item">Tuesdays · 9 PM ET</div>
           <div class="meta-item">Wraps Apr 28</div>
+          <div class="meta-item meta-admin"><span class="adm-label">Admin</span> Barry</div>
         </div>
         <div class="season-progress">
           <div class="progress-track"><div class="progress-fill"></div></div>
@@ -717,6 +730,7 @@
         <div class="meta-row">
           <div class="meta-item">10 Races · 8 Teams</div>
           <div class="meta-item">Starts mid-May</div>
+          <div class="meta-item meta-admin"><span class="adm-label">Admin</span> Barry</div>
         </div>
         <div class="arrow">→</div>
       </a>
@@ -738,6 +752,7 @@
           <div class="meta-item">Champion: Barry</div>
           <div class="meta-item">159 pts · Won by 1</div>
           <div class="meta-item">25 drivers · 9 rounds</div>
+          <div class="meta-item meta-admin"><span class="adm-label">Admin</span> TVDV</div>
         </div>
         <div class="arrow">→</div>
       </a>
@@ -749,6 +764,7 @@
           <div class="meta-item">Starts Apr 29, 2026</div>
           <div class="meta-item">8 drivers confirmed</div>
           <div class="meta-item">Same format · 9 weeks</div>
+          <div class="meta-item meta-admin"><span class="adm-label">Admin</span> TVDV</div>
         </div>
         <div class="arrow">→</div>
       </a>

@@ -260,7 +260,7 @@
   /* How It Works */
   .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .how-item { background: var(--bg-2); padding: 28px 24px; }
-  .how-num { font-family: var(--display); font-size: 48px; color: oklch(86% 0.175 97 / 10%); line-height: 1; margin-bottom: 8px; }
+  .how-num { font-family: var(--display); font-size: 48px; color: color-mix(in oklch, var(--accent) 12%, transparent); line-height: 1; margin-bottom: 8px; }
   .how-title { font-family: var(--display); font-size: 18px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
   .how-desc { font-size: 14px; color: var(--ink-dim); line-height: 1.65; }
 
@@ -353,6 +353,7 @@
     --ok: oklch(38% 0.18 145);
     color-scheme: light;
   }
+  [data-theme="light"] .how-num { color: color-mix(in oklch, var(--ink) 28%, transparent); }
   [data-theme="light"] body::before {
     background:
       radial-gradient(circle at 15% -10%, oklch(52% 0.17 97 / 7%), transparent 40%),
