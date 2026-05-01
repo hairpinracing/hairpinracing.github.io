@@ -217,6 +217,8 @@
   .stagger.in > *:nth-child(8)  { transition-delay: 0.40s; }
   .stagger.in > *:nth-child(9)  { transition-delay: 0.45s; }
   .stagger.in > *:nth-child(10) { transition-delay: 0.50s; }
+  .stagger.in > *:nth-child(11) { transition-delay: 0.55s; }
+  .stagger.in > *:nth-child(12) { transition-delay: 0.60s; }
   .stagger.in > * { opacity: 1; transform: none; }
 
   /* Callout */
@@ -320,6 +322,26 @@
   .schedule-table tr.round-next .round-num { color: var(--accent-2); }
   .schedule-table tr.round-next td:nth-child(4) { color: var(--ink); font-weight: 500; }
 
+  /* Round done */
+  .schedule-table tr.round-done { opacity: 0.55; }
+  .schedule-table tr.round-done .round-num { color: var(--ink-dim); }
+  .status-done { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ok); }
+
+  /* Championship Standings table */
+  .standings-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; border: 1px solid var(--line); }
+  .standings-table th { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: center; background: var(--bg); white-space: nowrap; }
+  .standings-table th:nth-child(2) { text-align: left; }
+  .standings-table td { padding: 11px 10px; text-align: center; border-bottom: 1px solid oklch(19% 0.007 25 / 40%); color: var(--ink-dim); }
+  .standings-table tr:last-child td { border-bottom: none; }
+  .standings-table td:nth-child(1) { font-size: 11px; color: var(--ink-dim); }
+  .standings-table td:nth-child(2) { text-align: left; font-family: var(--body); font-size: 14px; font-weight: 600; color: var(--ink); padding-left: 14px; }
+  .standings-table td:last-child { font-weight: 700; color: var(--ink); font-size: 15px; }
+  .standings-table tr:nth-child(1) .pos-num { color: var(--accent-2); font-size: 16px; font-weight: 700; }
+  .standings-table tr:nth-child(2) .pos-num { color: var(--ink); font-weight: 600; }
+  .standings-table tr:nth-child(3) .pos-num { color: var(--ink); font-weight: 500; }
+  .standings-table tr:nth-child(1) td:last-child { color: var(--accent-2); }
+  .fl-badge { font-family: var(--body); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2); padding: 1px 5px; border: 1px solid oklch(86% 0.175 97 / 35%); background: oklch(86% 0.175 97 / 6%); margin-left: 6px; vertical-align: middle; }
+
   /* Settings */
   .settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 24px; }
   .settings-row { background: var(--bg-2); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
@@ -415,16 +437,16 @@
   <div class="marquee-track">
     <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
     <span>Season 2</span><span class="dot">●</span>
-    <span>Registration Open</span><span class="dot">●</span>
-    <span>Starts Apr 29, 2026</span><span class="dot">●</span>
+    <span>Season Underway</span><span class="dot">●</span>
+    <span>R1 Complete · TVDV Wins</span><span class="dot">●</span>
     <span>Alsace Village · Blue Moon Bay · Fuji</span><span class="dot">●</span>
     <span>Ferrari 296 · Ford GT · Genesis X</span><span class="dot">●</span>
     <span>50 Min · BOP · 4x–8x Wear</span><span class="dot">●</span>
     <span>S1 Champion: Barry</span><span class="dot">●</span>
     <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
     <span>Season 2</span><span class="dot">●</span>
-    <span>Registration Open</span><span class="dot">●</span>
-    <span>Starts Apr 29, 2026</span><span class="dot">●</span>
+    <span>Season Underway</span><span class="dot">●</span>
+    <span>R1 Complete · TVDV Wins</span><span class="dot">●</span>
     <span>Alsace Village · Blue Moon Bay · Fuji</span><span class="dot">●</span>
     <span>Ferrari 296 · Ford GT · Genesis X</span><span class="dot">●</span>
     <span>50 Min · BOP · 4x–8x Wear</span><span class="dot">●</span>
@@ -440,7 +462,7 @@
   </nav>
 
   <header>
-    <div class="status-badge">● Registration Open · Starts Apr 29</div>
+    <div class="status-badge">● Season Underway · R1 Complete</div>
     <h1>
       <span class="word w1"><span>Wednesday</span></span><br />
       <span class="word w2"><span>Gr.3.</span></span>
@@ -448,9 +470,9 @@
     <div class="subtitle"><span>BOP Series · Season 2</span></div>
     <div class="meta">
       <div><div class="k">Season</div><div class="v">2</div></div>
-      <div><div class="k">R1</div><div class="v">Apr 29</div></div>
+      <div><div class="k">R1 Winner</div><div class="v">TVDV</div></div>
       <div><div class="k">Race Length</div><div class="v">50 Min</div></div>
-      <div><div class="k">Status</div><div class="v v-live">Reg Open</div></div>
+      <div><div class="k">Status</div><div class="v v-live">Ongoing</div></div>
     </div>
   </header>
 
@@ -461,12 +483,12 @@
       <h2>Season 2</h2>
     </div>
     <div class="callout-inner reveal">
-      <span class="callout-tag">● Season 2 — Registration Open · April 24, 2026</span>
-      <p>The championship returns.<br/>Registration is open. Grid filling fast.</p>
+      <span class="callout-tag">● Season 2 — Race 1 Complete · April 29, 2026</span>
+      <p>The season is on.<br/><span class="callout-hl">TVDV</span> leads after Race 1 at Alsace Village.</p>
       <p class="callout-sub">
-        Season 2 kicks off <span class="callout-hl">Wednesday, April 29, 2026.</span>
-        Same format as Season 1 — 9 weeks, 3 regions (Americas, Europe, Asia), BOP on, one car per track, no repeats.
-        Eight drivers locked in within the first hour of registration opening.
+        12 drivers took the start at Alsace Village with the Ferrari 296 GT3. TVDV took a dominant victory,
+        with D. Earnhardt and Jett completing the podium. Boltus set the fastest lap (1:52.885) in P5.
+        8 rounds to go — <span class="callout-hl">anything can still happen.</span>
       </p>
     </div>
     <a class="s1-callout reveal" href="../">
@@ -524,8 +546,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="round-next"><td class="round-num">R1</td><td class="date-col">Apr 29</td><td class="track-name">Alsace Village</td><td class="date-col">Ferrari 296</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
-          <tr><td class="round-num">R2</td><td class="date-col">May 6</td><td class="track-name">Blue Moon Bay</td><td class="date-col">Ford GT</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
+          <tr class="round-done"><td class="round-num">R1</td><td class="date-col">Apr 29</td><td class="track-name">Alsace Village</td><td class="date-col">Ferrari 296</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-next"><td class="round-num">R2</td><td class="date-col">May 6</td><td class="track-name">Blue Moon Bay</td><td class="date-col">Ford GT</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-upcoming">Next</span></td></tr>
           <tr><td class="round-num">R3</td><td class="date-col">May 13</td><td class="track-name">Fuji International</td><td class="date-col">Genesis X</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
           <tr><td class="round-num">R4</td><td class="date-col">May 20</td><td class="track-name">Saint Croix Circuit</td><td class="date-col">BMW M6 Endurance</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
           <tr><td class="round-num">R5</td><td class="date-col">May 27</td><td class="track-name">Laguna Seca</td><td class="date-col">Dodge Viper</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
@@ -538,10 +560,106 @@
     </div>
   </section>
 
-  <!-- 04: THE CARS -->
+  <!-- 04: CHAMPIONSHIP STANDINGS -->
   <section>
     <div class="section-head reveal">
       <div class="section-num">04</div>
+      <h2>Championship Standings</h2>
+    </div>
+    <p class="reveal section-intro tight">After 1 of 9 rounds. Fastest lap bonus included. Points scored only by race starters.</p>
+    <div class="reveal table-scroll">
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th scope="col">Pos</th>
+            <th scope="col">Driver</th>
+            <th scope="col">R1</th>
+            <th scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pos-num">1</span></td>
+            <td>TVDV</td>
+            <td>25</td>
+            <td>25</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">2</span></td>
+            <td>D. Earnhardt</td>
+            <td>22</td>
+            <td>22</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">3</span></td>
+            <td>Jett <span style="font-family:var(--mono);font-size:10px;color:var(--ink-dim)">(Weaksauce412)</span></td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">4</span></td>
+            <td>Barry</td>
+            <td>18</td>
+            <td>18</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">5</span></td>
+            <td>Boltus <span class="fl-badge">⚡ FL</span></td>
+            <td>17</td>
+            <td>17</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">6</span></td>
+            <td>RollingSmoke</td>
+            <td>14</td>
+            <td>14</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">7</span></td>
+            <td>Ctill-VR</td>
+            <td>12</td>
+            <td>12</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">8</span></td>
+            <td>Ncardw11</td>
+            <td>10</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">9</span></td>
+            <td>PeekabooRacing</td>
+            <td>8</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">10</span></td>
+            <td>Shake&amp;Bake</td>
+            <td>7</td>
+            <td>7</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">11</span></td>
+            <td>Dark Delacroix</td>
+            <td>6</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <td><span class="pos-num">12</span></td>
+            <td>TheEliteWeasel61</td>
+            <td>5</td>
+            <td>5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="pts-fl reveal">R1 fastest lap: Boltus · 1:52.885 · Alsace Village · Apr 29, 2026</p>
+  </section>
+
+  <!-- 05: THE CARS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">05</div>
       <h2>The Cars</h2>
     </div>
     <p class="reveal section-intro">
@@ -584,10 +702,10 @@
     </div>
   </section>
 
-  <!-- 05: POINTS SYSTEM -->
+  <!-- 06: POINTS SYSTEM -->
   <section>
     <div class="section-head reveal">
-      <div class="section-num">05</div>
+      <div class="section-num">06</div>
       <h2>Points System</h2>
     </div>
     <div class="reveal table-scroll">
@@ -613,64 +731,84 @@
     <p class="pts-fl reveal">+1 point awarded for Fastest Lap</p>
   </section>
 
-  <!-- 06: CONFIRMED DRIVERS -->
+  <!-- 07: CONFIRMED DRIVERS -->
   <section>
     <div class="section-head reveal">
-      <div class="section-num">06</div>
-      <h2>Confirmed Drivers</h2>
+      <div class="section-num">07</div>
+      <h2>R1 Field</h2>
     </div>
     <p class="reveal section-intro tight">
-      Registration opened April 24, 2026. Eight drivers confirmed in the first hour. Grid still filling.
+      12 drivers started Race 1 at Alsace Village on April 29, 2026.
     </p>
     <div class="drivers-grid stagger">
       <div class="driver-card">
-        <div class="driver-name">Barry</div>
-        <div class="driver-psn">PSN: ALUPNYA79</div>
-        <span class="driver-tag champion"><span aria-hidden="true">🏆</span> S1 Champion</span>
-      </div>
-      <div class="driver-card">
         <div class="driver-name">TVDV</div>
         <div class="driver-psn">PSN: VDVBrother</div>
-        <span class="driver-tag returning">Returning · Organizer</span>
+        <span class="driver-tag champion"><span aria-hidden="true">🏆</span> R1 Winner · Organizer</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">D. Earnhardt</div>
+        <div class="driver-psn">PSN: t0pher</div>
+        <span class="driver-tag returning">R1 P2</span>
       </div>
       <div class="driver-card">
         <div class="driver-name">Weaksauce412</div>
         <div class="driver-psn">PSN: Weaksauce412 · GT7: Jett</div>
-        <span class="driver-tag returning">Returning · S1 3rd</span>
+        <span class="driver-tag returning">Returning · R1 P3 · S1 3rd</span>
       </div>
       <div class="driver-card">
-        <div class="driver-name">Chief Sandbagger</div>
-        <div class="driver-psn">PSN: Dark_Delacroix</div>
-        <span class="driver-tag returning">Returning</span>
-      </div>
-      <div class="driver-card">
-        <div class="driver-name">Ncardw</div>
-        <div class="driver-psn">PSN: Ncardw11</div>
-        <span class="driver-tag returning">Returning</span>
+        <div class="driver-name">Barry</div>
+        <div class="driver-psn">PSN: ALUPNYA79</div>
+        <span class="driver-tag returning">Returning · R1 P4 · S1 Champion</span>
       </div>
       <div class="driver-card">
         <div class="driver-name">Boltus</div>
         <div class="driver-psn">PSN: Zack_Bolton02</div>
-        <span class="driver-tag returning">Returning</span>
+        <span class="driver-tag returning">Returning · R1 FL ⚡</span>
       </div>
       <div class="driver-card">
-        <div class="driver-name">Peekaboo Racing</div>
-        <div class="driver-psn">PSN: Clutch_N_load6</div>
-        <span class="driver-tag returning">Returning</span>
+        <div class="driver-name">RollingSmoke</div>
+        <div class="driver-psn">PSN: —</div>
+        <span class="driver-tag returning">R1 P6</span>
       </div>
       <div class="driver-card">
         <div class="driver-name">Ctill-VR</div>
         <div class="driver-psn">PSN: Shenanigas69</div>
-        <span class="driver-tag returning">Returning</span>
+        <span class="driver-tag returning">Returning · R1 P7</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Ncardw</div>
+        <div class="driver-psn">PSN: Ncardw11</div>
+        <span class="driver-tag returning">Returning · R1 P8</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Peekaboo Racing</div>
+        <div class="driver-psn">PSN: Clutch_N_load6</div>
+        <span class="driver-tag returning">Returning · R1 P9</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Shake&amp;Bake</div>
+        <div class="driver-psn">PSN: —</div>
+        <span class="driver-tag returning">R1 P10</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">Chief Sandbagger</div>
+        <div class="driver-psn">PSN: Dark_Delacroix</div>
+        <span class="driver-tag returning">Returning · R1 P11</span>
+      </div>
+      <div class="driver-card">
+        <div class="driver-name">TheEliteWeasel61</div>
+        <div class="driver-psn">PSN: TheEliteWeasel61</div>
+        <span class="driver-tag returning">R1 P12</span>
       </div>
     </div>
-    <p style="font-family:var(--mono);font-size:11px;color:var(--ink-dim);margin-top:12px;letter-spacing:0.04em;">As of Apr 24, 2026 · Registration still open</p>
+    <p style="font-family:var(--mono);font-size:11px;color:var(--ink-dim);margin-top:12px;letter-spacing:0.04em;">R1 starters · April 29, 2026 · Alsace Village</p>
   </section>
 
-  <!-- 07: ROOM SETTINGS -->
+  <!-- 08: ROOM SETTINGS -->
   <section>
     <div class="section-head reveal">
-      <div class="section-num">07</div>
+      <div class="section-num">08</div>
       <h2>Room Settings</h2>
     </div>
     <div class="settings-grid reveal">
@@ -719,7 +857,7 @@
 
 <footer>
   <div>Hairpin Racing · Wednesday Night Gr.3 BOP</div>
-  <div class="sig">Season 2 — Starts April 29, 2026</div>
+  <div class="sig">Season 2 · R1/9 Complete · TVDV Leads</div>
 </footer>
 
 <button class="theme-btn" onclick="(function(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('hairpin-theme',t);})()">Toggle Theme</button>
