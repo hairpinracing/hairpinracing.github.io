@@ -935,6 +935,7 @@
       lodgingUrl:      "https://www.airbnb.com/rooms/1635716348972030918",
       lodgingTotal:    0,
       lodgingPayer:    "",
+      lodgingStatus:   "Pending",
       beds: 10,
       payTo: "Felipe",
       payVenmo: "", payPaypal: "", payCashapp: ""
@@ -1453,6 +1454,7 @@
     box.innerHTML = '<div class="kv">' +
       r('Airbnb', addrV) +
       r('Stay', (ci && co) ? (fmtDate(ci) + ' → ' + fmtDate(co) + ' · ' + nights + ' nights') : '<span class="dim">set dates in Edit</span>') +
+      r('Status', tr.lodgingStatus ? ('<span class="pill ' + (tr.lodgingStatus === 'Confirmed' ? 'ok' : 'zero') + '">' + esc(tr.lodgingStatus) + '</span>') : '<span class="dim">—</span>') +
       r('Total', total ? money(total) : '<span class="dim">—</span>', !!total) +
       r('Per night', (total && nights) ? money(Math.round(total / nights)) : '<span class="dim">—</span>') +
       r('Avg / person', (total && head) ? money(Math.round(total / head)) : '<span class="dim">—</span>') +
@@ -1475,6 +1477,7 @@
         '<div class="ed-field full"><label>Airbnb link</label><input data-tf="lodgingUrl" value="' + esc(tr.lodgingUrl) + '" /></div>' +
         '<div class="ed-field"><label>Lodging total ($)</label><input type="number" min="0" step="0.01" data-tf="lodgingTotal" value="' + esc(tr.lodgingTotal) + '" /></div>' +
         '<div class="ed-field"><label>Lodging paid by</label>' + lodgingPayerSelect(tr.lodgingPayer) + '</div>' +
+        '<div class="ed-field"><label>Lodging status</label><select data-tf="lodgingStatus"><option value="Pending"' + (tr.lodgingStatus === 'Pending' ? ' selected' : '') + '>Pending</option><option value="Confirmed"' + (tr.lodgingStatus === 'Confirmed' ? ' selected' : '') + '>Confirmed</option></select></div>' +
         f('Check-in date', 'lodgingCheckIn', 'date') +
         f('Checkout date', 'lodgingCheckOut', 'date') +
         f('Beds', 'beds', 'number') +
