@@ -451,6 +451,8 @@
     flex-wrap: wrap;
   }
   .settle-item:last-child { border-bottom: none; }
+  .settle-item.is-paid { opacity: 0.5; }
+  .settle-item.is-paid .amt { text-decoration: line-through; }
   .settle-item .from { color: var(--accent-2); font-weight: 700; }
   .settle-item .to { color: var(--accent); font-weight: 700; }
   .settle-item .arr { color: var(--ink-dim); }
@@ -952,7 +954,9 @@
       { id:"q2", q:"How do I pay?", a:"Settle your total with Felipe via Venmo, Zelle, or PayPal — or cash for the split portion. (No cards.)" },
       { id:"q3", q:"When do we arrive and leave?", a:"Most arrive Friday, a few Thursday. Everyone heads out Monday morning." },
       { id:"q4", q:"What about race tickets?", a:"Everyone buys their own full-access (3-day) ticket via Ticketmaster. Tick yourself off in the Arrivals list once you've got yours." }
-    ]
+    ],
+    // who has already settled up (paid their share): { travelerId: true }
+    settled: {}
   };
 
   const KEY = 'hairpin-austin-2026';
@@ -961,8 +965,12 @@
   const SUPA_URL = 'https://pwnvcubqwlhbkaijaiws.supabase.co';
   const SUPA_KEY = 'sb_publishable_27WhoWhNx_Fk1w9CeD4AWg__gRLg1ib';
   let editCode = null;     // verified edit passcode, kept in memory for this tab only
-  let collapsedPanels = new Set();
-  try { const c = JSON.parse(localStorage.getItem(KEY + '-collapsed')); if (Array.isArray(c)) collapsedPanels = new Set(c); } catch (e) {}
+  // per-person + settle-up panels start collapsed by default (until the user changes it)
+  let collapsedPanels;
+  try {
+    const c = JSON.parse(localStorage.getItem(KEY + '-collapsed'));
+    collapsedPanels = Array.isArray(c) ? new Set(c) : new Set(['fair', 'settle', 'lodging-pp']);
+  } catch (e) { collapsedPanels = new Set(['fair', 'settle', 'lodging-pp']); }
   let lastSynced = null;   // JSON of the last state seen from / sent to the server
   let pushTimer = null;
 
@@ -983,6 +991,7 @@
     d.v = d.v || SEED.v;
     d.trip = Object.assign({}, SEED.trip, d.trip || {});
     ['travelers', 'expenses', 'schedule', 'plan', 'logistics', 'food', 'faq'].forEach(k => { if (!Array.isArray(d[k])) d[k] = []; });
+    if (typeof d.settled !== 'object' || d.settled === null || Array.isArray(d.settled)) d.settled = {};
     return d;
   }
   function save() {
@@ -1235,11 +1244,11 @@
 
   function settle(balances) {
     const creditors = balances.filter(b => b.balance > 0).map(b => ({ name: b.name, amt: b.balance })).sort((a, b) => b.amt - a.amt);
-    const debtors  = balances.filter(b => b.balance < 0).map(b => ({ name: b.name, amt: -b.balance })).sort((a, b) => b.amt - a.amt);
+    const debtors  = balances.filter(b => b.balance < 0).map(b => ({ id: b.id, name: b.name, amt: -b.balance })).sort((a, b) => b.amt - a.amt);
     const t = []; let i = 0, j = 0;
     while (i < debtors.length && j < creditors.length) {
       const pay = Math.min(debtors[i].amt, creditors[j].amt);
-      if (pay > 0) t.push({ from: debtors[i].name, to: creditors[j].name, amt: pay });
+      if (pay > 0) t.push({ fromId: debtors[i].id, from: debtors[i].name, to: creditors[j].name, amt: pay });
       debtors[i].amt -= pay; creditors[j].amt -= pay;
       if (debtors[i].amt <= 0) i++;
       if (creditors[j].amt <= 0) j++;
@@ -1632,13 +1641,16 @@
       '<div><div class="k">Total trip cost</div><div class="v accent">' + money(c.grand) + '</div></div>' +
       '<div><div class="k">Travelers</div><div class="v">' + state.travelers.length + '</div></div>';
 
+    const settled = state.settled || {};
     const bal = document.getElementById('balList');
     if (!c.balances.length) {
       bal.innerHTML = '<div class="settle-empty">Add travelers to see shares.</div>';
     } else {
       bal.innerHTML = c.balances.map(b => {
-        const cls = b.balance > 0 ? 'pos' : (b.balance < 0 ? 'neg' : 'zero');
-        const tag = b.balance > 0 ? 'gets back ' + money(b.balance) : (b.balance < 0 ? 'owes ' + money(-b.balance) : 'square');
+        const isPaid = b.balance < 0 && settled[b.id];
+        const cls = isPaid ? 'zero' : (b.balance > 0 ? 'pos' : (b.balance < 0 ? 'neg' : 'zero'));
+        const tag = isPaid ? '<span class="pill ok">✓ paid</span>'
+          : (b.balance > 0 ? 'gets back ' + money(b.balance) : (b.balance < 0 ? 'owes ' + money(-b.balance) : 'square'));
         return '<div class="bal-row"><div><div class="bal-name">' + esc(b.name) + '</div>' +
           '<div class="bal-sub">share ' + money(b.fair) + ' · paid ' + money(b.paid) + '</div></div>' +
           '<div class="bal-amt ' + cls + '">' + tag + '</div></div>';
@@ -1653,11 +1665,17 @@
     if (!c.transfers.length) {
       set.innerHTML = payNote + '<div class="settle-empty">All square — nothing to settle.</div>';
     } else {
-      set.innerHTML = payNote + c.transfers.map(t =>
-        '<div class="settle-item"><span class="from">' + esc(t.from) + '</span>' +
-        '<span class="arr">→</span><span class="to">' + esc(t.to) + '</span>' +
-        '<span class="amt">' + money(t.amt) + '</span></div>'
-      ).join('');
+      const outstanding = c.transfers.filter(t => !settled[t.fromId]).reduce((s, t) => s + t.amt, 0);
+      const paidCount = c.transfers.filter(t => settled[t.fromId]).length;
+      const tally = '<div class="pay-note">' + (outstanding > 0 ? '<b>' + money(outstanding) + '</b> outstanding · ' : 'All settled ✓ · ') + paidCount + ' of ' + c.transfers.length + ' paid</div>';
+      set.innerHTML = payNote + tally + c.transfers.map(t => {
+        const paid = !!settled[t.fromId];
+        return '<div class="settle-item' + (paid ? ' is-paid' : '') + '"><span class="from">' + esc(t.from) + '</span>' +
+          '<span class="arr">→</span><span class="to">' + esc(t.to) + '</span>' +
+          '<span class="amt">' + money(t.amt) + '</span>' +
+          '<button class="btn paid-toggle" data-id="' + t.fromId + '" style="padding:5px 10px;min-height:0;font-size:10px;margin-left:10px;">' + (paid ? '✓ paid · undo' : 'mark paid') + '</button>' +
+          '</div>';
+      }).join('');
     }
 
     const warnBox = document.getElementById('warnBox');
@@ -1866,6 +1884,17 @@
       if (collapsed) collapsedPanels.add(key); else collapsedPanels.delete(key);
       try { localStorage.setItem(KEY + '-collapsed', JSON.stringify([...collapsedPanels])); } catch (e) {}
     }
+  });
+
+  /* ---------- settle-up: mark a person paid (passcode-gated) ---------- */
+  document.addEventListener('click', async function (ev) {
+    const pt = ev.target.closest('.paid-toggle');
+    if (!pt) return;
+    if (!(await unlockEditing('Enter the passcode to update who has paid.'))) return;
+    const id = pt.getAttribute('data-id');
+    state.settled = state.settled || {};
+    if (state.settled[id]) delete state.settled[id]; else state.settled[id] = true;
+    save(); renderComputed();
   });
 
   /* ---------- toolbar: export, import, reset ---------- */
