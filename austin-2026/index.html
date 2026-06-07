@@ -457,7 +457,7 @@
 
   .totals-strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
@@ -1663,8 +1663,7 @@
     const ts = document.getElementById('totalsStrip');
     ts.innerHTML =
       '<div><div class="k">Total trip cost</div><div class="v accent">' + money(c.grand) + '</div></div>' +
-      '<div><div class="k">Travelers</div><div class="v">' + state.travelers.length + '</div></div>' +
-      '<div><div class="k">Booked nights</div><div class="v">' + c.nights.length + '</div></div>';
+      '<div><div class="k">Travelers</div><div class="v">' + state.travelers.length + '</div></div>';
 
     const bal = document.getElementById('balList');
     if (!c.balances.length) {
