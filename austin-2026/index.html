@@ -342,6 +342,18 @@
   .icon-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
   .icon-btn.exp-remove:hover { color: var(--accent-2); border-color: oklch(56% 0.215 28 / 0.5); }
 
+  /* Traveler card: aligned In/Out legs + right-side pills */
+  .trav-legs { margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+  .trav-leg { display: flex; gap: 10px; align-items: baseline; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+  .trav-leg .leg-k { flex-shrink: 0; width: 26px; color: var(--ink-dim); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .trav-leg .leg-v { min-width: 0; }
+  .trav-side { align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; max-width: 46%; }
+  .btn.arm { color: var(--accent-2); border-color: oklch(56% 0.215 28 / 0.55); }
+  @media (max-width: 640px) {
+    .exp-row { flex-wrap: wrap; }
+    .trav-side { max-width: none; width: 100%; justify-content: flex-start; }
+  }
+
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
   .kv .row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
@@ -1322,19 +1334,29 @@
   }
   // Arrivals: per-item, open editing (no passcode). Summary card + inline edit per traveler.
   const openTraveler = new Set();
+  function legText(date, time, mode, note) {
+    if (!date) return '<span class="pill zero">TBD</span>';
+    const parts = [fmtDate(date)];
+    if (time) parts.push(esc(time));
+    if (note) parts.push((MODE[mode] ? modeIco(mode) : '') + esc(note));
+    else if (MODE[mode]) parts.push(modeIco(mode).trim());
+    return parts.join(' · ');
+  }
   function travelerSummaryCard(t) {
     const n = nightsFor(t);
     const np = (t.arrive && t.depart) ? '<span class="pill">' + n + ' night' + (n === 1 ? '' : 's') + '</span>' : '<span class="pill zero">no dates</span>';
     const tk = t.ticket ? '<span class="pill ok">✓ ticket</span>' : '<span class="pill zero">no ticket</span>';
     return '<div class="exp-card" data-id="' + t.id + '">' +
       '<div class="exp-row">' +
-        '<div class="exp-info"><div class="exp-label">' + esc(t.name || 'Someone') + '</div>' +
-          '<div class="exp-meta">In: ' + whenCell(t.arrive, t.inTime, t.inMode, t.inNote) +
-          ' &nbsp;·&nbsp; Out: ' + whenCell(t.depart, t.outTime, t.outMode, t.outNote) +
-          ' &nbsp;·&nbsp; ' + np + ' &nbsp; ' + tk + '</div></div>' +
-        '<div class="exp-actions">' +
+        '<div class="exp-info">' +
+          '<div class="exp-label">' + esc(t.name || 'Someone') + '</div>' +
+          '<div class="trav-legs">' +
+            '<div class="trav-leg"><span class="leg-k">In</span><span class="leg-v">' + legText(t.arrive, t.inTime, t.inMode, t.inNote) + '</span></div>' +
+            '<div class="trav-leg"><span class="leg-k">Out</span><span class="leg-v">' + legText(t.depart, t.outTime, t.outMode, t.outNote) + '</span></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="exp-actions trav-side">' + np + tk +
           '<button class="icon-btn trav-edit" data-id="' + t.id + '" title="Edit">✎</button>' +
-          '<button class="icon-btn trav-remove" data-id="' + t.id + '" title="Remove">×</button>' +
         '</div>' +
       '</div></div>';
   }
@@ -1345,7 +1367,6 @@
         '<label class="tk-toggle"><input type="checkbox" data-field="ticket"' + (t.ticket ? ' checked' : '') + ' /> ticket</label>' +
         '<span class="nights-live" data-nights="' + t.id + '"></span>' +
         '<button class="btn trav-done" data-id="' + t.id + '" style="padding:8px 14px;min-height:34px;">✓ Done</button>' +
-        '<button class="x-btn trav-remove" data-id="' + t.id + '" title="Remove">×</button>' +
       '</div>' +
       '<div class="ed-grid">' +
         '<div class="ed-field"><label>Arrive date</label><input type="date" data-field="arrive" value="' + esc(t.arrive) + '" /></div>' +
@@ -1356,6 +1377,9 @@
         '<div class="ed-field"><label>Flight out time</label><input data-field="outTime" placeholder="e.g. 6:55 PM" value="' + esc(t.outTime) + '" /></div>' +
         '<div class="ed-field full"><label>Arrival note (flight #, from where)</label><input data-field="inNote" placeholder="e.g. AA1123 from DCA" value="' + esc(t.inNote) + '" /></div>' +
         '<div class="ed-field full"><label>Departure note</label><input data-field="outNote" value="' + esc(t.outNote) + '" /></div>' +
+      '</div>' +
+      '<div style="margin-top:14px;text-align:right;">' +
+        '<button class="btn trav-remove" data-id="' + t.id + '">Remove from trip</button>' +
       '</div>' +
     '</div>';
   }
@@ -1397,7 +1421,6 @@
           '<div class="exp-meta">' + parts.join(' · ') + '</div></div>' +
         '<div class="exp-actions">' +
           '<button class="icon-btn exp-edit" data-id="' + e.id + '" title="Edit">✎</button>' +
-          '<button class="icon-btn exp-remove" data-id="' + e.id + '" title="Remove">×</button>' +
         '</div>' +
       '</div></div>';
   }
@@ -1814,6 +1837,13 @@
     if (doneB) { openTraveler.delete(doneB.getAttribute('data-id')); renderArrivals(); renderComputed(); return; }
     const rmB = ev.target.closest('.trav-remove');
     if (rmB) {
+      if (rmB.getAttribute('data-armed') !== '1') {  // first tap arms; second tap (within 3s) deletes
+        rmB.setAttribute('data-armed', '1');
+        rmB.classList.add('arm');
+        rmB.textContent = 'Tap again to remove';
+        setTimeout(function () { if (rmB.isConnected) { rmB.removeAttribute('data-armed'); rmB.classList.remove('arm'); rmB.textContent = 'Remove from trip'; } }, 3000);
+        return;
+      }
       const id = rmB.getAttribute('data-id');
       state.travelers = state.travelers.filter(x => x.id !== id);
       openTraveler.delete(id);
