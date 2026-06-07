@@ -1690,7 +1690,7 @@
     if (ev.target.id !== 'meSelect') return;
     meId = ev.target.value;
     try { localStorage.setItem(KEY + '-me', meId); } catch (e) {}
-    renderMeCard();
+    renderComputed();
   });
 
   /* ---------- render: computed (summary, balances, settlement) ---------- */
@@ -1731,13 +1731,27 @@
     const methods = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]];
     const handles = methods.map(m => m[1] ? (m[0] + ' ' + esc(m[1])) : m[0]);
     const payNote = tr.payTo ? '<div class="pay-note">Settle up with <b>' + esc(tr.payTo) + '</b> · ' + handles.join(' · ') + '</div>' : '';
-    if (!c.transfers.length) {
-      set.innerHTML = payNote + '<div class="settle-empty">All square — nothing to settle.</div>';
+
+    // personal focus: when a name is picked, hide the everyone "fair share" panel
+    // and narrow the settle-up to just that person's line.
+    const soloMe = !!(meId && state.travelers.some(t => t.id === meId));
+    const fairPanel = document.querySelector('.panel[data-panel="fair"]');
+    const grid = document.querySelector('.cost-grid');
+    if (fairPanel) fairPanel.style.display = soloMe ? 'none' : '';
+    if (grid) grid.style.gridTemplateColumns = soloMe ? '1fr' : '';
+    const meIsDebtor = soloMe && c.transfers.some(t => t.fromId === meId);
+    const transfers = meIsDebtor ? c.transfers.filter(t => t.fromId === meId) : c.transfers;
+
+    if (!transfers.length) {
+      set.innerHTML = payNote + '<div class="settle-empty">' + (soloMe ? "Nothing to settle for you — you're square." : 'All square — nothing to settle.') + '</div>';
     } else {
-      const outstanding = c.transfers.filter(t => !settled[t.fromId]).reduce((s, t) => s + t.amt, 0);
-      const paidCount = c.transfers.filter(t => settled[t.fromId]).length;
-      const tally = '<div class="pay-note">' + (outstanding > 0 ? '<b>' + money(outstanding) + '</b> outstanding · ' : 'All settled ✓ · ') + paidCount + ' of ' + c.transfers.length + ' paid</div>';
-      set.innerHTML = payNote + tally + c.transfers.map(t => {
+      let tally = '';
+      if (!meIsDebtor) {
+        const outstanding = c.transfers.filter(t => !settled[t.fromId]).reduce((s, t) => s + t.amt, 0);
+        const paidCount = c.transfers.filter(t => settled[t.fromId]).length;
+        tally = '<div class="pay-note">' + (outstanding > 0 ? '<b>' + money(outstanding) + '</b> outstanding · ' : 'All settled ✓ · ') + paidCount + ' of ' + c.transfers.length + ' paid</div>';
+      }
+      set.innerHTML = payNote + tally + transfers.map(t => {
         const paid = !!settled[t.fromId];
         return '<div class="settle-item' + (paid ? ' is-paid' : '') + '">' +
           '<div class="parties"><span class="from">' + esc(t.from) + '</span><span class="arr">→</span><span class="to">' + esc(t.to) + '</span></div>' +
