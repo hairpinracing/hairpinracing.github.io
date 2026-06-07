@@ -761,23 +761,12 @@
     <div class="section-head reveal">
       <span class="section-num">01</span>
       <h2>Arrivals &amp; Departures</h2>
-      <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
-    <p class="dim reveal" style="margin-bottom:18px;">Who's in town when. Nights present drive the cost split — set each person's arrive/depart dates and the math below updates automatically. Don't have flights yet? Add the person and leave dates blank.</p>
+    <p class="dim reveal" style="margin-bottom:18px;">Who's in town when — <strong>no passcode needed here</strong>, just find your row, hit ✎, and add your flights. Nights present drive the cost split, so the math below updates automatically. Don't have flights yet? Add yourself and leave the dates blank.</p>
 
-    <div class="view-only table-scroll">
-      <table class="schedule">
-        <thead>
-          <tr><th>Traveler</th><th>Arrives</th><th>Departs</th><th>Nights</th><th>Ticket</th></tr>
-        </thead>
-        <tbody id="arrViewBody"></tbody>
-      </table>
-    </div>
-    <p class="dim view-only" id="ticketLine" style="margin-top:14px;font-family:var(--mono);font-size:12px;"></p>
-    <div class="edit-only">
-      <div id="arrEditList"></div>
-      <button class="add-btn" data-add="traveler">+ Add traveler</button>
-    </div>
+    <div id="arrList"></div>
+    <button class="add-btn" id="addTravelerBtn">+ Add traveler</button>
+    <p class="dim" id="ticketLine" style="margin-top:14px;font-family:var(--mono);font-size:12px;"></p>
   </section>
 
   <section>
@@ -1025,7 +1014,26 @@
   }
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
-    if (editCode) schedulePush();   // only unlocked editors push to the shared copy
+    if (editCode) schedulePush();   // only unlocked editors push the full doc (passcode)
+  }
+  // Travelers are an OPEN write (no passcode) — anyone can update their own arrival/ticket.
+  let travPushTimer = null;
+  function saveTravelers() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    setStatus('saving');
+    if (travPushTimer) clearTimeout(travPushTimer);
+    travPushTimer = setTimeout(pushTravelers, 700);
+  }
+  async function pushTravelers() {
+    try {
+      const res = await fetch(SUPA_URL + '/rest/v1/rpc/save_travelers', {
+        method: 'POST', headers: supaHeaders(true),
+        body: JSON.stringify({ p_travelers: state.travelers })
+      });
+      if (!res.ok) throw new Error('save_travelers ' + res.status);
+      lastSynced = JSON.stringify(state);
+      setStatus('saved');
+    } catch (e) { setStatus('offline'); }
   }
 
   function supaHeaders(json) {
@@ -1312,16 +1320,49 @@
     const sub = parts.length ? ' <span class="sub">· ' + parts.join(' · ') + '</span>' : '';
     return fmtDate(date) + sub;
   }
-  function renderArrivalsView() {
-    const body = document.getElementById('arrViewBody');
-    if (!state.travelers.length) { body.innerHTML = '<tr class="empty-row"><td colspan="5">No travelers yet — hit Edit to add the crew.</td></tr>'; return; }
-    body.innerHTML = state.travelers.map(t => {
-      const n = nightsFor(t);
-      const np = (t.arrive && t.depart) ? '<span class="pill">' + n + ' night' + (n === 1 ? '' : 's') + '</span>' : '<span class="pill zero">—</span>';
-      const tk = t.ticket ? '<span class="pill ok">✓ bought</span>' : '<span class="pill zero">not yet</span>';
-      return '<tr><td class="key">' + esc(t.name || '—') + '</td><td>' + whenCell(t.arrive, t.inTime, t.inMode, t.inNote) +
-        '</td><td>' + whenCell(t.depart, t.outTime, t.outMode, t.outNote) + '</td><td>' + np + '</td><td>' + tk + '</td></tr>';
-    }).join('');
+  // Arrivals: per-item, open editing (no passcode). Summary card + inline edit per traveler.
+  const openTraveler = new Set();
+  function travelerSummaryCard(t) {
+    const n = nightsFor(t);
+    const np = (t.arrive && t.depart) ? '<span class="pill">' + n + ' night' + (n === 1 ? '' : 's') + '</span>' : '<span class="pill zero">no dates</span>';
+    const tk = t.ticket ? '<span class="pill ok">✓ ticket</span>' : '<span class="pill zero">no ticket</span>';
+    return '<div class="exp-card" data-id="' + t.id + '">' +
+      '<div class="exp-row">' +
+        '<div class="exp-info"><div class="exp-label">' + esc(t.name || 'Someone') + '</div>' +
+          '<div class="exp-meta">In: ' + whenCell(t.arrive, t.inTime, t.inMode, t.inNote) +
+          ' &nbsp;·&nbsp; Out: ' + whenCell(t.depart, t.outTime, t.outMode, t.outNote) +
+          ' &nbsp;·&nbsp; ' + np + ' &nbsp; ' + tk + '</div></div>' +
+        '<div class="exp-actions">' +
+          '<button class="icon-btn trav-edit" data-id="' + t.id + '" title="Edit">✎</button>' +
+          '<button class="icon-btn trav-remove" data-id="' + t.id + '" title="Remove">×</button>' +
+        '</div>' +
+      '</div></div>';
+  }
+  function travelerEditCard(t) {
+    return '<div class="ed-card" data-kind="traveler" data-id="' + t.id + '">' +
+      '<div class="ed-card-head">' +
+        '<div class="grow"><input data-field="name" placeholder="Name" value="' + esc(t.name) + '" /></div>' +
+        '<label class="tk-toggle"><input type="checkbox" data-field="ticket"' + (t.ticket ? ' checked' : '') + ' /> ticket</label>' +
+        '<span class="nights-live" data-nights="' + t.id + '"></span>' +
+        '<button class="btn trav-done" data-id="' + t.id + '" style="padding:8px 14px;min-height:34px;">✓ Done</button>' +
+        '<button class="x-btn trav-remove" data-id="' + t.id + '" title="Remove">×</button>' +
+      '</div>' +
+      '<div class="ed-grid">' +
+        '<div class="ed-field"><label>Arrive date</label><input type="date" data-field="arrive" value="' + esc(t.arrive) + '" /></div>' +
+        '<div class="ed-field"><label>Depart date</label><input type="date" data-field="depart" value="' + esc(t.depart) + '" /></div>' +
+        '<div class="ed-field"><label>Getting in</label>' + modeSelect(t.inMode, 'inMode') + '</div>' +
+        '<div class="ed-field"><label>Getting out</label>' + modeSelect(t.outMode, 'outMode') + '</div>' +
+        '<div class="ed-field"><label>Flight in time</label><input data-field="inTime" placeholder="e.g. 8:30 AM" value="' + esc(t.inTime) + '" /></div>' +
+        '<div class="ed-field"><label>Flight out time</label><input data-field="outTime" placeholder="e.g. 6:55 PM" value="' + esc(t.outTime) + '" /></div>' +
+        '<div class="ed-field full"><label>Arrival note (flight #, from where)</label><input data-field="inNote" placeholder="e.g. AA1123 from DCA" value="' + esc(t.inNote) + '" /></div>' +
+        '<div class="ed-field full"><label>Departure note</label><input data-field="outNote" value="' + esc(t.outNote) + '" /></div>' +
+      '</div>' +
+    '</div>';
+  }
+  function renderArrivals() {
+    const list = document.getElementById('arrList'); if (!list) return;
+    if (!state.travelers.length) { list.innerHTML = '<p class="dim" style="font-style:italic;margin:0 0 4px;">No one added yet — hit + Add traveler to put yourself on the list.</p>'; return; }
+    list.innerHTML = state.travelers.map(t => openTraveler.has(t.id) ? travelerEditCard(t) : travelerSummaryCard(t)).join('');
   }
 
   function splitLabel(exp) {
@@ -1409,30 +1450,6 @@
     return '<select data-field="' + cls + '">' + opts.map(o =>
       '<option value="' + o[0] + '"' + (val === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'
     ).join('') + '</select>';
-  }
-
-  function renderArrivalsEdit() {
-    const list = document.getElementById('arrEditList');
-    list.innerHTML = state.travelers.map(t => (
-      '<div class="ed-card" data-kind="traveler" data-id="' + t.id + '">' +
-        '<div class="ed-card-head">' +
-          '<div class="grow"><input data-field="name" placeholder="Name" value="' + esc(t.name) + '" /></div>' +
-          '<label class="tk-toggle"><input type="checkbox" data-field="ticket"' + (t.ticket ? ' checked' : '') + ' /> ticket</label>' +
-          '<span class="nights-live" data-nights="' + t.id + '"></span>' +
-          '<button class="x-btn" data-remove="traveler" title="Remove">×</button>' +
-        '</div>' +
-        '<div class="ed-grid">' +
-          '<div class="ed-field"><label>Arrive date</label><input type="date" data-field="arrive" value="' + esc(t.arrive) + '" /></div>' +
-          '<div class="ed-field"><label>Depart date</label><input type="date" data-field="depart" value="' + esc(t.depart) + '" /></div>' +
-          '<div class="ed-field"><label>Getting in</label>' + modeSelect(t.inMode, 'inMode') + '</div>' +
-          '<div class="ed-field"><label>Getting out</label>' + modeSelect(t.outMode, 'outMode') + '</div>' +
-          '<div class="ed-field"><label>Flight in time</label><input data-field="inTime" placeholder="e.g. 8:30 AM" value="' + esc(t.inTime) + '" /></div>' +
-          '<div class="ed-field"><label>Flight out time</label><input data-field="outTime" placeholder="e.g. 6:55 PM" value="' + esc(t.outTime) + '" /></div>' +
-          '<div class="ed-field full"><label>Arrival note (flight #, from where)</label><input data-field="inNote" placeholder="e.g. AA1123 from DCA" value="' + esc(t.inNote) + '" /></div>' +
-          '<div class="ed-field full"><label>Departure note</label><input data-field="outNote" value="' + esc(t.outNote) + '" /></div>' +
-        '</div>' +
-      '</div>'
-    )).join('');
   }
 
   function payerSelect(val) {
@@ -1673,8 +1690,8 @@
 
   /* ---------- full render ---------- */
   function renderAll() {
-    renderArrivalsView(); renderExpenses(); renderScheduleView(); renderPlanView();
-    renderArrivalsEdit(); renderScheduleEdit(); renderPlanEdit();
+    renderArrivals(); renderExpenses(); renderScheduleView(); renderPlanView();
+    renderScheduleEdit(); renderPlanEdit();
     renderTripSettings();
     renderLogisticsView(); renderLogisticsEdit();
     renderFoodView(); renderFoodEdit();
@@ -1699,7 +1716,7 @@
       if (tf === 'beds') state.trip.beds = parseInt(ev.target.value, 10) || 0;
       else if (tf === 'lodgingTotal') state.trip.lodgingTotal = parseFloat(ev.target.value) || 0;
       else state.trip[tf] = ev.target.value;
-      save(); renderComputed(); renderArrivalsView();
+      save(); renderComputed(); renderArrivals();
       return;
     }
 
@@ -1724,11 +1741,12 @@
       else { rec.participants = rec.participants.filter(x => x !== part); }
     }
 
-    save();
+    // travelers are an open write (no passcode); everything else uses the passcode push
+    if (kind === 'traveler') saveTravelers(); else save();
     renderComputed();
     // refresh view tables so edits show after "Done" (open inputs aren't re-rendered → no focus loss).
-    // expenses list intentionally NOT re-rendered here, to preserve the open expense card being typed in.
-    renderArrivalsView(); renderScheduleView(); renderPlanView();
+    // expenses + arrivals lists intentionally NOT re-rendered here, to preserve the open card being typed in.
+    renderScheduleView(); renderPlanView();
     renderLogisticsView(); renderFoodView(); renderFaqView();
   }
 
@@ -1780,6 +1798,30 @@
     t.setAttribute('aria-pressed', on ? 'true' : 'false');
     t.textContent = on ? '✓ Done' : '✎ Edit';
     setStatus(anyEditing() ? 'editing' : 'live');
+  });
+
+  /* ---------- arrivals: per-item add / edit / remove (OPEN — no passcode) ---------- */
+  document.addEventListener('click', function (ev) {
+    const addB = ev.target.closest('#addTravelerBtn');
+    if (addB) {
+      const id = uid();
+      state.travelers.push({ id: id, name: '', arrive: '', depart: '', inMode: '', inTime: '', inNote: '', outMode: '', outTime: '', outNote: '', ticket: false });
+      openTraveler.add(id);
+      saveTravelers(); renderArrivals(); renderComputed();
+      return;
+    }
+    const editB = ev.target.closest('.trav-edit');
+    if (editB) { openTraveler.add(editB.getAttribute('data-id')); renderArrivals(); return; }
+    const doneB = ev.target.closest('.trav-done');
+    if (doneB) { openTraveler.delete(doneB.getAttribute('data-id')); renderArrivals(); renderComputed(); return; }
+    const rmB = ev.target.closest('.trav-remove');
+    if (rmB) {
+      const id = rmB.getAttribute('data-id');
+      state.travelers = state.travelers.filter(x => x.id !== id);
+      openTraveler.delete(id);
+      saveTravelers(); renderArrivals(); renderComputed();
+      return;
+    }
   });
 
   /* ---------- expenses: per-item add / edit / remove (passcode-gated, no section toggle) ---------- */
