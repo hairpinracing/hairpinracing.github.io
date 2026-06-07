@@ -330,6 +330,18 @@
   .pill.zero { color: var(--accent-2); border-color: oklch(56% 0.215 28 / 0.4); }
   .pill.ok { color: var(--accent); border-color: oklch(86% 0.175 97 / 0.45); }
 
+  /* Expense cards (per-item) */
+  .exp-card { border: 1px solid var(--line); background: var(--bg); margin-bottom: 8px; transition: border-color 0.2s var(--ease); }
+  .exp-card:hover { border-color: var(--ink-dim); }
+  .exp-row { display: flex; align-items: center; gap: 14px; padding: 13px 16px; }
+  .exp-info { flex: 1; min-width: 0; }
+  .exp-label { font-family: var(--display); font-size: 19px; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.05; }
+  .exp-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-top: 3px; }
+  .exp-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .icon-btn { width: 34px; height: 34px; min-height: 34px; padding: 0; line-height: 1; font-size: 15px; color: var(--ink-dim); background: var(--bg-2); border: 1px solid var(--line); cursor: pointer; transition: color 0.2s var(--ease), border-color 0.2s var(--ease); }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+  .icon-btn.exp-remove:hover { color: var(--accent-2); border-color: oklch(56% 0.215 28 / 0.5); }
+
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
   .kv .row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
@@ -757,30 +769,27 @@
   <section>
     <div class="section-head reveal">
       <span class="section-num">02</span>
-      <h2>Cost Splitting</h2>
+      <h2>Lodging</h2>
       <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
-    <p class="dim reveal" style="margin-bottom:18px;">The <strong>Airbnb</strong> is its own thing (below), split <strong>per night, per person</strong> — you only pay for the nights you're here. Everything else (van, groceries…) is a <strong>line item</strong> split however you choose. Race tickets are individual (tracked in Arrivals). The settlement shows the fewest payments to square up.</p>
+    <p class="dim reveal" style="margin-bottom:18px;">The Airbnb — split <strong>per night, per person</strong>, so you only pay for the nights you're actually here. Edit to set the total, who paid, dates, and booking status.</p>
 
     <div class="lodging-box view-only" id="lodgingBox"></div>
     <div class="edit-only" id="tripSettingsWrap"></div>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">03</span>
+      <h2>Cost Splitting</h2>
+    </div>
+    <p class="dim reveal" style="margin-bottom:18px;">Lodging (above) plus any shared costs below — van, groceries, whatever. Each expense splits evenly, among a chosen few, or per-night. Race tickets are individual (tracked in Arrivals). Settlement shows the fewest payments to square up.</p>
 
     <div class="totals-strip" id="totalsStrip"></div>
 
-    <div class="bar-label" style="margin:6px 0 10px;">Other expenses</div>
-
-    <div class="view-only table-scroll">
-      <table class="schedule">
-        <thead>
-          <tr><th>Expense</th><th>Amount</th><th>Paid by</th><th>Split</th></tr>
-        </thead>
-        <tbody id="expViewBody"></tbody>
-      </table>
-    </div>
-    <div class="edit-only">
-      <div id="expEditList"></div>
-      <button class="add-btn" data-add="expense">+ Add expense</button>
-    </div>
+    <div class="bar-label" style="margin:6px 0 10px;">Expenses</div>
+    <div id="expList"></div>
+    <button class="add-btn" id="addExpenseBtn">+ Add expense</button>
 
     <div id="warnBox"></div>
 
@@ -798,7 +807,7 @@
 
   <section>
     <div class="section-head reveal">
-      <span class="section-num">03</span>
+      <span class="section-num">04</span>
       <h2>Race Schedule — COTA</h2>
       <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
@@ -820,7 +829,7 @@
 
   <section>
     <div class="section-head reveal">
-      <span class="section-num">04</span>
+      <span class="section-num">05</span>
       <h2>Day-by-Day Plan</h2>
       <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
@@ -842,7 +851,7 @@
 
   <section>
     <div class="section-head reveal">
-      <span class="section-num">05</span>
+      <span class="section-num">06</span>
       <h2>Logistics</h2>
       <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
@@ -857,7 +866,7 @@
 
   <section>
     <div class="section-head reveal">
-      <span class="section-num">06</span>
+      <span class="section-num">07</span>
       <h2>Food &amp; Places</h2>
       <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
@@ -879,7 +888,7 @@
 
   <section>
     <div class="section-head reveal">
-      <span class="section-num">07</span>
+      <span class="section-num">08</span>
       <h2>FAQ</h2>
       <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
@@ -1308,15 +1317,39 @@
   }
   function nameOf(id) { const t = state.travelers.find(x => x.id === id); return t ? (t.name || '—') : '—'; }
 
-  function renderExpensesView() {
-    const body = document.getElementById('expViewBody');
-    if (!state.expenses.length) { body.innerHTML = '<tr class="empty-row"><td colspan="4">No expenses yet — hit Edit to add the Airbnb, van, etc.</td></tr>'; return; }
-    body.innerHTML = state.expenses.map(e => (
-      '<tr><td class="key">' + esc(e.label || '—') + '</td>' +
-      '<td>' + money(Math.round((Number(e.amount) || 0) * 100)) + '</td>' +
-      '<td>' + esc(nameOf(e.payer)) + '</td>' +
-      '<td class="sub">' + esc(splitLabel(e)) + '</td></tr>'
-    )).join('');
+  // per-item expenses: each card is a summary with its own edit/remove; open ones show fields
+  const openExpense = new Set();
+  function expenseSummaryCard(e) {
+    const amt = money(Math.round((Number(e.amount) || 0) * 100));
+    return '<div class="exp-card" data-id="' + e.id + '">' +
+      '<div class="exp-row">' +
+        '<div class="exp-info"><div class="exp-label">' + esc(e.label || 'Untitled') + '</div>' +
+          '<div class="exp-meta">' + amt + ' · ' + esc(splitLabel(e)) + ' · paid by ' + esc(nameOf(e.payer)) + '</div></div>' +
+        '<div class="exp-actions">' +
+          '<button class="icon-btn exp-edit" data-id="' + e.id + '" title="Edit">✎</button>' +
+          '<button class="icon-btn exp-remove" data-id="' + e.id + '" title="Remove">×</button>' +
+        '</div>' +
+      '</div></div>';
+  }
+  function expenseEditCard(e) {
+    return '<div class="ed-card" data-kind="expense" data-id="' + e.id + '">' +
+      '<div class="ed-card-head">' +
+        '<div class="grow"><input data-field="label" placeholder="What is it? (van, gas, groceries…)" value="' + esc(e.label) + '" /></div>' +
+        '<button class="btn exp-done" data-id="' + e.id + '" style="padding:8px 14px;min-height:34px;">✓ Done</button>' +
+        '<button class="x-btn exp-remove" data-id="' + e.id + '" title="Remove">×</button>' +
+      '</div>' +
+      '<div class="ed-grid">' +
+        '<div class="ed-field"><label>Amount ($)</label><input type="number" min="0" step="0.01" data-field="amount" value="' + esc(e.amount) + '" /></div>' +
+        '<div class="ed-field"><label>Paid by</label>' + payerSelect(e.payer) + '</div>' +
+        '<div class="ed-field full"><label>Split method</label>' + splitSelect(e.splitMode) + '</div>' +
+        '<div class="ed-field full" data-partwrap' + (e.splitMode === 'evenSelected' ? '' : ' style="display:none"') + '><label>Who shares it</label>' + participantChecks(e) + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function renderExpenses() {
+    const list = document.getElementById('expList'); if (!list) return;
+    if (!state.expenses.length) { list.innerHTML = '<p class="dim" style="font-style:italic;margin:0 0 4px;">No expenses yet — add the van, groceries, etc.</p>'; return; }
+    list.innerHTML = state.expenses.map(e => openExpense.has(e.id) ? expenseEditCard(e) : expenseSummaryCard(e)).join('');
   }
 
   function renderScheduleView() {
@@ -1391,23 +1424,6 @@
     ).join('') + '</div>';
   }
 
-  function renderExpensesEdit() {
-    const list = document.getElementById('expEditList');
-    list.innerHTML = state.expenses.map(e => (
-      '<div class="ed-card" data-kind="expense" data-id="' + e.id + '">' +
-        '<div class="ed-card-head">' +
-          '<div class="grow"><input data-field="label" placeholder="What is it? (Airbnb, van, gas…)" value="' + esc(e.label) + '" /></div>' +
-          '<button class="x-btn" data-remove="expense" title="Remove">×</button>' +
-        '</div>' +
-        '<div class="ed-grid">' +
-          '<div class="ed-field"><label>Amount ($)</label><input type="number" min="0" step="0.01" data-field="amount" value="' + esc(e.amount) + '" /></div>' +
-          '<div class="ed-field"><label>Paid by</label>' + payerSelect(e.payer) + '</div>' +
-          '<div class="ed-field full"><label>Split method</label>' + splitSelect(e.splitMode) + '</div>' +
-          '<div class="ed-field full" data-partwrap' + (e.splitMode === 'evenSelected' ? '' : ' style="display:none"') + '><label>Who shares it</label>' + participantChecks(e) + '</div>' +
-        '</div>' +
-      '</div>'
-    )).join('');
-  }
 
   function renderScheduleEdit() {
     const list = document.getElementById('schEditList');
@@ -1614,8 +1630,8 @@
 
   /* ---------- full render ---------- */
   function renderAll() {
-    renderArrivalsView(); renderExpensesView(); renderScheduleView(); renderPlanView();
-    renderArrivalsEdit(); renderExpensesEdit(); renderScheduleEdit(); renderPlanEdit();
+    renderArrivalsView(); renderExpenses(); renderScheduleView(); renderPlanView();
+    renderArrivalsEdit(); renderScheduleEdit(); renderPlanEdit();
     renderTripSettings();
     renderLogisticsView(); renderLogisticsEdit();
     renderFoodView(); renderFoodEdit();
@@ -1667,8 +1683,9 @@
 
     save();
     renderComputed();
-    // refresh all view tables so edits show after "Done" (edit inputs aren't re-rendered → no focus loss)
-    renderArrivalsView(); renderExpensesView(); renderScheduleView(); renderPlanView();
+    // refresh view tables so edits show after "Done" (open inputs aren't re-rendered → no focus loss).
+    // expenses list intentionally NOT re-rendered here, to preserve the open expense card being typed in.
+    renderArrivalsView(); renderScheduleView(); renderPlanView();
     renderLogisticsView(); renderFoodView(); renderFaqView();
   }
 
@@ -1720,6 +1737,41 @@
     t.setAttribute('aria-pressed', on ? 'true' : 'false');
     t.textContent = on ? '✓ Done' : '✎ Edit';
     setStatus(anyEditing() ? 'editing' : 'live');
+  });
+
+  /* ---------- expenses: per-item add / edit / remove (passcode-gated, no section toggle) ---------- */
+  document.addEventListener('click', async function (ev) {
+    const addB = ev.target.closest('#addExpenseBtn');
+    if (addB) {
+      if (!(await unlockEditing('Enter the passcode to add an expense.'))) return;
+      const id = uid();
+      state.expenses.push({ id: id, label: '', amount: 0, payer: '', splitMode: 'evenAll', participants: [] });
+      openExpense.add(id);
+      save(); renderExpenses(); renderComputed();
+      return;
+    }
+    const editB = ev.target.closest('.exp-edit');
+    if (editB) {
+      if (!(await unlockEditing('Enter the passcode to edit costs.'))) return;
+      openExpense.add(editB.getAttribute('data-id'));
+      renderExpenses();
+      return;
+    }
+    const doneB = ev.target.closest('.exp-done');
+    if (doneB) {
+      openExpense.delete(doneB.getAttribute('data-id'));
+      renderExpenses(); renderComputed();
+      return;
+    }
+    const rmB = ev.target.closest('.exp-remove');
+    if (rmB) {
+      if (!(await unlockEditing('Enter the passcode to remove this.'))) return;
+      const id = rmB.getAttribute('data-id');
+      state.expenses = state.expenses.filter(x => x.id !== id);
+      openExpense.delete(id);
+      save(); renderExpenses(); renderComputed();
+      return;
+    }
   });
 
   /* ---------- toolbar: export, import, reset ---------- */
