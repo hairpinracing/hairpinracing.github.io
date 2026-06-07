@@ -370,6 +370,21 @@
   .pay-note { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); padding: 12px 18px; border-bottom: 1px solid var(--line); }
   .pay-note b { color: var(--accent); }
 
+  /* "What do I owe?" personal lookup */
+  .me-pick { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 14px; }
+  .me-pick select { max-width: 280px; }
+  .me-card-inner { border: 1px solid var(--accent); background: oklch(86% 0.175 97 / 0.06); padding: 16px 18px; margin: 0 0 18px; }
+  .me-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+  .me-name { font-family: var(--display); font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
+  .me-amt { font-family: var(--display); font-size: 22px; }
+  .me-amt.neg { color: var(--accent-2); }
+  .me-amt.pos, .me-amt.ok { color: var(--accent); }
+  .me-rows { font-family: var(--mono); font-size: 13px; }
+  .me-row { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+  .me-row.me-total { color: var(--ink); font-weight: 700; border-bottom: none; border-top: 1px solid var(--line); margin-top: 4px; padding-top: 8px; }
+  .me-pay { margin-top: 10px; font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+  .me-pay b { color: var(--accent); }
+
   .tk-toggle { display: inline-flex; align-items: center; gap: 6px; font-family: var(--body); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); white-space: nowrap; cursor: pointer; }
   .tk-toggle input { width: auto; min-height: 0; }
 
@@ -805,6 +820,12 @@
     </div>
     <p class="dim reveal" style="margin-bottom:18px;">Lodging (above) plus any shared costs below — van, groceries, whatever. Each expense splits evenly, among a chosen few, or per-night. Race tickets are individual (tracked in Arrivals). Settlement shows the fewest payments to square up.</p>
 
+    <div class="me-pick">
+      <span class="bar-label">Just want your number?</span>
+      <select id="meSelect"><option value="">— pick your name —</option></select>
+    </div>
+    <div id="meCard"></div>
+
     <div class="totals-strip" id="totalsStrip"></div>
 
     <div class="bar-label" style="margin:6px 0 10px;">Expenses</div>
@@ -971,6 +992,8 @@
     const c = JSON.parse(localStorage.getItem(KEY + '-collapsed'));
     collapsedPanels = Array.isArray(c) ? new Set(c) : new Set(['fair', 'settle', 'lodging-pp']);
   } catch (e) { collapsedPanels = new Set(['fair', 'settle', 'lodging-pp']); }
+  let meId = '';
+  try { meId = localStorage.getItem(KEY + '-me') || ''; } catch (e) {}
   let lastSynced = null;   // JSON of the last state seen from / sent to the server
   let pushTimer = null;
 
@@ -1625,6 +1648,45 @@
     }
   });
 
+  /* ---------- "what do I owe?" personal lookup ---------- */
+  function renderMeSelect() {
+    const sel = document.getElementById('meSelect'); if (!sel) return;
+    sel.innerHTML = '<option value="">— pick your name —</option>' +
+      state.travelers.map(t => '<option value="' + t.id + '"' + (t.id === meId ? ' selected' : '') + '>' + esc(t.name || '—') + '</option>').join('');
+  }
+  function renderMeCard() {
+    const box = document.getElementById('meCard'); if (!box) return;
+    if (!meId || !state.travelers.some(t => t.id === meId)) { box.innerHTML = ''; return; }
+    const c = computeCosts();
+    const b = c.balances.find(x => x.id === meId);
+    if (!b) { box.innerHTML = ''; return; }
+    const nights = tripNights(), tr = state.trip, settled = !!(state.settled && state.settled[meId]);
+    const itemRows = [];
+    allExpenses().forEach(exp => {
+      const share = (allocExpense(exp, nights).alloc[meId] || 0);
+      if (share > 0) itemRows.push('<div class="me-row"><span>' + esc(exp.label || 'Item') + '</span><span>' + money(share) + '</span></div>');
+    });
+    const totalRow = '<div class="me-row me-total"><span>Your total share</span><span>' + money(b.fair) + '</span></div>';
+    const paidLine = b.paid > 0 ? '<div class="me-row"><span>You fronted</span><span>' + money(b.paid) + '</span></div>' : '';
+    let head;
+    if (settled) head = '<span class="me-amt ok">Settled ✓</span>';
+    else if (b.balance < 0) head = '<span class="me-amt neg">You owe ' + money(-b.balance) + '</span>';
+    else if (b.balance > 0) head = '<span class="me-amt pos">You get back ' + money(b.balance) + '</span>';
+    else head = '<span class="me-amt">You\'re square</span>';
+    const methods = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]].map(m => m[1] ? (m[0] + ' ' + esc(m[1])) : m[0]).join(' · ');
+    const payLine = (!settled && b.balance < 0 && tr.payTo) ? '<div class="me-pay">Pay <b>' + esc(tr.payTo) + '</b> · ' + methods + '</div>' : '';
+    box.innerHTML = '<div class="me-card-inner">' +
+      '<div class="me-head"><div class="me-name">' + esc(b.name) + '</div>' + head + '</div>' +
+      '<div class="me-rows">' + itemRows.join('') + totalRow + paidLine + '</div>' +
+      payLine + '</div>';
+  }
+  document.addEventListener('change', function (ev) {
+    if (ev.target.id !== 'meSelect') return;
+    meId = ev.target.value;
+    try { localStorage.setItem(KEY + '-me', meId); } catch (e) {}
+    renderMeCard();
+  });
+
   /* ---------- render: computed (summary, balances, settlement) ---------- */
   function renderComputed() {
     const c = computeCosts();
@@ -1633,6 +1695,7 @@
 
     renderLodging();
     renderLodgingShares();
+    renderMeCard();
     const tl = document.getElementById('ticketLine');
     if (tl) { const tc = state.travelers.filter(t => t.ticket).length; tl.textContent = state.travelers.length ? ('Tickets: ' + tc + ' / ' + state.travelers.length + ' bought') : ''; }
 
@@ -1697,6 +1760,7 @@
   function renderAll() {
     renderArrivals(); renderExpenses();
     renderTripSettings();
+    renderMeSelect();
     renderAllLists();
     renderComputed();
   }
