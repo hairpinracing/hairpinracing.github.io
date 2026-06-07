@@ -346,13 +346,12 @@
 
   /* Compact logistics rows (key → value) */
   .logi-card { margin-bottom: 6px; }
-  .logi-row { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 12px; padding: 11px 16px; }
-  .logi-ico { font-size: 15px; line-height: 1; }
+  .logi-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 12px; padding: 11px 16px; }
   .logi-k { font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
   .logi-v { font-family: var(--mono); font-size: 14px; color: var(--ink); text-align: right; min-width: 0; word-break: break-word; }
   @media (max-width: 560px) {
-    .logi-row { grid-template-columns: auto 1fr auto; row-gap: 3px; }
-    .logi-v { grid-column: 2 / -1; text-align: left; }
+    .logi-row { grid-template-columns: 1fr auto; row-gap: 3px; }
+    .logi-v { grid-column: 1 / -1; text-align: left; }
   }
 
   /* Traveler card: aligned In/Out legs + right-side pills */
@@ -1607,12 +1606,6 @@
     if (f.type === 'select') return '<div class="ed-field' + (f.full ? ' full' : '') + '"><label>' + f.label + '</label><select data-field="' + f.k + '">' + f.options.map(function (o) { return '<option value="' + o[0] + '"' + (v === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></div>';
     return '<div class="ed-field' + (f.full ? ' full' : '') + '"><label>' + f.label + '</label><input ' + (f.type ? 'type="' + f.type + '" ' : '') + 'data-field="' + f.k + '"' + (f.ph ? ' placeholder="' + esc(f.ph) + '"' : '') + ' value="' + esc(v || '') + '" /></div>';
   }
-  function logiIcon(label) {
-    const l = (label || '').toLowerCase();
-    if (l.indexOf('van') >= 0) return '🚐';
-    if (l.indexOf('airbnb') >= 0 || l.indexOf('check') >= 0 || l.indexOf('lodg') >= 0) return '🏠';
-    return '•';
-  }
   function listSummaryCard(kind, item) {
     const cfg = LISTS[kind];
     const s = cfg.summary(item);
@@ -1620,7 +1613,6 @@
       const val = s.meta ? esc(s.meta) : '<span class="dim">— not set</span>';
       return '<div class="exp-card logi-card" data-id="' + item.id + '">' +
         '<div class="logi-row">' +
-          '<span class="logi-ico">' + logiIcon(s.title) + '</span>' +
           '<span class="logi-k">' + esc(s.title) + '</span>' +
           '<span class="logi-v">' + val + '</span>' +
           '<button class="icon-btn list-edit" data-kind="' + kind + '" data-id="' + item.id + '" title="Edit">✎</button>' +
