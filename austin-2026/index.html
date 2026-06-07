@@ -775,6 +775,7 @@
     <p class="dim reveal" style="margin-bottom:18px;">The Airbnb — split <strong>per night, per person</strong>, so you only pay for the nights you're actually here. Edit to set the total, who paid, dates, and booking status.</p>
 
     <div class="lodging-box view-only" id="lodgingBox"></div>
+    <div class="view-only" id="lodgeShares"></div>
     <div class="edit-only" id="tripSettingsWrap"></div>
   </section>
 
@@ -1319,12 +1320,24 @@
 
   // per-item expenses: each card is a summary with its own edit/remove; open ones show fields
   const openExpense = new Set();
+  function perPersonHint(e) {
+    const cents = Math.round((Number(e.amount) || 0) * 100);
+    if (!cents) return '';
+    if (e.splitMode === 'perNightPresent') return 'varies by night';
+    let n;
+    if (e.splitMode === 'evenSelected') n = (e.participants || []).filter(id => state.travelers.some(t => t.id === id)).length || state.travelers.length;
+    else n = state.travelers.length;
+    return n ? (money(Math.round(cents / n)) + '/person') : '';
+  }
   function expenseSummaryCard(e) {
     const amt = money(Math.round((Number(e.amount) || 0) * 100));
+    const parts = [amt, esc(splitLabel(e))];
+    const hint = perPersonHint(e); if (hint) parts.push(hint);
+    parts.push('paid by ' + esc(nameOf(e.payer)));
     return '<div class="exp-card" data-id="' + e.id + '">' +
       '<div class="exp-row">' +
         '<div class="exp-info"><div class="exp-label">' + esc(e.label || 'Untitled') + '</div>' +
-          '<div class="exp-meta">' + amt + ' · ' + esc(splitLabel(e)) + ' · paid by ' + esc(nameOf(e.payer)) + '</div></div>' +
+          '<div class="exp-meta">' + parts.join(' · ') + '</div></div>' +
         '<div class="exp-actions">' +
           '<button class="icon-btn exp-edit" data-id="' + e.id + '" title="Edit">✎</button>' +
           '<button class="icon-btn exp-remove" data-id="' + e.id + '" title="Remove">×</button>' +
@@ -1478,6 +1491,19 @@
       r('Sleeps', tr.beds ? (head + ' going · ' + tr.beds + ' beds') : (head + ' going')) +
     '</div>';
   }
+  function renderLodgingShares() {
+    const box = document.getElementById('lodgeShares'); if (!box) return;
+    const le = lodgingExpense();
+    if (!le || !state.travelers.length) { box.innerHTML = ''; return; }
+    const r = allocExpense(le, tripNights());
+    box.innerHTML = '<div class="panel" style="margin-top:16px;"><div class="panel-head">Per-person — lodging</div>' +
+      state.travelers.map(t => {
+        const n = nightsFor(t), share = r.alloc[t.id] || 0;
+        return '<div class="bal-row"><div><div class="bal-name">' + esc(t.name || '—') + '</div>' +
+          '<div class="bal-sub">' + (t.arrive && t.depart ? (n + ' night' + (n === 1 ? '' : 's')) : 'no dates set') + '</div></div>' +
+          '<div class="bal-amt">' + money(share) + '</div></div>';
+      }).join('') + '</div>';
+  }
   function lodgingPayerSelect(val) {
     return '<select data-tf="lodgingPayer"><option value="">— who paid —</option>' +
       state.travelers.map(t => '<option value="' + t.id + '"' + (val === t.id ? ' selected' : '') + '>' + esc(t.name || '—') + '</option>').join('') + '</select>';
@@ -1574,6 +1600,7 @@
     document.getElementById('metaCrew').textContent = state.travelers.length || '—';
 
     renderLodging();
+    renderLodgingShares();
     const tl = document.getElementById('ticketLine');
     if (tl) { const tc = state.travelers.filter(t => t.ticket).length; tl.textContent = state.travelers.length ? ('Tickets: ' + tc + ' / ' + state.travelers.length + ' bought') : ''; }
 
