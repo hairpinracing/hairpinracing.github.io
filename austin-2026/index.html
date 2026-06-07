@@ -788,9 +788,6 @@
       <span class="sync" id="sync">Loading…</span>
       <span class="spacer"></span>
       <button class="btn" id="refreshBtn">↻ Refresh</button>
-      <button class="btn" id="exportBtn">↧ Export</button>
-      <button class="btn" id="importBtn">↥ Import</button>
-      <input type="file" id="importFile" accept="application/json,.json" class="hidden" style="display:none" />
     </div>
   </section>
 
@@ -1981,46 +1978,7 @@
     save(); renderComputed();
   });
 
-  /* ---------- toolbar: export, import, reset ---------- */
-
-  document.getElementById('exportBtn').addEventListener('click', function () {
-    const json = JSON.stringify(state, null, 2);
-    try {
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'austin-2026-trip.json';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch (e) {}
-    if (navigator.clipboard) navigator.clipboard.writeText(json).catch(() => {});
-  });
-
-  const importFile = document.getElementById('importFile');
-  document.getElementById('importBtn').addEventListener('click', async function () {
-    if (!editCode) {
-      const ok = await unlockEditing('Importing replaces the shared trip data. Enter the passcode to continue.');
-      if (!ok) return;
-    }
-    importFile.click();
-  });
-  importFile.addEventListener('change', function () {
-    const file = this.files && this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function () {
-      try {
-        const parsed = JSON.parse(reader.result);
-        if (!parsed || !Array.isArray(parsed.travelers)) throw new Error('bad shape');
-        state = normalize(parsed);
-        save();          // pushes to the shared copy (editCode is set)
-        renderAll();
-      } catch (e) { toast('Could not import that file — must be a trip JSON exported here.', true); }
-    };
-    reader.readAsText(file);
-    this.value = '';
-  });
-
+  /* ---------- toolbar: refresh ---------- */
   document.getElementById('refreshBtn').addEventListener('click', function () {
     if (anyEditing()) { toast('Click Done on the section you\'re editing before refreshing.', true); return; }
     setStatus('loading');
