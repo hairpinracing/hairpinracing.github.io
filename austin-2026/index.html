@@ -951,7 +951,7 @@
       lodgingStatus:   "Pending",
       beds: 10,
       payTo: "Felipe",
-      payVenmo: "", payPaypal: "", payCashapp: ""
+      payVenmo: "", payZelle: "", payPaypal: ""
     },
     // Crew filled in via Edit. Traveler: {inTime,outTime,ticket}.
     travelers: [],
@@ -976,7 +976,7 @@
     food: [],
     faq: [
       { id:"q1", q:"How are costs split?", a:"Lodging and per-day costs split per night, per person — you only pay for the nights you're actually here. Shared costs like the van and groceries split evenly. Race tickets are bought individually." },
-      { id:"q2", q:"How do I pay?", a:"Settle your total with Felipe via Venmo, PayPal, or CashApp — or cash for the split portion. (No cards.)" },
+      { id:"q2", q:"How do I pay?", a:"Settle your total with Felipe via Venmo, Zelle, or PayPal — or cash for the split portion. (No cards.)" },
       { id:"q3", q:"When do we arrive and leave?", a:"Most arrive Friday, a few Thursday. Everyone heads out Monday morning." },
       { id:"q4", q:"What about race tickets?", a:"Everyone buys their own full-access (3-day) ticket via Ticketmaster. Tick yourself off in the Arrivals list once you've got yours." }
     ]
@@ -1559,7 +1559,7 @@
         f('Settle up to (name)', 'payTo') +
         f('Venmo', 'payVenmo') +
         f('PayPal', 'payPaypal') +
-        f('CashApp', 'payCashapp') +
+        f('Zelle', 'payZelle') +
       '</div>' +
     '</div>';
   }
@@ -1658,11 +1658,9 @@
 
     const set = document.getElementById('settleList');
     const tr = state.trip;
-    const handles = [];
-    if (tr.payVenmo) handles.push('Venmo ' + esc(tr.payVenmo));
-    if (tr.payPaypal) handles.push('PayPal ' + esc(tr.payPaypal));
-    if (tr.payCashapp) handles.push('CashApp ' + esc(tr.payCashapp));
-    const payNote = tr.payTo ? '<div class="pay-note">Settle up with <b>' + esc(tr.payTo) + '</b>' + (handles.length ? ' · ' + handles.join(' · ') : '') + '</div>' : '';
+    const methods = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]];
+    const handles = methods.map(m => m[1] ? (m[0] + ' ' + esc(m[1])) : m[0]);
+    const payNote = tr.payTo ? '<div class="pay-note">Settle up with <b>' + esc(tr.payTo) + '</b> · ' + handles.join(' · ') + '</div>' : '';
     if (!c.transfers.length) {
       set.innerHTML = payNote + '<div class="settle-empty">All square — nothing to settle.</div>';
     } else {
