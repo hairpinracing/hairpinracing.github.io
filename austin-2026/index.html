@@ -880,13 +880,13 @@
     </div>
   </section>
 
-  <section>
+  <section data-open="1">
     <div class="section-head reveal">
       <span class="section-num">07</span>
       <h2>Food &amp; Places</h2>
       <button class="btn sec-edit" type="button" aria-pressed="false">✎ Edit</button>
     </div>
-    <p class="dim reveal" style="margin-bottom:18px;">Where to eat and what to do in Austin — drop your picks.</p>
+    <p class="dim reveal" style="margin-bottom:18px;">Where to eat and what to do in Austin — drop your picks. <strong>No passcode needed</strong>, anyone can add.</p>
 
     <div class="view-only table-scroll">
       <table class="schedule">
@@ -1043,6 +1043,25 @@
         body: JSON.stringify({ p_travelers: state.travelers })
       });
       if (!res.ok) throw new Error('save_travelers ' + res.status);
+      lastSynced = JSON.stringify(state);
+      setStatus('saved');
+    } catch (e) { setStatus('offline'); }
+  }
+  // Food & Places is also an OPEN write (no passcode).
+  let foodPushTimer = null;
+  function saveFood() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    setStatus('saving');
+    if (foodPushTimer) clearTimeout(foodPushTimer);
+    foodPushTimer = setTimeout(pushFood, 700);
+  }
+  async function pushFood() {
+    try {
+      const res = await fetch(SUPA_URL + '/rest/v1/rpc/save_food', {
+        method: 'POST', headers: supaHeaders(true),
+        body: JSON.stringify({ p_food: state.food })
+      });
+      if (!res.ok) throw new Error('save_food ' + res.status);
       lastSynced = JSON.stringify(state);
       setStatus('saved');
     } catch (e) { setStatus('offline'); }
@@ -1762,7 +1781,7 @@
     }
 
     // travelers are an open write (no passcode); everything else uses the passcode push
-    if (kind === 'traveler') saveTravelers(); else save();
+    if (kind === 'traveler') saveTravelers(); else if (kind === 'food') saveFood(); else save();
     renderComputed();
     // refresh view tables so edits show after "Done" (open inputs aren't re-rendered → no focus loss).
     // expenses + arrivals lists intentionally NOT re-rendered here, to preserve the open card being typed in.
@@ -1786,7 +1805,8 @@
       if (kind === 'logistics') state.logistics.push({ id: uid(), label: '', value: '' });
       if (kind === 'food')      state.food.push({ id: uid(), name: '', kind: 'Eat', note: '', url: '' });
       if (kind === 'faq')       state.faq.push({ id: uid(), q: '', a: '' });
-      save(); renderAll();
+      if (kind === 'food') saveFood(); else save();
+      renderAll();
       return;
     }
     const rm = ev.target.closest('[data-remove]');
@@ -1797,7 +1817,8 @@
       const id = card.getAttribute('data-id');
       const arr = KIND_MAP[kind];
       state[arr] = state[arr].filter(r => r.id !== id);
-      save(); renderAll();
+      if (kind === 'food') saveFood(); else save();
+      renderAll();
       return;
     }
   });
@@ -1809,7 +1830,8 @@
     const sec = t.closest('section');
     if (!sec) return;
     const turningOn = !sec.classList.contains('editing');
-    if (turningOn && !editCode) {
+    // sections marked data-open (e.g. Food & Places) are editable without the passcode
+    if (turningOn && !editCode && !sec.hasAttribute('data-open')) {
       const ok = await unlockEditing('Enter the passcode to edit. Changes sync to everyone.');
       if (!ok) { setStatus(anyEditing() ? 'editing' : 'live'); return; }
     }
