@@ -456,22 +456,28 @@
   .bal-amt.zero { color: var(--ink-dim); }
 
   .settle-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
     align-items: center;
-    gap: 10px;
+    gap: 6px 14px;
     padding: 12px 18px;
     border-bottom: 1px solid var(--line);
     font-family: var(--mono);
     font-size: 14px;
-    flex-wrap: wrap;
   }
   .settle-item:last-child { border-bottom: none; }
   .settle-item.is-paid { opacity: 0.5; }
   .settle-item.is-paid .amt { text-decoration: line-through; }
+  .settle-item .parties { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
   .settle-item .from { color: var(--accent-2); font-weight: 700; }
   .settle-item .to { color: var(--accent); font-weight: 700; }
   .settle-item .arr { color: var(--ink-dim); }
-  .settle-item .amt { margin-left: auto; font-weight: 700; }
+  .settle-item .amt { font-weight: 700; white-space: nowrap; text-align: right; }
+  .settle-item .paid-toggle { white-space: nowrap; padding: 6px 10px; min-height: 0; font-size: 10px; }
+  @media (max-width: 560px) {
+    .settle-item { grid-template-columns: 1fr auto; }
+    .settle-item .paid-toggle { grid-column: 1 / -1; justify-self: start; }
+  }
   .settle-empty { padding: 16px 18px; color: var(--ink-dim); font-family: var(--mono); font-size: 13px; }
 
   .totals-strip {
@@ -1733,10 +1739,10 @@
       const tally = '<div class="pay-note">' + (outstanding > 0 ? '<b>' + money(outstanding) + '</b> outstanding · ' : 'All settled ✓ · ') + paidCount + ' of ' + c.transfers.length + ' paid</div>';
       set.innerHTML = payNote + tally + c.transfers.map(t => {
         const paid = !!settled[t.fromId];
-        return '<div class="settle-item' + (paid ? ' is-paid' : '') + '"><span class="from">' + esc(t.from) + '</span>' +
-          '<span class="arr">→</span><span class="to">' + esc(t.to) + '</span>' +
+        return '<div class="settle-item' + (paid ? ' is-paid' : '') + '">' +
+          '<div class="parties"><span class="from">' + esc(t.from) + '</span><span class="arr">→</span><span class="to">' + esc(t.to) + '</span></div>' +
           '<span class="amt">' + money(t.amt) + '</span>' +
-          '<button class="btn paid-toggle" data-id="' + t.fromId + '" style="padding:5px 10px;min-height:0;font-size:10px;margin-left:10px;">' + (paid ? '✓ paid · undo' : 'mark paid') + '</button>' +
+          '<button class="btn paid-toggle" data-id="' + t.fromId + '">' + (paid ? '✓ paid · undo' : 'mark paid') + '</button>' +
           '</div>';
       }).join('');
     }
