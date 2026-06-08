@@ -354,6 +354,18 @@
     .logi-v { grid-column: 1 / -1; text-align: left; }
   }
 
+  /* Food & Places card */
+  .food-card .exp-label { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .food-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; }
+  .food-note { margin-top: 5px; line-height: 1.45; }
+  .food-lines { display: flex; flex-direction: column; gap: 4px; margin-top: 9px; }
+  .food-line { display: grid; grid-template-columns: 42px 1fr; align-items: baseline; gap: 10px; text-decoration: none; }
+  .food-k { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+  .food-v { font-family: var(--mono); font-size: 13px; color: var(--ink); word-break: break-word; }
+  a.food-map { cursor: pointer; }
+  a.food-map .food-v { color: var(--accent); }
+  a.food-map:hover .food-v { text-decoration: underline; }
+
   /* Traveler card: aligned In/Out legs + right-side pills */
   .trav-legs { margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
   .trav-leg { display: flex; gap: 10px; align-items: baseline; font-family: var(--mono); font-size: 12px; color: var(--ink); }
@@ -904,7 +916,7 @@
       <span class="section-num">07</span>
       <h2>Food &amp; Places</h2>
     </div>
-    <p class="dim reveal" style="margin-bottom:18px;">Where to eat and what to do in Austin — drop your picks. <strong>No passcode needed</strong>, anyone can add.</p>
+    <p class="dim reveal" style="margin-bottom:18px;">Where to eat and what to do in Austin — drop your picks. Anyone can add.</p>
 
     <div id="foodList"></div>
     <button class="add-btn" data-listadd="food">+ Add place</button>
@@ -1587,11 +1599,16 @@
       fields: [{ k: 'label', label: 'Label', full: true, ph: 'e.g. Van — pick up' },
         { k: 'value', label: 'Detail', full: true }] },
     food: { open: true, empty: 'No spots yet — add Austin eats & things to do.',
-      blank: function () { return { id: uid(), name: '', kind: 'Eat', note: '', url: '' }; },
+      blank: function () { return { id: uid(), name: '', kind: 'Eat', note: '', url: '', menuUrl: '', address: '', price: '', dist: '' }; },
+      card: function (f) { return foodCard(f); },
       summary: function (f) { return { title: f.name || 'Place', meta: [f.kind, f.note].filter(Boolean).join(' · '), url: f.url }; },
-      fields: [{ k: 'name', label: 'Name', full: true, ph: 'e.g. Franklin Barbecue' },
-        { k: 'kind', label: 'Type', type: 'select', options: FOOD_KINDS }, { k: 'url', label: 'Link (optional)', ph: 'https://' },
-        { k: 'note', label: 'Notes', full: true }] },
+      fields: [{ k: 'name', label: 'Name', full: true, ph: 'e.g. Suerte' },
+        { k: 'kind', label: 'Type', type: 'select', options: FOOD_KINDS }, { k: 'price', label: 'Avg / person', ph: 'e.g. $50–60' },
+        { k: 'dist', label: 'Drive from house', ph: 'e.g. ~7 min' },
+        { k: 'url', label: 'Website', full: true, ph: 'https://' },
+        { k: 'menuUrl', label: 'Menu link', full: true, ph: 'https://' },
+        { k: 'address', label: 'Address (opens in Maps)', full: true, ph: 'Street, Austin, TX' },
+        { k: 'note', label: 'Overview', type: 'textarea', full: true }] },
     faq: { open: false, empty: 'No questions yet.',
       blank: function () { return { id: uid(), q: '', a: '' }; },
       summary: function (f) { return { title: f.q || 'Question', meta: f.a || '' }; },
@@ -1606,8 +1623,29 @@
     if (f.type === 'select') return '<div class="ed-field' + (f.full ? ' full' : '') + '"><label>' + f.label + '</label><select data-field="' + f.k + '">' + f.options.map(function (o) { return '<option value="' + o[0] + '"' + (v === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></div>';
     return '<div class="ed-field' + (f.full ? ' full' : '') + '"><label>' + f.label + '</label><input ' + (f.type ? 'type="' + f.type + '" ' : '') + 'data-field="' + f.k + '"' + (f.ph ? ' placeholder="' + esc(f.ph) + '"' : '') + ' value="' + esc(v || '') + '" /></div>';
   }
+  function mapsUrl(addr) { return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr); }
+  function foodCard(f) {
+    const title = f.url
+      ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">' + esc(f.name || 'Place') + ' ↗</a>'
+      : esc(f.name || 'Place');
+    const tag = f.kind ? '<span class="food-tag">' + esc(f.kind) + '</span>' : '';
+    const lines = [];
+    if (f.menuUrl) lines.push('<a class="food-line food-map" href="' + esc(f.menuUrl) + '" target="_blank" rel="noopener"><span class="food-k">Menu</span><span class="food-v">View menu ↗</span></a>');
+    if (f.address) lines.push('<a class="food-line food-map" href="' + esc(mapsUrl(f.address)) + '" target="_blank" rel="noopener"><span class="food-k">Map</span><span class="food-v">' + esc(f.address) + ' ↗</span></a>');
+    if (f.price) lines.push('<div class="food-line"><span class="food-k">Avg</span><span class="food-v">' + esc(f.price) + ' / person</span></div>');
+    if (f.dist) lines.push('<div class="food-line"><span class="food-k">House</span><span class="food-v">' + esc(f.dist) + '</span></div>');
+    return '<div class="exp-card food-card" data-id="' + f.id + '">' +
+      '<div class="exp-row"><div class="exp-info">' +
+        '<div class="exp-label">' + title + tag + '</div>' +
+        (f.note ? '<div class="exp-meta food-note">' + esc(f.note) + '</div>' : '') +
+        (lines.length ? '<div class="food-lines">' + lines.join('') + '</div>' : '') +
+      '</div><div class="exp-actions">' +
+        '<button class="icon-btn list-edit" data-kind="food" data-id="' + f.id + '" title="Edit">✎</button>' +
+      '</div></div></div>';
+  }
   function listSummaryCard(kind, item) {
     const cfg = LISTS[kind];
+    if (cfg.card) return cfg.card(item);
     const s = cfg.summary(item);
     if (cfg.compact) {
       const val = s.meta ? esc(s.meta) : '<span class="dim">— not set</span>';
@@ -1871,7 +1909,7 @@
       if (kind === 'schedule')  state.schedule.push({ id: uid(), day: '', time: '', session: '', note: '' });
       if (kind === 'plan')      state.plan.push({ id: uid(), day: '', time: '', title: '', note: '' });
       if (kind === 'logistics') state.logistics.push({ id: uid(), label: '', value: '' });
-      if (kind === 'food')      state.food.push({ id: uid(), name: '', kind: 'Eat', note: '', url: '' });
+      if (kind === 'food')      state.food.push({ id: uid(), name: '', kind: 'Eat', note: '', url: '', menuUrl: '', address: '', price: '', dist: '' });
       if (kind === 'faq')       state.faq.push({ id: uid(), q: '', a: '' });
       if (kind === 'food') saveFood(); else save();
       renderAll();
