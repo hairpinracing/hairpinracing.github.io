@@ -1599,11 +1599,12 @@
       fields: [{ k: 'label', label: 'Label', full: true, ph: 'e.g. Van — pick up' },
         { k: 'value', label: 'Detail', full: true }] },
     food: { open: true, empty: 'No spots yet — add Austin eats & things to do.',
-      blank: function () { return { id: uid(), name: '', kind: 'Eat', note: '', url: '', address: '', price: '' }; },
+      blank: function () { return { id: uid(), name: '', kind: 'Eat', note: '', url: '', address: '', price: '', dist: '' }; },
       card: function (f) { return foodCard(f); },
       summary: function (f) { return { title: f.name || 'Place', meta: [f.kind, f.note].filter(Boolean).join(' · '), url: f.url }; },
       fields: [{ k: 'name', label: 'Name', full: true, ph: 'e.g. Suerte' },
         { k: 'kind', label: 'Type', type: 'select', options: FOOD_KINDS }, { k: 'price', label: 'Avg / person', ph: 'e.g. $50–60' },
+        { k: 'dist', label: 'Drive from house', ph: 'e.g. ~7 min' },
         { k: 'url', label: 'Website', full: true, ph: 'https://' },
         { k: 'address', label: 'Address (opens in Maps)', full: true, ph: 'Street, Austin, TX' },
         { k: 'note', label: 'Overview', type: 'textarea', full: true }] },
@@ -1630,6 +1631,7 @@
     const lines = [];
     if (f.address) lines.push('<a class="food-line food-map" href="' + esc(mapsUrl(f.address)) + '" target="_blank" rel="noopener"><span class="food-k">Map</span><span class="food-v">' + esc(f.address) + ' ↗</span></a>');
     if (f.price) lines.push('<div class="food-line"><span class="food-k">Avg</span><span class="food-v">' + esc(f.price) + ' / person</span></div>');
+    if (f.dist) lines.push('<div class="food-line"><span class="food-k">House</span><span class="food-v">' + esc(f.dist) + '</span></div>');
     return '<div class="exp-card food-card" data-id="' + f.id + '">' +
       '<div class="exp-row"><div class="exp-info">' +
         '<div class="exp-label">' + title + tag + '</div>' +
@@ -1905,7 +1907,7 @@
       if (kind === 'schedule')  state.schedule.push({ id: uid(), day: '', time: '', session: '', note: '' });
       if (kind === 'plan')      state.plan.push({ id: uid(), day: '', time: '', title: '', note: '' });
       if (kind === 'logistics') state.logistics.push({ id: uid(), label: '', value: '' });
-      if (kind === 'food')      state.food.push({ id: uid(), name: '', kind: 'Eat', note: '', url: '', address: '', price: '' });
+      if (kind === 'food')      state.food.push({ id: uid(), name: '', kind: 'Eat', note: '', url: '', address: '', price: '', dist: '' });
       if (kind === 'faq')       state.faq.push({ id: uid(), q: '', a: '' });
       if (kind === 'food') saveFood(); else save();
       renderAll();
