@@ -1326,21 +1326,56 @@
     const nights = tripNights();
     const fair = {}, paid = {};
     state.travelers.forEach(t => { fair[t.id] = 0; paid[t.id] = 0; });
+    const isTraveler = {}; state.travelers.forEach(t => isTraveler[t.id] = true);
     let unassigned = 0; const warns = [];
     const items = allExpenses();
+
+    // owe[debtorId][creditorId] = cents — each person's share of an expense
+    // is owed back to whoever actually paid that expense (per-payer reimbursement).
+    const owe = {};
+    function addOwe(d, cr, amt) { if (amt <= 0 || d === cr) return; (owe[d] = owe[d] || {})[cr] = (owe[d][cr] || 0) + amt; }
+
     items.forEach(exp => {
       const r = allocExpense(exp, nights);
       Object.keys(r.alloc).forEach(id => fair[id] += r.alloc[id]);
       const cents = Math.round((Number(exp.amount) || 0) * 100);
-      if (exp.payer && paid[exp.payer] !== undefined) paid[exp.payer] += cents;
+      const payer = (exp.payer && isTraveler[exp.payer]) ? exp.payer : null;
+      if (payer) {
+        paid[payer] += cents;
+        Object.keys(r.alloc).forEach(id => addOwe(id, payer, r.alloc[id]));
+      } else if (cents > 0 && Object.keys(r.alloc).some(id => r.alloc[id] > 0)) {
+        warns.push((exp.label || 'Expense') + ': no one is set as the payer, so it is left out of settle-up');
+      }
       unassigned += r.unassigned;
       r.warn.forEach(w => warns.push((exp.label || 'Expense') + ': ' + w));
     });
+
+    // Net mutual debts so two people never pay each other in both directions
+    // (e.g. Felipe owes Topher for the van while Topher owes Felipe for lodging).
+    Object.keys(owe).forEach(a => Object.keys(owe[a]).forEach(b => {
+      if (owe[b] && owe[b][a] > 0 && owe[a][b] > 0) {
+        const m = Math.min(owe[a][b], owe[b][a]);
+        owe[a][b] -= m; owe[b][a] -= m;
+      }
+    }));
+
     const balances = state.travelers.map(t => ({
       id: t.id, name: t.name || '—', paid: paid[t.id] || 0, fair: fair[t.id] || 0,
       balance: (paid[t.id] || 0) - (fair[t.id] || 0)
     }));
-    const transfers = settle(balances);
+    const nameOf = {}; state.travelers.forEach(t => nameOf[t.id] = t.name || '—');
+
+    // One transfer per (debtor → payer) pair, so every payer is reimbursed directly.
+    const transfers = [];
+    state.travelers.forEach(d => {
+      const m = owe[d.id]; if (!m) return;
+      state.travelers.forEach(cr => {
+        const amt = m[cr.id]; if (!amt || amt <= 0) return;
+        transfers.push({ fromId: d.id, from: nameOf[d.id], toId: cr.id, to: nameOf[cr.id], amt: amt, key: d.id + '>' + cr.id });
+      });
+    });
+    transfers.sort((a, b) => a.to === b.to ? b.amt - a.amt : a.to.localeCompare(b.to));
+
     const grand = items.reduce((s, e) => s + Math.round((Number(e.amount) || 0) * 100), 0);
     return { nights, balances, transfers, unassigned, warns, grand };
   }
@@ -1728,7 +1763,9 @@
     const c = computeCosts();
     const b = c.balances.find(x => x.id === meId);
     if (!b) { box.innerHTML = ''; return; }
-    const nights = tripNights(), tr = state.trip, settled = !!(state.settled && state.settled[meId]);
+    const nights = tripNights(), tr = state.trip;
+    const myTransfers = c.transfers.filter(t => t.fromId === meId);
+    const settled = myTransfers.length > 0 && myTransfers.every(t => (state.settled || {})[t.key]);
     const itemRows = [];
     allExpenses().forEach(exp => {
       const share = (allocExpense(exp, nights).alloc[meId] || 0);
@@ -1742,11 +1779,13 @@
     else if (b.balance > 0) head = '<span class="me-amt pos">You get back ' + money(b.balance) + '</span>';
     else head = '<span class="me-amt">You\'re square</span>';
     const methods = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]].map(m => m[1] ? (m[0] + ' ' + esc(m[1])) : m[0]).join(' · ');
-    const payLine = (!settled && b.balance < 0 && tr.payTo) ? '<div class="me-pay">Pay <b>' + esc(tr.payTo) + '</b> · ' + methods + '</div>' : '';
+    const payLine = (!settled && myTransfers.length) ? '<div class="me-pay">' + myTransfers.map(t => 'Pay <b>' + esc(t.to) + '</b> · ' + money(t.amt)).join('<br>') + '</div>' : '';
+    const myIn = c.transfers.filter(t => t.toId === meId);
+    const collectLine = myIn.length ? '<div class="me-pay">' + myIn.map(t => 'Collect from <b>' + esc(t.from) + '</b> · ' + money(t.amt)).join('<br>') + '</div>' : '';
     box.innerHTML = '<div class="me-card-inner">' +
       '<div class="me-head"><div class="me-name">' + esc(b.name) + '</div>' + head + '</div>' +
       '<div class="me-rows">' + itemRows.join('') + totalRow + paidLine + '</div>' +
-      payLine + '</div>';
+      payLine + collectLine + '</div>';
   }
   document.addEventListener('change', function (ev) {
     if (ev.target.id !== 'meSelect') return;
@@ -1773,12 +1812,16 @@
       '<div><div class="k">Travelers</div><div class="v">' + state.travelers.length + '</div></div>';
 
     const settled = state.settled || {};
+    // a person is "paid" once every transfer they owe is marked paid
+    const myTransfersBy = {};
+    c.transfers.forEach(t => { (myTransfersBy[t.fromId] = myTransfersBy[t.fromId] || []).push(t); });
+    function personAllPaid(id) { const arr = myTransfersBy[id]; return !!(arr && arr.length && arr.every(t => settled[t.key])); }
     const bal = document.getElementById('balList');
     if (!c.balances.length) {
       bal.innerHTML = '<div class="settle-empty">Add travelers to see shares.</div>';
     } else {
       bal.innerHTML = c.balances.map(b => {
-        const isPaid = b.balance < 0 && settled[b.id];
+        const isPaid = b.balance < 0 && personAllPaid(b.id);
         const cls = isPaid ? 'zero' : (b.balance > 0 ? 'pos' : (b.balance < 0 ? 'neg' : 'zero'));
         const tag = isPaid ? '<span class="pill ok">✓ paid</span>'
           : (b.balance > 0 ? 'gets back ' + money(b.balance) : (b.balance < 0 ? 'owes ' + money(-b.balance) : 'square'));
@@ -1792,7 +1835,7 @@
     const tr = state.trip;
     const methods = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]];
     const handles = methods.map(m => m[1] ? (m[0] + ' ' + esc(m[1])) : m[0]);
-    const payNote = tr.payTo ? '<div class="pay-note">Settle up with <b>' + esc(tr.payTo) + '</b> · ' + handles.join(' · ') + '</div>' : '';
+    const payNote = '<div class="pay-note">Pay the person shown on each line.' + (tr.payTo ? ' <b>' + esc(tr.payTo) + '</b>: ' + handles.join(' · ') : '') + '</div>';
 
     // personal focus: when a name is picked, hide the everyone "fair share" panel
     // and narrow the settle-up to just that person's line.
@@ -1809,16 +1852,16 @@
     } else {
       let tally = '';
       if (!meIsDebtor) {
-        const outstanding = c.transfers.filter(t => !settled[t.fromId]).reduce((s, t) => s + t.amt, 0);
-        const paidCount = c.transfers.filter(t => settled[t.fromId]).length;
+        const outstanding = c.transfers.filter(t => !settled[t.key]).reduce((s, t) => s + t.amt, 0);
+        const paidCount = c.transfers.filter(t => settled[t.key]).length;
         tally = '<div class="pay-note">' + (outstanding > 0 ? '<b>' + money(outstanding) + '</b> outstanding · ' : 'All settled ✓ · ') + paidCount + ' of ' + c.transfers.length + ' paid</div>';
       }
       set.innerHTML = payNote + tally + transfers.map(t => {
-        const paid = !!settled[t.fromId];
+        const paid = !!settled[t.key];
         return '<div class="settle-item' + (paid ? ' is-paid' : '') + '">' +
           '<div class="parties"><span class="from">' + esc(t.from) + '</span><span class="arr">→</span><span class="to">' + esc(t.to) + '</span></div>' +
           '<span class="amt">' + money(t.amt) + '</span>' +
-          '<button class="btn paid-toggle" data-id="' + t.fromId + '">' + (paid ? '✓ paid · undo' : 'mark paid') + '</button>' +
+          '<button class="btn paid-toggle" data-id="' + t.key + '">' + (paid ? '✓ paid · undo' : 'mark paid') + '</button>' +
           '</div>';
       }).join('');
     }
