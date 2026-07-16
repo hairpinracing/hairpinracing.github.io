@@ -544,6 +544,23 @@
   .season-card.gr3-upcoming .num { color: var(--accent); }
   .season-card.gr3-upcoming .arrow { color: var(--accent); }
 
+  /* GR1 live card accent (blue) */
+  .season-card.gr1-live .status {
+    color: oklch(68% 0.16 245);
+    border: 1px solid oklch(68% 0.16 245 / 0.40);
+    background: oklch(68% 0.16 245 / 0.06);
+  }
+  .season-card.gr1-live .num { color: oklch(68% 0.16 245); }
+  .season-card.gr1-live .arrow { color: oklch(68% 0.16 245); }
+
+  /* 1-column grid for single-season series */
+  .seasons-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--line);
+    border-top: none;
+  }
+
   /* Utility link (drivers) */
   .utility-card {
     display: flex;
@@ -658,6 +675,8 @@
     <span>Wednesday Night Gr.3 BOP</span><span class="dot">●</span>
     <span>S1 Champion: Barry · Won by 1 pt</span><span class="dot">●</span>
     <span>S2 · R8/9 Complete · TVDV Leads</span><span class="dot">●</span>
+    <span>Group 1 Series — Mondays 9 PM ET</span><span class="dot">●</span>
+    <span>S1 · R5/10 Complete · Speedysully Leads</span><span class="dot">●</span>
     <span><b>Hairpin Racing</b></span><span class="dot">●</span>
     <span>Gran Turismo 7</span><span class="dot">●</span>
     <span>Multi-Class — Tuesdays 9 PM ET</span><span class="dot">●</span>
@@ -677,13 +696,13 @@
       <span class="word w1"><span>Hairpin</span></span><br />
       <span class="word w2"><span>Racing.</span></span>
     </h1>
-    <div class="subtitle"><span>Multi-Class · Gr.3 BOP · Tue &amp; Wed Nights</span></div>
+    <div class="subtitle"><span>Multi-Class · Gr.3 BOP · Group 1 · Mon–Wed Nights</span></div>
   </header>
 
   <div class="stats-strip">
-    <div><span class="k">Series</span><span class="v">2</span></div>
-    <div><span class="k">Seasons</span><span class="v">6</span></div>
-    <div><span class="k">Race Nights</span><span class="v">Tue &amp; Wed</span></div>
+    <div><span class="k">Series</span><span class="v">3</span></div>
+    <div><span class="k">Seasons</span><span class="v">7</span></div>
+    <div><span class="k">Race Nights</span><span class="v">Mon, Tue &amp; Wed</span></div>
     <div><span class="k">Platform</span><span class="v">GT7</span></div>
   </div>
 
@@ -770,6 +789,28 @@
     </div>
   </div>
 
+  <!-- ══ GROUP 1 SERIES ══ -->
+  <div class="series-block">
+    <div class="series-header">
+      <span class="series-header-name">Group 1 Series</span>
+      <span class="series-header-meta">Monday Nights · 9 PM ET · LMDh &amp; Group 1 · Single Class</span>
+    </div>
+    <div class="seasons-1">
+      <a class="season-card gr1-live" href="gr1/" style="animation-delay:1.30s">
+        <div class="status">● Ongoing · R5/10 Complete</div>
+        <span class="num">S1</span>
+        <span class="label">Group 1</span>
+        <div class="meta-row">
+          <div class="meta-item">Leader: Speedysully · 91 pts</div>
+          <div class="meta-item">15 drivers · R5/10</div>
+          <div class="meta-item">Next: Barcelona · Jul 20</div>
+          <div class="meta-item meta-admin"><span class="adm-label">Admin</span> Pawl</div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+    </div>
+  </div>
+
   <!-- ══ LEAGUE ROAD TRIP ══ -->
   <div class="series-block">
     <div class="series-header">
@@ -788,7 +829,7 @@
 </main>
 
 <footer>
-  Hairpin Racing · GT7 · Multi-Class &amp; Wednesday Night Gr.3 BOP
+  Hairpin Racing · GT7 · Multi-Class · Wednesday Night Gr.3 BOP · Group 1
   <div class="sig">See you on track.</div>
 </footer>
 
