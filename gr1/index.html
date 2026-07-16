@@ -322,6 +322,57 @@
   .driver-tag.new { color: var(--accent-2); border: 1px solid oklch(74% 0.17 55 / 40%); background: oklch(74% 0.17 55 / 8%); }
   .driver-tag.reserve { color: var(--ink-dim); border: 1px solid var(--line); background: transparent; }
 
+  /* By The Numbers — chart, facts, heatmap */
+  .chart-wrap { border: 1px solid var(--line); background: var(--bg-2); padding: 20px 16px 12px; margin-bottom: 32px; }
+  .chart-label { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 12px; }
+  .chart-legend { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
+  .legend-line { width: 20px; height: 2px; flex-shrink: 0; }
+  .chart-line { stroke-dasharray: 9999; stroke-dashoffset: 9999; animation: drawLine 1.6s var(--ease-out) both; animation-play-state: paused; }
+  .chart-line-a { animation-delay: 0.3s; }
+  .chart-line-b { animation-delay: 0.5s; }
+  .chart-line-c { animation-delay: 0.7s; }
+  .chart-line-d { animation-delay: 0.9s; }
+  @keyframes drawLine { from { stroke-dashoffset: 9999; } to { stroke-dashoffset: 0; } }
+  .chart-wrap.in .chart-line { animation-play-state: running; }
+  .chart-grid { opacity: 0; animation: fadeIn2 0.5s ease-out forwards; animation-play-state: paused; }
+  .chart-axis { opacity: 0; animation: fadeIn2 0.4s ease-out forwards; animation-play-state: paused; }
+  .chart-wrap.in .chart-grid, .chart-wrap.in .chart-axis { animation-play-state: running; }
+  @keyframes fadeIn2 { to { opacity: 1; } }
+  .chart-circle { opacity: 0; transform-box: fill-box; transform-origin: center; animation: popCircle 0.25s var(--ease-out) forwards; animation-play-state: paused; }
+  .chart-wrap.in .chart-circle { animation-play-state: running; }
+  @keyframes popCircle { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+  .chart-end-label { opacity: 0; animation: fadeIn2 0.35s ease-out forwards; animation-play-state: paused; }
+  .chart-wrap.in .chart-end-label { animation-play-state: running; }
+  @media (prefers-reduced-motion: reduce) {
+    .chart-line { stroke-dashoffset: 0 !important; animation: none; }
+    .chart-grid, .chart-axis, .chart-circle, .chart-end-label { opacity: 1 !important; transform: none !important; animation: none; }
+  }
+
+  .analytics-facts { list-style: none; padding: 0; margin: 0 0 40px; }
+  .analytics-facts li { display: flex; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .analytics-facts li:first-child { padding-top: 0; }
+  .fact-num { font-family: var(--display); font-size: 2.2rem; line-height: 1; color: var(--accent); min-width: 72px; flex-shrink: 0; }
+  .fact-text { font-size: 0.88rem; line-height: 1.6; color: var(--ink-dim); }
+  .fact-text strong { color: var(--ink); font-weight: 600; }
+  .analytics-sub-head { font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-dim); margin-bottom: 14px; }
+  .heat-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 16px; }
+  .heat-table { border-collapse: collapse; font-family: var(--mono); font-size: 0.72rem; white-space: nowrap; min-width: 480px; }
+  .heat-table th { padding: 6px 8px; text-align: center; color: var(--ink-dim); font-weight: 400; font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid var(--line); }
+  .heat-table th.h-driver { text-align: left; min-width: 130px; }
+  .heat-table td { padding: 5px 8px; text-align: center; border: 1px solid oklch(18% 0.005 245 / 60%); }
+  .heat-table td.h-name { text-align: left; padding: 5px 14px 5px 4px; color: var(--ink-dim); }
+  .pos-1 { background: oklch(52% 0.15 245); color: oklch(97% 0.01 245); font-weight: 700; }
+  .pos-2 { background: oklch(40% 0.11 245); color: oklch(91% 0.01 245); font-weight: 600; }
+  .pos-3 { background: oklch(32% 0.08 245); color: oklch(84% 0.02 245); }
+  .pos-4, .pos-5 { background: oklch(16% 0.005 245); color: var(--ink-dim); }
+  .pos-6, .pos-7, .pos-8 { background: oklch(13% 0.003 245); color: oklch(40% 0.01 245); }
+  .pos-9, .pos-10, .pos-11 { background: oklch(11% 0.002 245); color: oklch(34% 0.01 245); }
+  .pos-abs { background: oklch(11% 0.002 245); color: oklch(28% 0.005 245); font-style: italic; }
+  .heat-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+  .heat-legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 0.63rem; color: var(--ink-dim); }
+  .heat-swatch { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+
   footer { padding: 48px 0 36px; text-align: center; font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.25em; color: var(--ink-dim); text-transform: uppercase; position: relative; z-index: 1; }
   footer .sig { color: var(--accent); margin-top: 8px; font-family: var(--display); font-size: 22px; letter-spacing: 0.04em; }
 
@@ -379,6 +430,8 @@
     .standings-table th:nth-child(n+3):nth-child(-n+7), .standings-table td:nth-child(n+3):nth-child(-n+7) { display: none; }
     .settings-table { font-size: 11px; }
     .settings-table td, .settings-table th { padding: 8px 8px; }
+    .chart-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .chart-wrap svg { min-width: 560px; }
   }
   @media (max-width: 480px) {
     .wrap { padding: 0 16px; }
@@ -751,6 +804,144 @@
         <div class="driver-psn">PSN: SS_-Gogeta-_</div>
         <span class="driver-tag new">Joined Jul 16 · not yet raced</span>
       </div>
+    </div>
+  </section>
+
+  <!-- 09: BY THE NUMBERS -->
+  <section>
+    <div class="section-head reveal">
+      <div class="section-num">09</div>
+      <h2>By The Numbers</h2>
+    </div>
+
+    <div class="chart-wrap reveal">
+      <div class="chart-label">Championship Trajectory · Top 4 Drivers · Cumulative Points</div>
+      <svg width="100%" viewBox="0 0 950 210" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
+        <line class="chart-grid" x1="45" y1="170" x2="910" y2="170" style="stroke:var(--line);animation-delay:0s"    stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="155" x2="910" y2="155" style="stroke:var(--line);animation-delay:0.08s" stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="140" x2="910" y2="140" style="stroke:var(--line);animation-delay:0.16s" stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="125" x2="910" y2="125" style="stroke:var(--line);animation-delay:0.24s" stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="185" x2="910" y2="185" style="stroke:var(--line);animation-delay:0s"    stroke-width="1"/>
+        <text class="chart-axis" x="38" y="174" text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0s">25</text>
+        <text class="chart-axis" x="38" y="159" text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.08s">50</text>
+        <text class="chart-axis" x="38" y="144" text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.16s">75</text>
+        <text class="chart-axis" x="38" y="129" text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.24s">100</text>
+        <text class="chart-axis" x="100" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0s">R1</text>
+        <text class="chart-axis" x="290" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.06s">R2</text>
+        <text class="chart-axis" x="480" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.12s">R3</text>
+        <text class="chart-axis" x="670" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.18s">R4</text>
+        <text class="chart-axis" x="860" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--accent);font-weight:700;animation-delay:0.24s">R5</text>
+
+        <!-- Ncardw11 -->
+        <polyline class="chart-line chart-line-d" points="100,174 290,163 480,154 670,150 860,141"
+          style="fill:none;stroke:oklch(48% 0.004 245)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="100" cy="174" r="2.5" style="fill:oklch(48% 0.004 245);animation-delay:0.90s"/>
+        <circle class="chart-circle" cx="290" cy="163" r="2.5" style="fill:oklch(48% 0.004 245);animation-delay:1.05s"/>
+        <circle class="chart-circle" cx="480" cy="154" r="2.5" style="fill:oklch(48% 0.004 245);animation-delay:1.20s"/>
+        <circle class="chart-circle" cx="670" cy="150" r="2.5" style="fill:oklch(48% 0.004 245);animation-delay:1.35s"/>
+        <circle class="chart-circle" cx="860" cy="141" r="3"   style="fill:oklch(48% 0.004 245);animation-delay:1.50s"/>
+
+        <!-- rollinsmoke -->
+        <polyline class="chart-line chart-line-c" points="100,170 290,163 480,150 670,145 860,139"
+          style="fill:none;stroke:oklch(78% 0.006 245)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="100" cy="170" r="3" style="fill:oklch(78% 0.006 245);animation-delay:0.75s"/>
+        <circle class="chart-circle" cx="290" cy="163" r="3" style="fill:oklch(78% 0.006 245);animation-delay:0.90s"/>
+        <circle class="chart-circle" cx="480" cy="150" r="3" style="fill:oklch(78% 0.006 245);animation-delay:1.05s"/>
+        <circle class="chart-circle" cx="670" cy="145" r="3" style="fill:oklch(78% 0.006 245);animation-delay:1.20s"/>
+        <circle class="chart-circle" cx="860" cy="139" r="3.5" style="fill:oklch(78% 0.006 245);animation-delay:1.35s"/>
+
+        <!-- CtillVR -->
+        <polyline class="chart-line chart-line-b" points="100,172 290,163 480,147 670,137 860,132"
+          style="fill:none;stroke:var(--accent-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="100" cy="172" r="3.5" style="fill:var(--accent-2);animation-delay:0.55s"/>
+        <circle class="chart-circle" cx="290" cy="163" r="3.5" style="fill:var(--accent-2);animation-delay:0.70s"/>
+        <circle class="chart-circle" cx="480" cy="147" r="3.5" style="fill:var(--accent-2);animation-delay:0.85s"/>
+        <circle class="chart-circle" cx="670" cy="137" r="3.5" style="fill:var(--accent-2);animation-delay:1.00s"/>
+        <circle class="chart-circle" cx="860" cy="132" r="4"   style="fill:var(--accent-2);animation-delay:1.15s"/>
+
+        <!-- Speedysully (leader) -->
+        <polyline class="chart-line chart-line-a" points="100,177 290,160 480,148 670,138 860,130"
+          style="fill:none;stroke:var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="100" cy="177" r="3.5" style="fill:var(--accent);animation-delay:0.35s"/>
+        <circle class="chart-circle" cx="290" cy="160" r="3.5" style="fill:var(--accent);animation-delay:0.50s"/>
+        <circle class="chart-circle" cx="480" cy="148" r="3.5" style="fill:var(--accent);animation-delay:0.65s"/>
+        <circle class="chart-circle" cx="670" cy="138" r="3.5" style="fill:var(--accent);animation-delay:0.80s"/>
+        <circle class="chart-circle" cx="860" cy="130" r="6"   style="fill:none;stroke:var(--accent);stroke-width:1.5;animation-delay:0.95s"/>
+        <circle class="chart-circle" cx="860" cy="130" r="4"   style="fill:var(--accent);animation-delay:0.95s"/>
+
+        <text class="chart-end-label" x="870" y="127" style="font-family:'Archivo',sans-serif;font-size:10px;font-weight:700;fill:var(--accent);animation-delay:2.0s">Speedysully</text>
+        <text class="chart-end-label" x="870" y="139" style="font-family:'Azeret Mono',monospace;font-size:9px;font-weight:700;fill:var(--accent);animation-delay:2.1s">91</text>
+        <text class="chart-end-label" x="870" y="153" style="font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;fill:var(--accent-2);animation-delay:2.05s">CtillVR</text>
+        <text class="chart-end-label" x="870" y="164" style="font-family:'Azeret Mono',monospace;font-size:8px;fill:var(--accent-2);animation-delay:2.15s">88</text>
+        <text class="chart-end-label" x="870" y="178" style="font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;fill:oklch(78% 0.006 245);animation-delay:2.1s">rollinsmoke</text>
+        <text class="chart-end-label" x="870" y="189" style="font-family:'Azeret Mono',monospace;font-size:8px;fill:oklch(78% 0.006 245);animation-delay:2.2s">77</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-line" style="background:var(--accent)"></span>Speedysully (91)</div>
+        <div class="legend-item"><span class="legend-line" style="background:var(--accent-2)"></span>CtillVR (88)</div>
+        <div class="legend-item"><span class="legend-line" style="background:oklch(78% 0.006 245)"></span>rollinsmoke (77)</div>
+        <div class="legend-item"><span class="legend-line" style="background:oklch(48% 0.004 245)"></span>Ncardw11 (73)</div>
+      </div>
+    </div>
+
+    <ul class="analytics-facts stagger reveal">
+      <li>
+        <span class="fact-num">6</span>
+        <span class="fact-text"><strong>Only 6 of 15 drivers have started every single round.</strong> Speedysully, CtillVR, rollinsmoke, Ncardw11, SnakePlissken, and Pawl are the only ones with a perfect five-for-five attendance record.</span>
+      </li>
+      <li>
+        <span class="fact-num">2</span>
+        <span class="fact-text"><strong>Only two rounds have been won by the same driver twice</strong> — nobody has repeated as a winner yet: rollinsmoke (R1), Speedysully (R2), CtillVR (R3), Barry (R4), and iCrazy (R5) have combined for five different winners in five races.</span>
+      </li>
+      <li>
+        <span class="fact-num">3</span>
+        <span class="fact-text"><strong>Three round winners swept both bonus points</strong> — Speedysully (R2), CtillVR (R3), and iCrazy (R5) all took pole and fastest lap on their way to victory.</span>
+      </li>
+      <li>
+        <span class="fact-num">3</span>
+        <span class="fact-text"><strong>Only 3 points separate 1st and 2nd</strong> heading into Round 6 — CtillVR trails Speedysully 88 to 91, with rollinsmoke and Ncardw11 both still within 20 of the lead.</span>
+      </li>
+    </ul>
+
+    <div class="analytics-sub-head reveal">Finishing Position — R1 – R5</div>
+    <div class="heat-wrap reveal">
+      <table class="heat-table">
+        <thead>
+          <tr>
+            <th class="h-driver">Driver</th>
+            <th>R1<br><span style="opacity:0.55;font-size:0.6rem">Fuji</span></th>
+            <th>R2<br><span style="opacity:0.55;font-size:0.6rem">Daytona</span></th>
+            <th>R3<br><span style="opacity:0.55;font-size:0.6rem">Le Mans</span></th>
+            <th>R4<br><span style="opacity:0.55;font-size:0.6rem">Spa</span></th>
+            <th>R5<br><span style="opacity:0.55;font-size:0.6rem">Monza</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="h-name">Speedysully</td><td class="pos-6">6</td><td class="pos-1">1</td><td class="pos-3">3</td><td class="pos-4">4</td><td class="pos-7">7</td></tr>
+          <tr><td class="h-name">CtillVR</td><td class="pos-3">3</td><td class="pos-5">5</td><td class="pos-1">1</td><td class="pos-5">5</td><td class="pos-9">9</td></tr>
+          <tr><td class="h-name">rollinsmoke</td><td class="pos-1">1</td><td class="pos-7">7</td><td class="pos-2">2</td><td class="pos-9">9</td><td class="pos-8">8</td></tr>
+          <tr><td class="h-name">Ncardw11</td><td class="pos-4">4</td><td class="pos-4">4</td><td class="pos-5">5</td><td class="pos-10">10</td><td class="pos-6">6</td></tr>
+          <tr><td class="h-name">SnakePlissken</td><td class="pos-8">8</td><td class="pos-3">3</td><td class="pos-4">4</td><td class="pos-7">7</td><td class="pos-11">12</td></tr>
+          <tr><td class="h-name">PeekabooRacing</td><td class="pos-2">2</td><td class="pos-abs">ABS</td><td class="pos-6">6</td><td class="pos-8">8</td><td class="pos-4">4</td></tr>
+          <tr><td class="h-name">Pawl</td><td class="pos-7">7</td><td class="pos-2">2</td><td class="pos-7">7</td><td class="pos-6">6</td><td class="pos-11">13</td></tr>
+          <tr><td class="h-name">Jett</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-2">2</td><td class="pos-3">3</td></tr>
+          <tr><td class="h-name">Barry</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-1">1</td><td class="pos-5">5</td></tr>
+          <tr><td class="h-name">TheEliteWeasel61</td><td class="pos-9">9</td><td class="pos-6">6</td><td class="pos-8">8</td><td class="pos-abs">ABS</td><td class="pos-11">13</td></tr>
+          <tr><td class="h-name">MPR_Modfox</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-3">3</td><td class="pos-10">10</td></tr>
+          <tr><td class="h-name">iCrazy</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-1">1</td></tr>
+          <tr><td class="h-name">Leadfoot GT</td><td class="pos-10">10</td><td class="pos-8">8</td><td class="pos-abs">ABS</td><td class="pos-11">11</td><td class="pos-abs">ABS</td></tr>
+          <tr><td class="h-name">D. Earnhardt</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-2">2</td></tr>
+          <tr><td class="h-name">Dark Delacroix</td><td class="pos-5">5</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-abs">ABS</td><td class="pos-11">11</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="heat-legend reveal">
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(52% 0.15 245)"></div> P1 — win</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(40% 0.11 245)"></div> P2 — podium</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(32% 0.08 245)"></div> P3 — podium</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(16% 0.005 245)"></div> P4–5</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(13% 0.003 245)"></div> P6–8</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(11% 0.002 245)"></div> P9+ / ABS</div>
     </div>
   </section>
 
