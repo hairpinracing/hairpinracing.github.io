@@ -271,7 +271,7 @@
   .standings-table tr:nth-child(2) .pos-num { color: var(--ink); font-weight: 600; }
   .standings-table tr:nth-child(3) .pos-num { color: var(--ink); font-weight: 500; }
   .standings-table tr:nth-child(1) td:last-child { color: var(--accent); }
-  .standings-table .r1-col { color: var(--accent-2); font-style: italic; }
+  .standings-table .r1-col { color: var(--ink-dim); }
   .fl-badge { font-family: var(--body); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2); padding: 1px 5px; border: 1px solid oklch(74% 0.17 55 / 35%); background: oklch(74% 0.17 55 / 6%); margin-left: 6px; vertical-align: middle; }
   .standings-table th:nth-child(n+3):nth-child(-n+8), .standings-table td:nth-child(n+3):nth-child(-n+8) { }
 
@@ -404,7 +404,7 @@
     <span>Fuji · Daytona · Le Mans · Spa · Monza</span><span class="dot">●</span>
     <span>LMDh &amp; Group 1 Prototypes</span><span class="dot">●</span>
     <span>50 Min · Pole + FL Bonus</span><span class="dot">●</span>
-    <span>Next: Barcelona · Date TBD</span><span class="dot">●</span>
+    <span>Next: Barcelona · Jul 20</span><span class="dot">●</span>
     <span><b>Group 1 Series</b></span><span class="dot">●</span>
     <span>Season 1</span><span class="dot">●</span>
     <span>R5/10 Complete</span><span class="dot">●</span>
@@ -412,7 +412,7 @@
     <span>Fuji · Daytona · Le Mans · Spa · Monza</span><span class="dot">●</span>
     <span>LMDh &amp; Group 1 Prototypes</span><span class="dot">●</span>
     <span>50 Min · Pole + FL Bonus</span><span class="dot">●</span>
-    <span>Next: Barcelona · Date TBD</span><span class="dot">●</span>
+    <span>Next: Barcelona · Jul 20</span><span class="dot">●</span>
   </div>
 </div>
 
@@ -453,9 +453,9 @@
         <span class="callout-hl">Ncardw11</span> (73) with five rounds to go. Admin: <span class="callout-hl">Pawl</span>.
       </p>
       <p class="callout-flag">
-        ⚠ Round 1 (Fuji, June 15) results were never posted to the league in full — the points already count toward
-        the standings below, but the official finishing order was lost. The R1 column shown is reconstructed from
-        point-total math (see the note under Championship Standings), not an official results post.
+        Round 1 (Fuji, June 15) results were never posted to Discord in full — but every driver's points are confirmed
+        via the league's official <a href="https://hairpin.vercel.app/torneos" style="color:inherit;text-decoration:underline;">tournament tracking app</a>,
+        which stores the full round-by-round breakdown. Standings below reflect that source.
       </p>
     </div>
   </section>
@@ -508,20 +508,18 @@
           <tr class="round-done"><td class="round-num">R3</td><td class="date-col">Jun 29</td><td class="track-name">Le Mans</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
           <tr class="round-done"><td class="round-num">R4</td><td class="date-col">Jul 6</td><td class="track-name">Spa-Francorchamps</td><td class="date-col">Vintage</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
           <tr class="round-done"><td class="round-num">R5</td><td class="date-col">Jul 13</td><td class="track-name">Monza (w/ chicane)</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
-          <tr class="round-next"><td class="round-num">R6</td><td class="date-col">Aug 20</td><td class="track-name">Barcelona</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-next">Next</span></td></tr>
-          <tr><td class="round-num">R7</td><td class="date-col">Aug 27</td><td class="track-name">Interlagos</td><td class="date-col">Vintage</td><td class="date-col"><span class="status-tbd">Scheduled</span></td></tr>
-          <tr><td class="round-num">R8</td><td class="date-col">Aug 3*</td><td class="track-name">Deep Forest Raceway</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-tbd">Date TBD</span></td></tr>
-          <tr><td class="round-num">R9</td><td class="date-col">Aug 10*</td><td class="track-name">Nürburgring GP</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-tbd">Date TBD</span></td></tr>
-          <tr><td class="round-num">R10</td><td class="date-col">Aug 17*</td><td class="track-name">Yas Marina</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-tbd">Date TBD</span></td></tr>
+          <tr class="round-next"><td class="round-num">R6</td><td class="date-col">Jul 20</td><td class="track-name">Barcelona</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-next">Next</span></td></tr>
+          <tr><td class="round-num">R7</td><td class="date-col">Jul 27</td><td class="track-name">Interlagos</td><td class="date-col">Vintage</td><td class="date-col"><span class="status-tbd">Scheduled</span></td></tr>
+          <tr><td class="round-num">R8</td><td class="date-col">Aug 3</td><td class="track-name">Deep Forest Raceway</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-tbd">Scheduled</span></td></tr>
+          <tr><td class="round-num">R9</td><td class="date-col">Aug 10</td><td class="track-name">Nürburgring GP</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-tbd">Scheduled</span></td></tr>
+          <tr><td class="round-num">R10</td><td class="date-col">Aug 17</td><td class="track-name">Yas Marina</td><td class="date-col">Primary Gr1</td><td class="date-col"><span class="status-tbd">Scheduled</span></td></tr>
         </tbody>
       </table>
     </div>
     <p class="rounds-note">
-      * The official season calendar graphic lists Rounds 8–10 on dates (8/3, 8/10, 8/17) that fall <em>before</em>
-      Rounds 6–7 (8/20, 8/27) — almost certainly a typo in the graphic itself (most likely meant to read September,
-      continuing the weekly Monday cadence: 8/20 → 8/27 → 9/3 → 9/10 → 9/17). This was flagged live in <strong>#gr1-chat</strong>
-      on 7/16/26 and the organizer confirmed the next race is <strong>Monday, August 20 at Barcelona</strong>, but never
-      corrected the graphic or confirmed the R8–R10 dates directly — treat those three as unconfirmed until Pawl posts an update.
+      The season runs ten straight weekly Mondays with no break — Jun 15 through Aug 17 — confirmed against the
+      league's tracking app (season start 6/15/2026, end 8/17/2026). An earlier version of this page misread a
+      Discord discussion as implying an August/September gap; there isn't one.
     </p>
   </section>
 
@@ -531,7 +529,7 @@
       <div class="section-num">04</div>
       <h2>Championship Standings</h2>
     </div>
-    <p class="reveal section-intro tight">After 5 of 10 rounds. Pole and fastest-lap bonus points included. <span class="r1-col" style="font-style:normal;">R1</span> column is reconstructed — see note below.</p>
+    <p class="reveal section-intro tight">After 5 of 10 rounds. Pole and fastest-lap bonus points included. Full round-by-round data confirmed via the league's <a href="https://hairpin.vercel.app/torneos" style="color:var(--accent);">tournament tracking app</a>.</p>
     <div class="reveal table-scroll">
       <table class="standings-table">
         <thead>
@@ -567,12 +565,10 @@
     </div>
     <p class="pts-fl reveal">Fastest laps / poles: R2 Speedysully (pole + FL) · R3 CtillVR (pole + FL) · R4 SnakePlissken (FL, 2:04.489) · R5 iCrazy (pole + FL, 1:36.290)</p>
     <p class="rounds-note">
-      <strong>On the R1 column:</strong> no official Round 1 results post exists in Discord — the channel's history jumps straight
-      from a "points didn't calculate right" apology to Round 2. The R1 values above are reconstructed by subtracting each driver's
-      known R2 score from their announced post-R2 cumulative total. That reconstruction independently reproduces two details
-      confirmed elsewhere in chat (PeekabooRacing's pole bonus, CtillVR's fastest-lap bonus) and every single driver's R1–R5 total
-      matches their officially announced cumulative points exactly — so it's a high-confidence reconstruction, but still an inference,
-      not an official record. The implied R1 winner (rollinsmoke, highest reconstructed score) was never named in any Discord post.
+      <strong>On Round 1:</strong> no official Round 1 results post ever went up in Discord — the standings channel's history jumps
+      straight from a "points didn't calculate right" apology to Round 2. The R1 column above is pulled from the league's official
+      tournament tracking app, which confirms <strong>rollinsmoke won Round 1</strong> at Fuji, with PeekabooRacing 2nd (pole bonus)
+      and CtillVR 3rd (fastest lap bonus) — a result that was never posted anywhere in Discord itself.
     </p>
   </section>
 
@@ -625,7 +621,7 @@
         </ul>
       </div>
     </div>
-    <p class="rounds-note">The "Group 1 Cars" tier is listed on the official car-list graphic as reference/legal Group 1 prototypes; it's unconfirmed whether these are actually raced as an alternate to the Primary tier or shown for classification purposes only.</p>
+    <p class="rounds-note">The "Group 1 Cars" tier is listed on the official car-list graphic as reference/legal Group 1 prototypes, but per the league's official car-history log, no driver has actually raced one through Round 5 — every start has come in a Primary or Vintage car.</p>
   </section>
 
   <!-- 06: POINTS SYSTEM -->
@@ -634,7 +630,7 @@
       <div class="section-num">06</div>
       <h2>Points System</h2>
     </div>
-    <p class="reveal section-intro tight">No official scoring table has been posted — this is reverse-engineered from five rounds of results and confirmed against organizer Pawl's own point breakdowns in chat. Treat it as observed, not official.</p>
+    <p class="reveal section-intro tight">No formal scoring table has been posted — this scale is derived from five rounds of official results and matches every driver's point total exactly, so treat it as accurate, if not a published rule.</p>
     <div class="reveal table-scroll">
       <table class="pts-table">
         <thead>
