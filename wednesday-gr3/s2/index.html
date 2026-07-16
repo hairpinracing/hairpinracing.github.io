@@ -417,6 +417,7 @@
     .schedule-table .date-col { display: none; }
     .schedule-table thead th:nth-child(2) { display: none; }
     .pts-table th:nth-child(n+10), .pts-table td:nth-child(n+10) { display: none; }
+    .standings-table th:nth-child(n+3):nth-child(-n+10), .standings-table td:nth-child(n+3):nth-child(-n+10) { display: none; }
   }
   @media (max-width: 480px) {
     .wrap { padding: 0 16px; }
@@ -437,18 +438,18 @@
   <div class="marquee-track">
     <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
     <span>Season 2</span><span class="dot">●</span>
-    <span>Season Underway</span><span class="dot">●</span>
-    <span>R1 Complete · TVDV Wins</span><span class="dot">●</span>
-    <span>Alsace Village · Blue Moon Bay · Fuji</span><span class="dot">●</span>
-    <span>Ferrari 296 · Ford GT · Genesis X</span><span class="dot">●</span>
+    <span>R8/9 Complete</span><span class="dot">●</span>
+    <span>TVDV Leads · 178 pts</span><span class="dot">●</span>
+    <span>R9 Raced Jul 15 · Results Pending</span><span class="dot">●</span>
+    <span>Kyoto Driving Park · GT-R Nismo</span><span class="dot">●</span>
     <span>50 Min · BOP · 4x–8x Wear</span><span class="dot">●</span>
     <span>S1 Champion: Barry</span><span class="dot">●</span>
     <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
     <span>Season 2</span><span class="dot">●</span>
-    <span>Season Underway</span><span class="dot">●</span>
-    <span>R1 Complete · TVDV Wins</span><span class="dot">●</span>
-    <span>Alsace Village · Blue Moon Bay · Fuji</span><span class="dot">●</span>
-    <span>Ferrari 296 · Ford GT · Genesis X</span><span class="dot">●</span>
+    <span>R8/9 Complete</span><span class="dot">●</span>
+    <span>TVDV Leads · 178 pts</span><span class="dot">●</span>
+    <span>R9 Raced Jul 15 · Results Pending</span><span class="dot">●</span>
+    <span>Kyoto Driving Park · GT-R Nismo</span><span class="dot">●</span>
     <span>50 Min · BOP · 4x–8x Wear</span><span class="dot">●</span>
     <span>S1 Champion: Barry</span><span class="dot">●</span>
   </div>
@@ -462,7 +463,7 @@
   </nav>
 
   <header>
-    <div class="status-badge">● Season Underway · R1 Complete</div>
+    <div class="status-badge">● Season Underway · R8/9 Complete</div>
     <h1>
       <span class="word w1"><span>Wednesday</span></span><br />
       <span class="word w2"><span>Gr.3.</span></span>
@@ -470,7 +471,7 @@
     <div class="subtitle"><span>BOP Series · Season 2</span></div>
     <div class="meta">
       <div><div class="k">Season</div><div class="v">2</div></div>
-      <div><div class="k">R1 Winner</div><div class="v">TVDV</div></div>
+      <div><div class="k">Leader</div><div class="v">TVDV</div></div>
       <div><div class="k">Race Length</div><div class="v">50 Min</div></div>
       <div><div class="k">Status</div><div class="v v-live">Ongoing</div></div>
     </div>
@@ -483,12 +484,13 @@
       <h2>Season 2</h2>
     </div>
     <div class="callout-inner reveal">
-      <span class="callout-tag">● Season 2 — Race 1 Complete · April 29, 2026</span>
-      <p>The season is on.<br/><span class="callout-hl">TVDV</span> leads after Race 1 at Alsace Village.</p>
+      <span class="callout-tag">● Season 2 — 8 of 9 Races Complete · Through July 8, 2026</span>
+      <p>Down to the wire.<br/><span class="callout-hl">TVDV</span> leads with 178 points after a dominant R8 win at Trial Mountain.</p>
       <p class="callout-sub">
-        12 drivers took the start at Alsace Village with the Ferrari 296 GT3. TVDV took a dominant victory,
-        with D. Earnhardt and Jett completing the podium. Boltus set the fastest lap (1:52.885) in P5.
-        8 rounds to go — <span class="callout-hl">anything can still happen.</span>
+        TVDV took P1 and fastest lap at Trial Mountain to extend the points lead over <span class="callout-hl">Barry</span> (158),
+        with Jett (138) and Boltus (137) still mathematically alive. Race 9 — the season finale at Kyoto Driving Park
+        in the GT-R Nismo GT3 — ran the night of <span class="callout-hl">July 15, 2026</span>, but official results
+        haven't been posted to the league yet. Standings below reflect Races 1–8.
       </p>
     </div>
     <a class="s1-callout reveal" href="../">
@@ -547,14 +549,14 @@
         </thead>
         <tbody>
           <tr class="round-done"><td class="round-num">R1</td><td class="date-col">Apr 29</td><td class="track-name">Alsace Village</td><td class="date-col">Ferrari 296</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
-          <tr class="round-next"><td class="round-num">R2</td><td class="date-col">May 6</td><td class="track-name">Blue Moon Bay</td><td class="date-col">Ford GT</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-upcoming">Next</span></td></tr>
-          <tr><td class="round-num">R3</td><td class="date-col">May 13</td><td class="track-name">Fuji International</td><td class="date-col">Genesis X</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
-          <tr><td class="round-num">R4</td><td class="date-col">May 20</td><td class="track-name">Saint Croix Circuit</td><td class="date-col">BMW M6 Endurance</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
-          <tr><td class="round-num">R5</td><td class="date-col">May 27</td><td class="track-name">Laguna Seca</td><td class="date-col">Dodge Viper</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
-          <tr><td class="round-num">R6</td><td class="date-col">Jun 4</td><td class="track-name">Tsukuba Circuit</td><td class="date-col">Lexus RC F</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
-          <tr><td class="round-num">R7</td><td class="date-col">Jun 11</td><td class="track-name">Monza</td><td class="date-col">Aston Martin Vantage</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
-          <tr><td class="round-num">R8</td><td class="date-col">Jun 18</td><td class="track-name">Trial Mountain</td><td class="date-col">Ford Mustang</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
-          <tr><td class="round-num">R9</td><td class="date-col">Jun 25</td><td class="track-name">Kyoto Driving Park</td><td class="date-col">GT-R Nismo</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col">Random</td></tr>
+          <tr class="round-done"><td class="round-num">R2</td><td class="date-col">May 6</td><td class="track-name">Blue Moon Bay</td><td class="date-col">Ford GT</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-done"><td class="round-num">R3</td><td class="date-col">May 13</td><td class="track-name">Fuji International</td><td class="date-col">Genesis X</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-done"><td class="round-num">R4</td><td class="date-col">Jun 11</td><td class="track-name">Saint Croix Circuit</td><td class="date-col">BMW M6 Endurance</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-done"><td class="round-num">R5</td><td class="date-col">Jun 18</td><td class="track-name">Laguna Seca</td><td class="date-col">Dodge Viper</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-done"><td class="round-num">R6</td><td class="date-col">Jun 24</td><td class="track-name">Tsukuba Circuit</td><td class="date-col">Lexus RC F</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-done"><td class="round-num">R7</td><td class="date-col">Jul 1</td><td class="track-name">Monza</td><td class="date-col">Aston Martin Vantage</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-done"><td class="round-num">R8</td><td class="date-col">Jul 8</td><td class="track-name">Trial Mountain</td><td class="date-col">Ford Mustang</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
+          <tr class="round-next"><td class="round-num">R9</td><td class="date-col">Jul 15</td><td class="track-name">Kyoto Driving Park</td><td class="date-col">GT-R Nismo</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-upcoming">Results Pending</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -566,7 +568,7 @@
       <div class="section-num">04</div>
       <h2>Championship Standings</h2>
     </div>
-    <p class="reveal section-intro tight">After 1 of 9 rounds. Fastest lap bonus included. Points scored only by race starters.</p>
+    <p class="reveal section-intro tight">After 8 of 9 rounds. Fastest lap bonus included. Points scored only by race starters. R9 (Kyoto, Jul 15) has been raced but results aren't posted yet — not reflected below.</p>
     <div class="reveal table-scroll">
       <table class="standings-table">
         <thead>
@@ -574,86 +576,38 @@
             <th scope="col">Pos</th>
             <th scope="col">Driver</th>
             <th scope="col">R1</th>
+            <th scope="col">R2</th>
+            <th scope="col">R3</th>
+            <th scope="col">R4</th>
+            <th scope="col">R5</th>
+            <th scope="col">R6</th>
+            <th scope="col">R7</th>
+            <th scope="col">R8</th>
             <th scope="col">Total</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><span class="pos-num">1</span></td>
-            <td>TVDV</td>
-            <td>25</td>
-            <td>25</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">2</span></td>
-            <td>D. Earnhardt</td>
-            <td>22</td>
-            <td>22</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">3</span></td>
-            <td>Jett <span style="font-family:var(--mono);font-size:10px;color:var(--ink-dim)">(Weaksauce412)</span></td>
-            <td>20</td>
-            <td>20</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">4</span></td>
-            <td>Barry</td>
-            <td>18</td>
-            <td>18</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">5</span></td>
-            <td>Boltus <span class="fl-badge">⚡ FL</span></td>
-            <td>17</td>
-            <td>17</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">6</span></td>
-            <td>RollingSmoke</td>
-            <td>14</td>
-            <td>14</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">7</span></td>
-            <td>Ctill-VR</td>
-            <td>12</td>
-            <td>12</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">8</span></td>
-            <td>Ncardw11</td>
-            <td>10</td>
-            <td>10</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">9</span></td>
-            <td>PeekabooRacing</td>
-            <td>8</td>
-            <td>8</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">10</span></td>
-            <td>Shake&amp;Bake</td>
-            <td>7</td>
-            <td>7</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">11</span></td>
-            <td>Dark Delacroix</td>
-            <td>6</td>
-            <td>6</td>
-          </tr>
-          <tr>
-            <td><span class="pos-num">12</span></td>
-            <td>TheEliteWeasel61</td>
-            <td>5</td>
-            <td>5</td>
-          </tr>
+          <tr><td><span class="pos-num">1</span></td><td>TVDV</td><td>25</td><td>22</td><td>20</td><td>20</td><td>20</td><td>25</td><td>20</td><td>26 <span class="fl-badge">⚡ FL</span></td><td>178</td></tr>
+          <tr><td><span class="pos-num">2</span></td><td>Barry</td><td>18</td><td>20</td><td>18</td><td>19</td><td>14</td><td>22</td><td>25</td><td>22</td><td>158</td></tr>
+          <tr><td><span class="pos-num">3</span></td><td>Jett</td><td>20</td><td>19</td><td>26</td><td>22</td><td>19</td><td>—</td><td>18</td><td>14</td><td>138</td></tr>
+          <tr><td><span class="pos-num">4</span></td><td>Boltus</td><td>17</td><td>14</td><td>14</td><td>25</td><td>22</td><td>13</td><td>12</td><td>20</td><td>137</td></tr>
+          <tr><td><span class="pos-num">5</span></td><td>Ncardw11</td><td>10</td><td>16</td><td>0</td><td>14</td><td>10</td><td>16</td><td>14</td><td>16</td><td>96</td></tr>
+          <tr><td><span class="pos-num">6</span></td><td>Ctill-VR</td><td>12</td><td>8</td><td>8</td><td>10</td><td>16</td><td>20</td><td>16</td><td>—</td><td>90</td></tr>
+          <tr><td><span class="pos-num">7</span></td><td>RollingSmoke</td><td>14</td><td>10</td><td>12</td><td>0</td><td>—</td><td>18</td><td>10</td><td>—</td><td>64</td></tr>
+          <tr><td><span class="pos-num">8</span></td><td>PeekabooRacing</td><td>8</td><td>6</td><td>—</td><td>—</td><td>12</td><td>—</td><td>23</td><td>12</td><td>61</td></tr>
+          <tr><td><span class="pos-num">9</span></td><td>Pawl</td><td>—</td><td>7</td><td>16</td><td>12</td><td>8</td><td>8</td><td>6</td><td>—</td><td>57</td></tr>
+          <tr><td><span class="pos-num">10</span></td><td>Dark Delacroix</td><td>6</td><td>12</td><td>—</td><td>16</td><td>—</td><td>—</td><td>—</td><td>18</td><td>52</td></tr>
+          <tr><td><span class="pos-num">11</span></td><td>D. Earnhardt</td><td>22</td><td>—</td><td>—</td><td>—</td><td>25</td><td>—</td><td>—</td><td>—</td><td>47</td></tr>
+          <tr><td><span class="pos-num">12</span></td><td>iCrazy</td><td>—</td><td>25</td><td>22</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>47</td></tr>
+          <tr><td><span class="pos-num">13</span></td><td>Xelerate</td><td>—</td><td>—</td><td>—</td><td>0</td><td>6</td><td>—</td><td>8</td><td>—</td><td>14</td></tr>
+          <tr><td><span class="pos-num">14</span></td><td>Shake&amp;Bake</td><td>5</td><td>5</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
+          <tr><td><span class="pos-num">15</span></td><td>Leadfoot GT</td><td>—</td><td>—</td><td>10</td><td>0</td><td>0</td><td>0</td><td>—</td><td>0</td><td>10</td></tr>
+          <tr><td><span class="pos-num">16</span></td><td>Focalenergy</td><td>—</td><td>—</td><td>—</td><td>—</td><td>7</td><td>—</td><td>—</td><td>—</td><td>7</td></tr>
+          <tr><td><span class="pos-num">17</span></td><td>TheEliteWeasel61</td><td>5</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="pts-fl reveal">R1 fastest lap: Boltus · 1:52.885 · Alsace Village · Apr 29, 2026</p>
+    <p class="pts-fl reveal">Fastest laps: R1 Boltus (1:52.885) · R2 Jett (1:08.485) · R3 Jett (1:41.571) · R4 Barry (2:10.111) · R5 Jett (1:23.492) · R6 Boltus (2:00.257) · R7 PeekabooRacing (1:49.453) · R8 TVDV (1:52.894)</p>
   </section>
 
   <!-- 05: THE CARS -->
@@ -857,7 +811,7 @@
 
 <footer>
   <div>Hairpin Racing · Wednesday Night Gr.3 BOP</div>
-  <div class="sig">Season 2 · R1/9 Complete · TVDV Leads</div>
+  <div class="sig">Season 2 · R8/9 Complete · TVDV Leads · R9 Results Pending</div>
 </footer>
 
 <button class="theme-btn" onclick="(function(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('hairpin-theme',t);})()">Toggle Theme</button>
