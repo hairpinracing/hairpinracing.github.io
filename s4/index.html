@@ -848,6 +848,89 @@
     50% { opacity: 0.55; }
   }
 
+  /* Round by Round — chart, moments, rounds table */
+  .chart-wrap { border: 1px solid var(--line); background: var(--bg-2); padding: 20px 16px 12px; margin-bottom: 32px; }
+  .chart-label { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 12px; }
+  .chart-legend { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
+  .legend-line { width: 20px; height: 2px; flex-shrink: 0; }
+  .legend-note { font-family: var(--body); font-size: 10px; font-style: italic; color: oklch(64% 0.005 97 / 50%); margin-left: auto; }
+  .sub-head { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 16px; }
+
+  .moment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 32px; }
+  .moment-card { background: var(--bg-2); padding: 26px 24px; position: relative; overflow: hidden; }
+  .moment-round-bg { position: absolute; top: 8px; right: 14px; font-family: var(--display); font-size: 64px; letter-spacing: -0.02em; line-height: 1; color: var(--line); pointer-events: none; z-index: 0; user-select: none; }
+  .moment-content { position: relative; z-index: 1; }
+  .moment-tag { font-family: var(--body); font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .moment-title { font-family: var(--display); font-size: clamp(17px, 2vw, 22px); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 8px; line-height: 1.05; }
+  .moment-stat { font-family: var(--mono); font-size: 11px; color: var(--accent-2); letter-spacing: 0.06em; margin-bottom: 10px; }
+  .moment-desc { font-family: var(--body); font-size: 13px; color: var(--ink-dim); line-height: 1.65; max-width: 34ch; }
+
+  .rounds-table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); font-size: 13px; }
+  .rounds-table th { font-family: var(--body); font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: center; background: var(--bg); }
+  .rounds-table th:first-child { text-align: left; }
+  .rounds-table td { font-family: var(--mono); font-size: 13px; padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: center; color: var(--ink-dim); }
+  .rounds-table tr:last-child td { border-bottom: none; }
+  .rounds-table .team-col { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); text-align: left; }
+  .rounds-table .rt-win { color: var(--accent); font-weight: 700; }
+  .rounds-table .rt-crisis { color: var(--accent-2); font-weight: 700; }
+  .rounds-table .rt-total { color: var(--ink); font-weight: 700; }
+  .rounds-table .winner-row td { background: oklch(86% 0.175 97 / 5%); font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+  .rounds-note { font-family: var(--body); font-size: 11px; color: oklch(64% 0.005 97 / 80%); margin-top: 10px; letter-spacing: 0.02em; line-height: 1.6; }
+
+  /* Chart line draw-in animation */
+  .chart-line { stroke-dasharray: 9999; stroke-dashoffset: 9999; animation: drawLine 1.6s var(--ease-out) both; animation-play-state: paused; }
+  .chart-line-a { animation-delay: 0.3s; }
+  .chart-line-b { animation-delay: 0.5s; }
+  .chart-line-c { animation-delay: 0.7s; }
+  .chart-line-d { animation-delay: 0.9s; }
+  @keyframes drawLine { from { stroke-dashoffset: 9999; } to { stroke-dashoffset: 0; } }
+  .chart-wrap.in .chart-line { animation-play-state: running; }
+  .chart-grid { opacity: 0; animation: fadeIn2 0.5s ease-out forwards; animation-play-state: paused; }
+  .chart-axis { opacity: 0; animation: fadeIn2 0.4s ease-out forwards; animation-play-state: paused; }
+  .chart-wrap.in .chart-grid, .chart-wrap.in .chart-axis { animation-play-state: running; }
+  @keyframes fadeIn2 { to { opacity: 1; } }
+  .chart-circle { opacity: 0; transform-box: fill-box; transform-origin: center; animation: popCircle 0.25s var(--ease-out) forwards; animation-play-state: paused; }
+  .chart-wrap.in .chart-circle { animation-play-state: running; }
+  @keyframes popCircle { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+  .chart-end-label { opacity: 0; animation: fadeIn2 0.35s ease-out forwards; animation-play-state: paused; }
+  .lead-label { fill: var(--accent-2); opacity: 0; animation: fadeIn2 0.35s ease-out forwards; animation-play-state: paused; }
+  .lead-vline { stroke: var(--accent-2); opacity: 0; animation: fadeIn2 0.4s ease-out forwards; animation-play-state: paused; }
+  .chart-wrap.in .lead-vline, .chart-wrap.in .lead-label, .chart-wrap.in .chart-end-label { animation-play-state: running; }
+  @media (prefers-reduced-motion: reduce) {
+    .chart-line { stroke-dashoffset: 0 !important; animation: none; }
+    .chart-grid, .chart-axis, .chart-circle, .lead-vline, .lead-label, .chart-end-label { opacity: 1 !important; transform: none !important; animation: none; }
+  }
+
+  /* By The Numbers */
+  .analytics-facts { list-style: none; padding: 0; margin: 0 0 40px; }
+  .analytics-facts li { display: flex; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .analytics-facts li:first-child { padding-top: 0; }
+  .fact-num { font-family: var(--display); font-size: 2.2rem; line-height: 1; color: var(--accent); min-width: 72px; flex-shrink: 0; }
+  .fact-text { font-size: 0.88rem; line-height: 1.6; color: var(--ink-dim); }
+  .fact-text strong { color: var(--ink); font-weight: 600; }
+  .analytics-sub-head { font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-dim); margin-bottom: 14px; }
+  .heat-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 16px; }
+  .heat-table { border-collapse: collapse; font-family: var(--mono); font-size: 0.72rem; white-space: nowrap; min-width: 580px; }
+  .heat-table th { padding: 6px 8px; text-align: center; color: var(--ink-dim); font-weight: 400; font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid var(--line); }
+  .heat-table th.h-driver { text-align: left; min-width: 130px; }
+  .heat-table td { padding: 5px 8px; text-align: center; border: 1px solid oklch(18% 0.005 97 / 60%); }
+  .heat-table td.h-name { text-align: left; padding: 5px 14px 5px 4px; color: var(--ink-dim); }
+  .pos-1 { background: oklch(48% 0.17 97); color: oklch(12% 0.01 97); font-weight: 700; }
+  .pos-2 { background: oklch(38% 0.12 97); color: oklch(88% 0.01 97); font-weight: 600; }
+  .pos-3 { background: oklch(30% 0.09 97); color: oklch(80% 0.02 97); }
+  .pos-4, .pos-5 { background: oklch(16% 0.005 97); color: var(--ink-dim); }
+  .pos-6, .pos-7, .pos-8 { background: oklch(13% 0.003 97); color: oklch(40% 0.01 97); }
+  .heat-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+  .heat-legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 0.63rem; color: var(--ink-dim); }
+  .heat-swatch { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+  .wins-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.78rem; margin-bottom: 40px; }
+  .wins-table th { padding: 6px 10px; text-align: left; color: var(--ink-dim); font-weight: 400; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--line); }
+  .wins-table td { padding: 8px 10px; border-bottom: 1px solid oklch(18% 0.005 97 / 60%); }
+  .wins-table td.wt-round { color: var(--ink-dim); font-size: 0.72rem; }
+  .wins-table td.wt-track { color: var(--ink-dim); font-size: 0.72rem; }
+  .wins-table .is-lead { color: var(--accent); font-weight: 700; }
+
   /* Teams */
   .teams-grid {
     display: grid;
@@ -944,6 +1027,14 @@
     .settings-grid .row { grid-template-columns: 110px 1fr; }
     .flow .step { flex: 1 1 100%; border-right: none; border-bottom: 1px solid var(--line); }
     .flow .step:last-child { border-bottom: none; }
+    .moment-grid { grid-template-columns: 1fr; }
+    .moment-desc { max-width: none; }
+    .legend-note { display: none; }
+    .rounds-table { font-size: 11px; }
+    .rounds-table td, .rounds-table th { padding: 8px 8px; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .chart-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .chart-wrap svg { min-width: 600px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1353,6 +1444,324 @@
         <tr><td class="race">16</td><td><span class="track">Ctill-VR</span></td><td class="dim">32</td></tr>
       </tbody>
     </table>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">10</span>
+      <h2>Round by Round</h2>
+    </div>
+
+    <div class="chart-wrap reveal">
+      <div class="chart-label">Championship Trajectory · Top 4 Teams · Cumulative Points</div>
+      <svg width="100%" viewBox="0 0 950 210" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
+        <line class="chart-grid" x1="45" y1="155" x2="910" y2="155" style="stroke:var(--line);animation-delay:0s"    stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="125" x2="910" y2="125" style="stroke:var(--line);animation-delay:0.08s" stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="95"  x2="910" y2="95"  style="stroke:var(--line);animation-delay:0.16s" stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="65"  x2="910" y2="65"  style="stroke:var(--line);animation-delay:0.24s" stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="35"  x2="910" y2="35"  style="stroke:var(--line);animation-delay:0.30s" stroke-width="0.5" stroke-dasharray="4,6"/>
+        <line class="chart-grid" x1="45" y1="185" x2="910" y2="185" style="stroke:var(--line);animation-delay:0s"    stroke-width="1"/>
+        <text class="chart-axis" x="38" y="159" text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0s">50</text>
+        <text class="chart-axis" x="38" y="129" text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.08s">100</text>
+        <text class="chart-axis" x="38" y="99"  text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.16s">150</text>
+        <text class="chart-axis" x="38" y="69"  text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.24s">200</text>
+        <text class="chart-axis" x="38" y="39"  text-anchor="end" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.30s">250</text>
+        <text class="chart-axis" x="60"  y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0s">R1</text>
+        <text class="chart-axis" x="161" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.05s">R2</text>
+        <text class="chart-axis" x="263" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.10s">R3</text>
+        <text class="chart-axis" x="364" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.15s">R4</text>
+        <text class="chart-axis" x="465" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.20s">R5</text>
+        <text class="chart-axis" x="566" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.25s">R6</text>
+        <text class="chart-axis" x="667" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.30s">R7</text>
+        <text class="chart-axis" x="769" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--ink-dim);animation-delay:0.35s">R8</text>
+        <text class="chart-axis" x="870" y="200" text-anchor="middle" style="font-family:'Azeret Mono',monospace;font-size:11px;fill:var(--accent);font-weight:700;animation-delay:0.40s">R9</text>
+
+        <line class="lead-vline" x1="364" y1="20" x2="364" y2="185" stroke-width="1" stroke-dasharray="3,5" style="animation-delay:2.6s"/>
+        <text class="lead-label" x="364" y="17" text-anchor="middle" style="font-family:'Archivo',sans-serif;font-size:9px;letter-spacing:0.08em;animation-delay:2.75s">911 LEADS</text>
+        <line class="lead-vline" x1="870" y1="20" x2="870" y2="185" stroke-width="1" stroke-dasharray="3,5" style="animation-delay:3.1s"/>
+        <text class="lead-label" x="870" y="17" text-anchor="middle" style="font-family:'Archivo',sans-serif;font-size:9px;letter-spacing:0.08em;animation-delay:3.25s">TPB LEADS</text>
+
+        <!-- The Lap Dancers -->
+        <polyline class="chart-line chart-line-d" points="60,170 161,157 263,151 364,141 465,123 566,109 667,103 769,91 870,69"
+          style="fill:none;stroke:oklch(48% 0.004 97)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="60"  cy="170" r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:0.90s"/>
+        <circle class="chart-circle" cx="161" cy="157" r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:1.05s"/>
+        <circle class="chart-circle" cx="263" cy="151" r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:1.20s"/>
+        <circle class="chart-circle" cx="364" cy="141" r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:1.35s"/>
+        <circle class="chart-circle" cx="465" cy="123" r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:1.50s"/>
+        <circle class="chart-circle" cx="566" cy="109" r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:1.65s"/>
+        <circle class="chart-circle" cx="667" cy="103" r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:1.80s"/>
+        <circle class="chart-circle" cx="769" cy="91"  r="2.5" style="fill:oklch(48% 0.004 97);animation-delay:1.95s"/>
+        <circle class="chart-circle" cx="870" cy="69"  r="3"   style="fill:oklch(48% 0.004 97);animation-delay:2.10s"/>
+
+        <!-- 911 Operators -->
+        <polyline class="chart-line chart-line-c" points="60,171 161,156 263,138 364,111 465,90 566,74 667,59 769,44 870,42"
+          style="fill:none;stroke:oklch(78% 0.006 97)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="60"  cy="171" r="3" style="fill:oklch(78% 0.006 97);animation-delay:0.75s"/>
+        <circle class="chart-circle" cx="161" cy="156" r="3" style="fill:oklch(78% 0.006 97);animation-delay:0.90s"/>
+        <circle class="chart-circle" cx="263" cy="138" r="3" style="fill:oklch(78% 0.006 97);animation-delay:1.05s"/>
+        <circle class="chart-circle" cx="364" cy="111" r="3.5" style="fill:oklch(78% 0.006 97);animation-delay:1.20s"/>
+        <circle class="chart-circle" cx="465" cy="90"  r="3" style="fill:oklch(78% 0.006 97);animation-delay:1.35s"/>
+        <circle class="chart-circle" cx="566" cy="74"  r="3" style="fill:oklch(78% 0.006 97);animation-delay:1.50s"/>
+        <circle class="chart-circle" cx="667" cy="59"  r="3" style="fill:oklch(78% 0.006 97);animation-delay:1.65s"/>
+        <circle class="chart-circle" cx="769" cy="44"  r="3" style="fill:oklch(78% 0.006 97);animation-delay:1.80s"/>
+        <!-- 911's R9 crisis dot -->
+        <circle class="chart-circle" cx="870" cy="42"  r="5" style="fill:none;stroke:var(--accent-2);stroke-width:1.5;animation-delay:1.95s"/>
+        <circle class="chart-circle" cx="870" cy="42"  r="3" style="fill:oklch(78% 0.006 97);animation-delay:1.95s"/>
+
+        <!-- Heavy Sandbags -->
+        <polyline class="chart-line chart-line-b" points="60,164 161,150 263,132 364,118 465,99 566,82 667,65 769,52 870,37"
+          style="fill:none;stroke:var(--accent-2)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="60"  cy="164" r="3.5" style="fill:var(--accent-2);animation-delay:0.55s"/>
+        <circle class="chart-circle" cx="161" cy="150" r="3.5" style="fill:var(--accent-2);animation-delay:0.70s"/>
+        <circle class="chart-circle" cx="263" cy="132" r="3.5" style="fill:var(--accent-2);animation-delay:0.85s"/>
+        <circle class="chart-circle" cx="364" cy="118" r="3.5" style="fill:var(--accent-2);animation-delay:1.00s"/>
+        <circle class="chart-circle" cx="465" cy="99"  r="3.5" style="fill:var(--accent-2);animation-delay:1.15s"/>
+        <circle class="chart-circle" cx="566" cy="82"  r="3.5" style="fill:var(--accent-2);animation-delay:1.30s"/>
+        <circle class="chart-circle" cx="667" cy="65"  r="3.5" style="fill:var(--accent-2);animation-delay:1.45s"/>
+        <circle class="chart-circle" cx="769" cy="52"  r="3.5" style="fill:var(--accent-2);animation-delay:1.60s"/>
+        <circle class="chart-circle" cx="870" cy="37"  r="4"   style="fill:var(--accent-2);animation-delay:1.75s"/>
+
+        <!-- Tail Pipes and Boners (current leader) -->
+        <polyline class="chart-line chart-line-a" points="60,174 161,154 263,133 364,119 465,98 566,79 667,71 769,54 870,36"
+          style="fill:none;stroke:var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle class="chart-circle" cx="60"  cy="174" r="3.5" style="fill:var(--accent);animation-delay:0.35s"/>
+        <circle class="chart-circle" cx="161" cy="154" r="3.5" style="fill:var(--accent);animation-delay:0.50s"/>
+        <circle class="chart-circle" cx="263" cy="133" r="3.5" style="fill:var(--accent);animation-delay:0.65s"/>
+        <circle class="chart-circle" cx="364" cy="119" r="3.5" style="fill:var(--accent);animation-delay:0.80s"/>
+        <circle class="chart-circle" cx="465" cy="98"  r="3.5" style="fill:var(--accent);animation-delay:0.95s"/>
+        <circle class="chart-circle" cx="566" cy="79"  r="3.5" style="fill:var(--accent);animation-delay:1.10s"/>
+        <circle class="chart-circle" cx="667" cy="71"  r="3.5" style="fill:var(--accent);animation-delay:1.25s"/>
+        <circle class="chart-circle" cx="769" cy="54"  r="3.5" style="fill:var(--accent);animation-delay:1.40s"/>
+        <circle class="chart-circle" cx="870" cy="36"  r="6"   style="fill:none;stroke:var(--accent);stroke-width:1.5;animation-delay:1.55s"/>
+        <circle class="chart-circle" cx="870" cy="36"  r="4"   style="fill:var(--accent);animation-delay:1.55s"/>
+
+        <text class="chart-end-label" x="880" y="33"  style="font-family:'Archivo',sans-serif;font-size:10px;font-weight:700;fill:var(--accent);animation-delay:3.4s">TPB</text>
+        <text class="chart-end-label" x="880" y="44"  style="font-family:'Azeret Mono',monospace;font-size:9px;font-weight:700;fill:var(--accent);animation-delay:3.5s">248</text>
+        <text class="chart-end-label" x="880" y="59"  style="font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;fill:var(--accent-2);animation-delay:3.45s">HS</text>
+        <text class="chart-end-label" x="880" y="70"  style="font-family:'Azeret Mono',monospace;font-size:8px;fill:var(--accent-2);animation-delay:3.55s">246</text>
+        <text class="chart-end-label" x="880" y="85"  style="font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;fill:oklch(78% 0.006 97);animation-delay:3.5s">911</text>
+        <text class="chart-end-label" x="880" y="96"  style="font-family:'Azeret Mono',monospace;font-size:8px;fill:oklch(78% 0.006 97);animation-delay:3.6s">238</text>
+        <text class="chart-end-label" x="880" y="111" style="font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;fill:oklch(48% 0.004 97);animation-delay:3.55s">LD</text>
+        <text class="chart-end-label" x="880" y="122" style="font-family:'Azeret Mono',monospace;font-size:8px;fill:oklch(48% 0.004 97);animation-delay:3.65s">193</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-line" style="background:var(--accent)"></span>Tail Pipes and Boners (248)</div>
+        <div class="legend-item"><span class="legend-line" style="background:var(--accent-2)"></span>Heavy Sandbags (246)</div>
+        <div class="legend-item"><span class="legend-line" style="background:oklch(78% 0.006 97)"></span>911 Operators (238)</div>
+        <div class="legend-item"><span class="legend-line" style="background:oklch(48% 0.004 97)"></span>The Lap Dancers (193)</div>
+        <div class="legend-note">dashed = championship lead changed · R10 (finale) still to come</div>
+      </div>
+    </div>
+
+    <div class="sub-head reveal">Key Moments</div>
+    <div class="moment-grid stagger">
+      <div class="moment-card">
+        <span class="moment-round-bg">R4</span>
+        <div class="moment-content">
+          <div class="moment-tag">Statement Round</div>
+          <div class="moment-title">911's 44-Point Explosion</div>
+          <div class="moment-stat">44 pts · the season's single highest team round total</div>
+          <div class="moment-desc">Leadfoot GT won Gr4 at Fuji outright, and 911 Operators' 44-point haul launched five straight rounds atop the standings — the biggest single result of the season, by any team, in either format.</div>
+        </div>
+      </div>
+      <div class="moment-card">
+        <span class="moment-round-bg">R9</span>
+        <div class="moment-content">
+          <div class="moment-tag">Crisis</div>
+          <div class="moment-title">Sully's Streak Snaps</div>
+          <div class="moment-stat">8 straight class wins (R1–R8) · then last place, 1 pt, R9</div>
+          <div class="moment-desc">Sully won his class every single round from R1 through R8 — then posted "anyone available to fill in tonight?" hours before Brands Hatch and finished dead last in Gr4. He still leads the driver standings, but the margin has never been this thin.</div>
+        </div>
+      </div>
+      <div class="moment-card">
+        <span class="moment-round-bg">★</span>
+        <div class="moment-content">
+          <div class="moment-tag">Down To The Wire</div>
+          <div class="moment-title">A Three-Way Title Fight</div>
+          <div class="moment-stat">248 · 246 · 238 — 10 points cover 1st through 3rd</div>
+          <div class="moment-desc">The lead has changed hands twice: Heavy Sandbags led R1–R3, 911 Operators took over for five straight rounds (R4–R8), and Tail Pipes and Boners seized it in R9. All three teams are still mathematically alive heading into the finale.</div>
+        </div>
+      </div>
+      <div class="moment-card">
+        <span class="moment-round-bg">R9</span>
+        <div class="moment-content">
+          <div class="moment-tag">Drama</div>
+          <div class="moment-title">Leadfoot's Meltdown</div>
+          <div class="moment-stat">Qualifying mix-up → near-quit → walked back</div>
+          <div class="moment-desc">A qualifying mishap at Brands Hatch left Leadfoot GT crashed into a wall before the race even started; he posted publicly that Sully should "find a new teammate," then walked it back a day later, citing a brutal week outside the sim.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-head reveal">Team Scores by Round</div>
+    <div class="reveal table-scroll">
+      <table class="rounds-table">
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>R1</th><th>R2</th><th>R3</th><th>R4</th>
+            <th>R5</th><th>R6</th><th>R7</th><th>R8</th><th>R9</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="winner-row">
+            <td>Round Winner</td>
+            <td>HS</td><td>TPB</td><td>TPB</td><td>911</td>
+            <td>911</td><td>TPB</td><td>HS</td><td>TPB†</td><td>LD</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="team-col">Tail Pipes and Boners</td>
+            <td>18</td><td class="rt-win">34</td><td class="rt-win">34</td><td>24</td>
+            <td>35</td><td class="rt-win">32</td><td>13</td><td class="rt-win">28</td><td>30</td>
+            <td class="rt-total">248</td>
+          </tr>
+          <tr>
+            <td class="team-col">Heavy Sandbags</td>
+            <td class="rt-win">35</td><td>24</td><td>29</td><td>24</td>
+            <td>31</td><td>28</td><td class="rt-win">29</td><td>22</td><td>24</td>
+            <td class="rt-total">246</td>
+          </tr>
+          <tr>
+            <td class="team-col">911 Operators</td>
+            <td>24</td><td>25</td><td>30</td><td class="rt-win">44</td>
+            <td class="rt-win">36</td><td>26</td><td>25</td><td>25</td><td class="rt-crisis">3</td>
+            <td class="rt-total">238</td>
+          </tr>
+          <tr>
+            <td class="team-col">The Lap Dancers</td>
+            <td>25</td><td>22</td><td>10</td><td>17</td>
+            <td>30</td><td>22</td><td>10</td><td>21</td><td class="rt-win">36</td>
+            <td class="rt-total">193</td>
+          </tr>
+          <tr>
+            <td class="team-col">The Fast and the Curious</td>
+            <td>16</td><td>13</td><td>25</td><td>13</td>
+            <td>33</td><td>18</td><td>20</td><td class="rt-win">28</td><td>24</td>
+            <td class="rt-total">190</td>
+          </tr>
+          <tr>
+            <td class="team-col">The Holy Rollers</td>
+            <td>7</td><td>8</td><td>2</td><td>10</td>
+            <td>31</td><td>12</td><td>24</td><td>14</td><td>10</td>
+            <td class="rt-total">118</td>
+          </tr>
+          <tr>
+            <td class="team-col">Weaka Franksauce</td>
+            <td>11</td><td>16</td><td>6</td><td>11</td>
+            <td>28</td><td>2</td><td>17</td><td>3</td><td>13</td>
+            <td class="rt-total">107</td>
+          </tr>
+          <tr>
+            <td class="team-col">2 Girls 1 Multi-Class Cup</td>
+            <td>10</td><td>4</td><td>10</td><td>3</td>
+            <td>16</td><td>6</td><td>8</td><td>5</td><td>6</td>
+            <td class="rt-total">68</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rounds-note">† Tail Pipes and Boners and The Fast and the Curious tied at 28 pts in R8. Yellow = round winner. Red = crisis round (911 Operators' 3-point R9, the round that let Tail Pipes and Boners retake the lead). All totals reconciled against posted cumulative standings.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head reveal">
+      <span class="section-num">11</span>
+      <h2>By The Numbers</h2>
+    </div>
+
+    <ul class="analytics-facts stagger reveal">
+      <li>
+        <span class="fact-num">8/9</span>
+        <span class="fact-text"><strong>Sully won his class in 8 of the season's first 9 rounds.</strong> A streak snapped only once, in the worst possible round — R9, the last one before the finale.</span>
+      </li>
+      <li>
+        <span class="fact-num">2×</span>
+        <span class="fact-text"><strong>The championship lead has changed hands twice.</strong> Heavy Sandbags (R1–R3) → 911 Operators (R4–R8) → Tail Pipes and Boners (R9). Three different teams have topped the standings this season.</span>
+      </li>
+      <li>
+        <span class="fact-num">44</span>
+        <span class="fact-text"><strong>911 Operators' R4 score is the highest single-round team total of the season</strong> — built almost entirely on Leadfoot GT's Gr4 win at Fuji.</span>
+      </li>
+      <li>
+        <span class="fact-num">10</span>
+        <span class="fact-text"><strong>Points separate 1st through 3rd</strong> in the team standings entering the R10 finale — the tightest title picture of the season, with three teams still mathematically live.</span>
+      </li>
+    </ul>
+
+    <div class="analytics-sub-head reveal">Class Position — R1 – R9</div>
+    <div class="heat-wrap reveal">
+      <table class="heat-table">
+        <thead>
+          <tr>
+            <th class="h-driver">Driver</th>
+            <th>R1<br><span style="opacity:0.55;font-size:0.6rem">Sardegna</span></th>
+            <th>R2<br><span style="opacity:0.55;font-size:0.6rem">Dragon Trl</span></th>
+            <th>R3<br><span style="opacity:0.55;font-size:0.6rem">Trial Mtn</span></th>
+            <th>R4<br><span style="opacity:0.55;font-size:0.6rem">Fuji</span></th>
+            <th>R5<br><span style="opacity:0.55;font-size:0.6rem">Spa</span></th>
+            <th>R6<br><span style="opacity:0.55;font-size:0.6rem">St Croix B</span></th>
+            <th>R7<br><span style="opacity:0.55;font-size:0.6rem">Interlagos</span></th>
+            <th>R8<br><span style="opacity:0.55;font-size:0.6rem">Nürburgring</span></th>
+            <th>R9<br><span style="opacity:0.55;font-size:0.6rem">Brands Hatch</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="h-name">Sully</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-8">8</td></tr>
+          <tr><td class="h-name">iCrazy</td><td class="pos-2">2</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-2">2</td><td class="pos-1">1</td><td class="pos-1">1</td><td class="pos-4">4</td><td class="pos-1">1</td><td class="pos-1">1</td></tr>
+          <tr><td class="h-name">Dark Delacroix</td><td class="pos-1">1</td><td class="pos-2">2</td><td class="pos-3">3</td><td class="pos-3">3</td><td class="pos-1">1</td><td class="pos-2">2</td><td class="pos-2">2</td><td class="pos-2">2</td><td class="pos-4">4</td></tr>
+          <tr><td class="h-name">TVDV</td><td class="pos-4">4</td><td class="pos-2">2</td><td class="pos-6">6</td><td class="pos-2">2</td><td class="pos-3">3</td><td class="pos-2">2</td><td class="pos-5">5</td><td class="pos-3">3</td><td class="pos-1">1</td></tr>
+          <tr><td class="h-name">PunkTree</td><td class="pos-3">3</td><td class="pos-8">8</td><td class="pos-2">2</td><td class="pos-4">4</td><td class="pos-2">2</td><td class="pos-5">5</td><td class="pos-3">3</td><td class="pos-2">2</td><td class="pos-2">2</td></tr>
+          <tr><td class="h-name">Speedysully</td><td class="pos-3">3</td><td class="pos-5">5</td><td class="pos-2">2</td><td class="pos-3">3</td><td class="pos-4">4</td><td class="pos-3">3</td><td class="pos-3">3</td><td class="pos-5">5</td><td class="pos-2">2</td></tr>
+          <tr><td class="h-name">Barry</td><td class="pos-6">6</td><td class="pos-3">3</td><td class="pos-4">4</td><td class="pos-6">6</td><td class="pos-2">2</td><td class="pos-3">3</td><td class="pos-4">4</td><td class="pos-3">3</td><td class="pos-5">5</td></tr>
+          <tr><td class="h-name">Boltus</td><td class="pos-2">2</td><td class="pos-5">5</td><td class="pos-5">5</td><td class="pos-8">8</td><td class="pos-2">2</td><td class="pos-5">5</td><td class="pos-6">6</td><td class="pos-4">4</td><td class="pos-3">3</td></tr>
+          <tr><td class="h-name">Jett</td><td class="pos-4">4</td><td class="pos-4">4</td><td class="pos-6">6</td><td class="pos-5">5</td><td class="pos-2">2</td><td class="pos-8">8</td><td class="pos-2">2</td><td class="pos-7">7</td><td class="pos-3">3</td></tr>
+          <tr><td class="h-name">Ncardw11</td><td class="pos-7">7</td><td class="pos-3">3</td><td class="pos-3">3</td><td class="pos-5">5</td><td class="pos-3">3</td><td class="pos-4">4</td><td class="pos-6">6</td><td class="pos-6">6</td><td class="pos-4">4</td></tr>
+          <tr><td class="h-name">Lart_Jesus</td><td class="pos-5">5</td><td class="pos-6">6</td><td class="pos-8">8</td><td class="pos-7">7</td><td class="pos-4">4</td><td class="pos-6">6</td><td class="pos-1">1</td><td class="pos-4">4</td><td class="pos-5">5</td></tr>
+          <tr><td class="h-name">Pawl</td><td class="pos-8">8</td><td class="pos-6">6</td><td class="pos-8">8</td><td class="pos-4">4</td><td class="pos-1">1</td><td class="pos-4">4</td><td class="pos-8">8</td><td class="pos-5">5</td><td class="pos-6">6</td></tr>
+          <tr><td class="h-name">Leadfoot GT</td><td class="pos-8">8</td><td class="pos-8">8</td><td class="pos-5">5</td><td class="pos-1">1</td><td class="pos-3">3</td><td class="pos-7">7</td><td class="pos-7">7</td><td class="pos-7">7</td><td class="pos-7">7</td></tr>
+          <tr><td class="h-name">TheEliteWeasel61</td><td class="pos-6">6</td><td class="pos-7">7</td><td class="pos-4">4</td><td class="pos-8">8</td><td class="pos-4">4</td><td class="pos-7">7</td><td class="pos-5">5</td><td class="pos-8">8</td><td class="pos-6">6</td></tr>
+          <tr><td class="h-name">RollingSmoke</td><td class="pos-7">7</td><td class="pos-4">4</td><td class="pos-7">7</td><td class="pos-6">6</td><td class="pos-3">3</td><td class="pos-8">8</td><td class="pos-8">8</td><td class="pos-8">8</td><td class="pos-8">8</td></tr>
+          <tr><td class="h-name">Ctill-VR</td><td class="pos-5">5</td><td class="pos-7">7</td><td class="pos-7">7</td><td class="pos-7">7</td><td class="pos-4">4</td><td class="pos-6">6</td><td class="pos-7">7</td><td class="pos-6">6</td><td class="pos-7">7</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="heat-legend reveal">
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(48% 0.17 97)"></div> P1 — class win</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(38% 0.12 97)"></div> P2 — podium</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(30% 0.09 97)"></div> P3 — podium</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(16% 0.005 97)"></div> P4–5</div>
+      <div class="heat-legend-item"><div class="heat-swatch" style="background:oklch(13% 0.003 97)"></div> P6–8</div>
+    </div>
+    <p class="dim reveal" style="font-size:11px;margin-bottom:40px;">R5 ran all four classes (8 drivers split 4 per class instead of 8) — positions there are out of 4, not 8. No driver missed a single round all season.</p>
+
+    <div class="analytics-sub-head reveal">Class Winners Per Round</div>
+    <div class="reveal table-scroll">
+      <table class="wins-table">
+        <thead>
+          <tr>
+            <th>Rnd</th>
+            <th>Track</th>
+            <th>Classes</th>
+            <th>Winners</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="wt-round">R1</td><td class="wt-track">Sardegna</td><td class="wt-track">Gr1 / Gr2</td><td>Gr1: <span class="is-lead">Dark Delacroix</span> · Gr2: <span class="is-lead">Sully</span></td></tr>
+          <tr><td class="wt-round">R2</td><td class="wt-track">Dragon Trail — Seaside</td><td class="wt-track">Gr3 / Gr4</td><td>Gr3: iCrazy · Gr4: <span class="is-lead">Sully</span></td></tr>
+          <tr><td class="wt-round">R3</td><td class="wt-track">Trial Mountain</td><td class="wt-track">Gr1 / Gr2</td><td>Gr1: <span class="is-lead">Sully</span> · Gr2: iCrazy</td></tr>
+          <tr><td class="wt-round">R4</td><td class="wt-track">Fuji</td><td class="wt-track">Gr3 / Gr4</td><td>Gr3: <span class="is-lead">Sully</span> · Gr4: Leadfoot GT</td></tr>
+          <tr><td class="wt-round">R5</td><td class="wt-track">Spa-Francorchamps</td><td class="wt-track">All 4</td><td>Gr1: <span class="is-lead">Sully</span> · Gr2: iCrazy · Gr3: Dark Delacroix · Gr4: Pawl</td></tr>
+          <tr><td class="wt-round">R6</td><td class="wt-track">St Croix B</td><td class="wt-track">Gr1 / Gr2</td><td>Gr1: <span class="is-lead">Sully</span> · Gr2: iCrazy</td></tr>
+          <tr><td class="wt-round">R7</td><td class="wt-track">Interlagos</td><td class="wt-track">Gr3 / Gr4</td><td>Gr3: <span class="is-lead">Sully</span> · Gr4: Lart_Jesus</td></tr>
+          <tr><td class="wt-round">R8</td><td class="wt-track">Nürburgring GP</td><td class="wt-track">Gr1 / Gr2</td><td>Gr1: iCrazy · Gr2: <span class="is-lead">Sully</span></td></tr>
+          <tr><td class="wt-round">R9</td><td class="wt-track">Brands Hatch</td><td class="wt-track">Gr3 / Gr4</td><td>Gr3: iCrazy · Gr4: TVDV</td></tr>
+        </tbody>
+      </table>
+      <div class="rounds-note">Sully won his class in 8 of 9 rounds before R9. iCrazy carried the late title charge with 6 class wins across the last 7 races.</div>
+    </div>
   </section>
 
   <footer class="reveal">
