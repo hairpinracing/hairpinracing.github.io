@@ -553,6 +553,15 @@
   .season-card.gr1-live .num { color: oklch(68% 0.16 245); }
   .season-card.gr1-live .arrow { color: oklch(68% 0.16 245); }
 
+  /* Community Cup live card accent (green) */
+  .season-card.community-live .status {
+    color: oklch(65% 0.15 145);
+    border: 1px solid oklch(65% 0.15 145 / 0.40);
+    background: oklch(65% 0.15 145 / 0.06);
+  }
+  .season-card.community-live .num { color: oklch(65% 0.15 145); }
+  .season-card.community-live .arrow { color: oklch(65% 0.15 145); }
+
   /* 1-column grid for single-season series */
   .seasons-1 {
     display: grid;
@@ -677,6 +686,8 @@
     <span>S2 · R8/9 Complete · TVDV Leads</span><span class="dot">●</span>
     <span>Group 1 Series — Mondays 9 PM ET</span><span class="dot">●</span>
     <span>S1 · R5/10 Complete · Speedysully Leads</span><span class="dot">●</span>
+    <span>Community Cup — Sundays · Casual, Host Rotates</span><span class="dot">●</span>
+    <span>S1 · Starts Jul 26</span><span class="dot">●</span>
     <span><b>Hairpin Racing</b></span><span class="dot">●</span>
     <span>Gran Turismo 7</span><span class="dot">●</span>
     <span>Multi-Class — Tuesdays 9 PM ET</span><span class="dot">●</span>
@@ -696,13 +707,13 @@
       <span class="word w1"><span>Hairpin</span></span><br />
       <span class="word w2"><span>Racing.</span></span>
     </h1>
-    <div class="subtitle"><span>Multi-Class · Gr.3 BOP · Group 1 · Mon–Wed Nights</span></div>
+    <div class="subtitle"><span>Multi-Class · Gr.3 BOP · Group 1 · Community Cup · Sun–Wed Nights</span></div>
   </header>
 
   <div class="stats-strip">
-    <div><span class="k">Series</span><span class="v">3</span></div>
-    <div><span class="k">Seasons</span><span class="v">7</span></div>
-    <div><span class="k">Race Nights</span><span class="v">Mon, Tue &amp; Wed</span></div>
+    <div><span class="k">Series</span><span class="v">4</span></div>
+    <div><span class="k">Seasons</span><span class="v">8</span></div>
+    <div><span class="k">Race Nights</span><span class="v">Sun, Mon, Tue &amp; Wed</span></div>
     <div><span class="k">Platform</span><span class="v">GT7</span></div>
   </div>
 
@@ -802,7 +813,29 @@
         <div class="meta-row">
           <div class="meta-item">Leader: Speedysully · 91 pts</div>
           <div class="meta-item">15 drivers · R5/10</div>
-          <div class="meta-item">Next: Barcelona · Jul 20</div>
+          <div class="meta-item">R6 raced · results pending</div>
+          <div class="meta-item meta-admin"><span class="adm-label">Admin</span> Pawl</div>
+        </div>
+        <div class="arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ══ COMMUNITY CUP ══ -->
+  <div class="series-block">
+    <div class="series-header">
+      <span class="series-header-name">Community Cup</span>
+      <span class="series-header-meta">Sunday Nights · 9 PM ET · Casual · Host Rotates Weekly</span>
+    </div>
+    <div class="seasons-1">
+      <a class="season-card community-live" href="community-cup/" style="animation-delay:1.40s">
+        <div class="status">● Registering · R1 Jul 26</div>
+        <span class="num">S1</span>
+        <span class="label">Community Cup</span>
+        <div class="meta-row">
+          <div class="meta-item">8 drivers registered</div>
+          <div class="meta-item">No fixed length · no points, just fun</div>
+          <div class="meta-item">R1: Pawl hosts · Kyoto Yamagiwa</div>
           <div class="meta-item meta-admin"><span class="adm-label">Admin</span> Pawl</div>
         </div>
         <div class="arrow">→</div>
@@ -828,7 +861,7 @@
 </main>
 
 <footer>
-  Hairpin Racing · GT7 · Multi-Class · Wednesday Night Gr.3 BOP · Group 1
+  Hairpin Racing · GT7 · Multi-Class · Wednesday Night Gr.3 BOP · Group 1 · Community Cup
   <div class="sig">See you on track.</div>
 </footer>
 
