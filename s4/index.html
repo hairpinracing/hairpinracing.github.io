@@ -848,6 +848,52 @@
     50% { opacity: 0.55; }
   }
 
+  /* Championship picture */
+  .champ-picture {
+    border: 1px solid oklch(86% 0.175 97 / 40%);
+    background: oklch(86% 0.175 97 / 5%);
+    margin-bottom: 8px;
+  }
+  .champ-head {
+    font-family: var(--body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 12px 20px;
+    border-bottom: 1px solid oklch(86% 0.175 97 / 20%);
+  }
+  .champ-battle { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .champ-side { padding: 24px 22px; }
+  .champ-side.chasing-side { text-align: right; }
+  .champ-status { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 4px; }
+  .leader-side .champ-status { color: var(--accent); }
+  .champ-name { font-family: var(--display); font-size: clamp(18px, 2.8vw, 28px); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .leader-side .champ-name { color: var(--accent); }
+  .champ-score { font-family: var(--mono); font-size: clamp(32px, 5vw, 48px); letter-spacing: -0.02em; line-height: 1; }
+  .champ-middle {
+    padding: 24px 32px;
+    border-left: 1px solid oklch(86% 0.175 97 / 20%);
+    border-right: 1px solid oklch(86% 0.175 97 / 20%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .champ-margin { font-family: var(--display); font-size: clamp(52px, 8vw, 88px); line-height: 1; color: var(--accent); }
+  .champ-margin-label { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim); margin-top: 2px; }
+  .champ-facts { border-top: 1px solid oklch(86% 0.175 97 / 20%); padding: 14px 20px; display: flex; gap: 40px; flex-wrap: wrap; }
+  .champ-fact { font-family: var(--body); font-size: 13px; color: var(--ink-dim); }
+  .champ-fact strong { color: var(--ink); }
+  @media (max-width: 780px) {
+    .champ-battle { grid-template-columns: 1fr; }
+    .champ-middle { border-left: none; border-right: none; border-top: 1px solid oklch(86% 0.175 97 / 20%); border-bottom: 1px solid oklch(86% 0.175 97 / 20%); padding: 14px 16px; }
+    .champ-side.chasing-side { text-align: left; }
+    .champ-facts { gap: 16px; padding: 14px 16px; }
+  }
+
   /* Round by Round — chart, moments, rounds table */
   .chart-wrap { border: 1px solid var(--line); background: var(--bg-2); padding: 20px 16px 12px; margin-bottom: 32px; }
   .chart-label { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 12px; }
@@ -1090,6 +1136,32 @@
       <div><div class="k">Status</div><div class="v" style="color:var(--accent);">Complete</div></div>
     </div>
   </header>
+
+  <section style="padding-top: 40px;">
+    <div class="champ-picture reveal">
+      <div class="champ-head">Season 4 Champions · Multi-Class</div>
+      <div class="champ-battle">
+        <div class="champ-side leader-side">
+          <div class="champ-status">★ Team Champions</div>
+          <div class="champ-name">Tail Pipes and Boners</div>
+          <div class="champ-score">287</div>
+        </div>
+        <div class="champ-middle">
+          <div class="champ-margin">+4</div>
+          <div class="champ-margin-label">points</div>
+        </div>
+        <div class="champ-side chasing-side">
+          <div class="champ-status">Runner-up</div>
+          <div class="champ-name">Heavy Sandbags</div>
+          <div class="champ-score">283</div>
+        </div>
+      </div>
+      <div class="champ-facts">
+        <div class="champ-fact"><strong>Sully</strong> wins the individual driver title with <strong>211 pts</strong>, 9 clear of P2 iCrazy (202)</div>
+        <div class="champ-fact"><strong>911 Operators</strong> won the finale outright (40 pts) but their 3-point R9 collapse had already cost them the title — 3rd, just 9 off 1st</div>
+      </div>
+    </div>
+  </section>
 
   <section>
     <div class="callout reveal">
