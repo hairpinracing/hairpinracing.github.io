@@ -26,8 +26,9 @@
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  /* overflow-x: clip (not hidden) — hidden on the root promotes it to a scroll
+     container, which breaks momentum scrolling on iOS. clip has no such effect. */
+  html, body { margin: 0; padding: 0; overflow-x: clip; }
   body {
     background: var(--bg);
     color: var(--ink);
@@ -47,21 +48,28 @@
       radial-gradient(circle at 0% 110%, oklch(56% 0.215 28 / 0.08), transparent 45%);
     pointer-events: none;
     z-index: 0;
+    /* own compositor layer: these static gradients paint once instead of
+       repainting every scroll frame */
+    transform: translateZ(0);
   }
+  /* Extends 320px past the right edge so the leftward drift never exposes a gap.
+     Animating transform (compositor) instead of background-position (repaint)
+     keeps this off the paint path entirely. */
   body::after {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: 0 -320px 0 0;
     background-image:
       linear-gradient(90deg, transparent 0, transparent 49.5%, oklch(96% 0.003 97 / 0.025) 50%, transparent 50.5%, transparent 100%);
     background-size: 80px 100%;
     pointer-events: none;
     z-index: 0;
+    will-change: transform;
     animation: lines 14s linear infinite;
   }
   @keyframes lines {
-    from { background-position: 0 0; }
-    to { background-position: -320px 0; }
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-320px, 0, 0); }
   }
 
   .wrap, header, section, footer, .marquee, .flag { position: relative; z-index: 1; }
