@@ -26,8 +26,9 @@
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  /* overflow-x: clip (not hidden) — hidden on the root promotes it to a scroll
+     container, which breaks momentum scrolling on iOS. clip has no such effect. */
+  html, body { margin: 0; padding: 0; overflow-x: clip; }
   body {
     background: var(--bg);
     color: var(--ink);
@@ -47,21 +48,28 @@
       radial-gradient(circle at 0% 110%, oklch(56% 0.215 28 / 0.08), transparent 45%);
     pointer-events: none;
     z-index: 0;
+    /* own compositor layer: these static gradients paint once instead of
+       repainting every scroll frame */
+    transform: translateZ(0);
   }
+  /* Extends 320px past the right edge so the leftward drift never exposes a gap.
+     Animating transform (compositor) instead of background-position (repaint)
+     keeps this off the paint path entirely. */
   body::after {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: 0 -320px 0 0;
     background-image:
       linear-gradient(90deg, transparent 0, transparent 49.5%, oklch(96% 0.003 97 / 0.025) 50%, transparent 50.5%, transparent 100%);
     background-size: 80px 100%;
     pointer-events: none;
     z-index: 0;
+    will-change: transform;
     animation: lines 14s linear infinite;
   }
   @keyframes lines {
-    from { background-position: 0 0; }
-    to { background-position: -320px 0; }
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-320px, 0, 0); }
   }
 
   .wrap, header, section, footer, .marquee, .flag { position: relative; z-index: 1; }
@@ -979,7 +987,8 @@
       lodgingStatus:   "Pending",
       beds: 10,
       payTo: "Felipe",
-      payVenmo: "", payZelle: "", payPaypal: ""
+      payVenmo: "", payZelle: "", payPaypal: "",
+      settleNote: ""
     },
     // Crew filled in via Edit. Traveler: {inTime,outTime,ticket}.
     travelers: [],
@@ -1609,6 +1618,7 @@
         f('Venmo', 'payVenmo') +
         f('PayPal', 'payPaypal') +
         f('Zelle', 'payZelle') +
+        '<div class="ed-field full"><label>Settle-up note (shown to everyone)</label><input data-tf="settleNote" placeholder="e.g. Airbnb charges in August — settle up then" value="' + esc(tr.settleNote) + '" /></div>' +
       '</div>' +
     '</div>';
   }
@@ -1778,8 +1788,13 @@
     else if (b.balance < 0) head = '<span class="me-amt neg">You owe ' + money(-b.balance) + '</span>';
     else if (b.balance > 0) head = '<span class="me-amt pos">You get back ' + money(b.balance) + '</span>';
     else head = '<span class="me-amt">You\'re square</span>';
-    const methods = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]].map(m => m[1] ? (m[0] + ' ' + esc(m[1])) : m[0]).join(' · ');
-    const payLine = (!settled && myTransfers.length) ? '<div class="me-pay">' + myTransfers.map(t => 'Pay <b>' + esc(t.to) + '</b> · ' + money(t.amt)).join('<br>') + '</div>' : '';
+    const myHandles = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]]
+      .filter(m => m[1]).map(m => m[0] + ' ' + esc(m[1])).join(' · ');
+    const payLine = (!settled && myTransfers.length)
+      ? '<div class="me-pay">' + myTransfers.map(t => 'Pay <b>' + esc(t.to) + '</b> · ' + money(t.amt)).join('<br>') +
+        (myHandles ? '<br>' + myHandles : '') +
+        (tr.settleNote ? '<br>' + esc(tr.settleNote) : '') + '</div>'
+      : '';
     const myIn = c.transfers.filter(t => t.toId === meId);
     const collectLine = myIn.length ? '<div class="me-pay">' + myIn.map(t => 'Collect from <b>' + esc(t.from) + '</b> · ' + money(t.amt)).join('<br>') + '</div>' : '';
     box.innerHTML = '<div class="me-card-inner">' +
@@ -1833,9 +1848,12 @@
 
     const set = document.getElementById('settleList');
     const tr = state.trip;
-    const methods = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]];
-    const handles = methods.map(m => m[1] ? (m[0] + ' ' + esc(m[1])) : m[0]);
-    const payNote = '<div class="pay-note">Pay the person shown on each line.' + (tr.payTo ? ' <b>' + esc(tr.payTo) + '</b>: ' + handles.join(' · ') : '') + '</div>';
+    // Only advertise payment methods that actually have a handle filled in.
+    const handles = [['Venmo', tr.payVenmo], ['Zelle', tr.payZelle], ['PayPal', tr.payPaypal]]
+      .filter(m => m[1]).map(m => m[0] + ' ' + esc(m[1]));
+    const payNote = '<div class="pay-note">Pay the person shown on each line.' +
+      (handles.length && tr.payTo ? ' <b>' + esc(tr.payTo) + '</b>: ' + handles.join(' · ') : '') +
+      (tr.settleNote ? '<br><b>' + esc(tr.settleNote) + '</b>' : '') + '</div>';
 
     // personal focus: when a name is picked, hide the everyone "fair share" panel
     // and narrow the settle-up to just that person's line.
