@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hairpin Racing — Season 5 Captain Candidates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<script>(function(){var t=localStorage.getItem('hairpin-theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;})();</script>
+<style>
+  :root {
+    --bg: oklch(9% 0.008 97);
+    --bg-2: oklch(11.5% 0.006 97);
+    --ink: oklch(96% 0.003 97);
+    --ink-dim: oklch(64% 0.005 97);
+    --line: oklch(19% 0.007 97);
+    --accent: oklch(86% 0.175 97);
+    --accent-2: oklch(56% 0.215 28);
+    --mono: 'Azeret Mono', ui-monospace, monospace;
+    --body: 'Archivo', system-ui, sans-serif;
+    --display: 'Anton', 'Archivo', sans-serif;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    color-scheme: dark light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 85% -10%, oklch(86% 0.175 97 / 0.10), transparent 40%),
+      radial-gradient(circle at 0% 110%, oklch(56% 0.215 28 / 0.08), transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap, header, section, footer, .marquee, .flag { position: relative; z-index: 1; }
+
+  .flag {
+    height: 18px;
+    background: repeating-conic-gradient(oklch(96% 0.003 97) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px;
+    animation: flagmove 3s linear infinite;
+  }
+  @keyframes flagmove { from { background-position: 0 0; } to { background-position: 72px 0; } }
+
+  .marquee { overflow: hidden; border-bottom: 1px solid var(--line); background: var(--bg); padding: 10px 0; }
+  .marquee-track {
+    display: flex; gap: 48px; white-space: nowrap;
+    animation: scroll 42s linear infinite;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--ink-dim); width: max-content;
+  }
+  .marquee-track span.dot { color: var(--accent); }
+  .marquee-track b { color: var(--ink); font-weight: 600; }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  .nav { padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .nav a {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-dim); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: color 0.2s var(--ease);
+  }
+  .nav a:hover { color: var(--accent); }
+  .nav a::before { content: "←"; font-weight: 400; letter-spacing: 0; }
+
+  header { padding: 56px 0 48px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 10px;
+    opacity: 0; animation: fadeIn 0.8s var(--ease-out) 0.1s forwards;
+  }
+  .eyebrow::before {
+    content: ""; width: 0; height: 1px; background: var(--accent);
+    display: inline-block; animation: growLine 0.8s var(--ease-out) 0.3s forwards;
+  }
+  @keyframes growLine { to { width: 28px; } }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  h1 {
+    font-family: var(--display); font-weight: 400;
+    font-size: clamp(52px, 10vw, 128px); line-height: 0.85; letter-spacing: -0.01em;
+    margin: 18px 0 6px; text-transform: uppercase;
+  }
+  h1 .word { display: inline-block; overflow: hidden; vertical-align: top; }
+  h1 .word > span { display: inline-block; transform: translateY(110%); animation: rise 0.9s var(--ease-out) forwards; }
+  h1 .w1 > span { animation-delay: 0.15s; }
+  h1 .w2 > span { animation-delay: 0.35s; color: var(--accent); }
+  @keyframes rise { to { transform: translateY(0); } }
+
+  .subtitle {
+    font-family: var(--display); font-size: clamp(22px, 3.6vw, 38px);
+    line-height: 1; letter-spacing: 0.02em; color: var(--ink-dim);
+    margin: 0 0 28px; text-transform: uppercase; overflow: hidden;
+  }
+  .subtitle > span { display: inline-block; transform: translateY(110%); animation: rise 0.9s var(--ease-out) 0.55s forwards; }
+
+  .meta {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px;
+    background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    margin-top: 24px;
+  }
+  .meta > div {
+    background: var(--bg); padding: 16px 18px;
+    opacity: 0; transform: translateY(12px);
+    animation: fadeUp 0.6s var(--ease-out) forwards;
+    transition: background 0.3s var(--ease);
+  }
+  .meta > div:nth-child(1) { animation-delay: 0.75s; }
+  .meta > div:nth-child(2) { animation-delay: 0.85s; }
+  .meta > div:nth-child(3) { animation-delay: 0.95s; }
+  .meta > div:nth-child(4) { animation-delay: 1.05s; }
+  .meta > div:nth-child(5) { animation-delay: 1.15s; }
+  .meta > div:hover { background: var(--bg-2); }
+  .meta > div:hover .v { color: var(--accent); }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .meta .k { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 4px; }
+  .meta .v { font-family: var(--display); font-size: 20px; letter-spacing: 0.02em; text-transform: uppercase; transition: color 0.3s var(--ease); }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .stagger:not(.in) > * { opacity: 0; transform: translateY(20px); }
+  .stagger > * { transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+  .stagger.in > * { opacity: 1; transform: translateY(0); }
+  .stagger.in > *:nth-child(1) { transition-delay: 0.05s; }
+  .stagger.in > *:nth-child(2) { transition-delay: 0.12s; }
+  .stagger.in > *:nth-child(3) { transition-delay: 0.19s; }
+  .stagger.in > *:nth-child(4) { transition-delay: 0.26s; }
+  .stagger.in > *:nth-child(5) { transition-delay: 0.33s; }
+  .stagger.in > *:nth-child(6) { transition-delay: 0.40s; }
+  .stagger.in > *:nth-child(7) { transition-delay: 0.47s; }
+  .stagger.in > *:nth-child(8) { transition-delay: 0.54s; }
+  .stagger.in > *:nth-child(9) { transition-delay: 0.61s; }
+  .stagger.in > *:nth-child(10) { transition-delay: 0.68s; }
+  .stagger.in > *:nth-child(11) { transition-delay: 0.75s; }
+
+  section { padding: 72px 0 24px; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+  .section-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 28px; }
+  .section-num { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.2em; }
+  h2 {
+    font-family: var(--display); font-weight: 400;
+    font-size: clamp(30px, 4.6vw, 48px); line-height: 0.95; margin: 0;
+    letter-spacing: 0.01em; text-transform: uppercase;
+  }
+  h3 {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim);
+    margin: 36px 0 14px;
+  }
+  p { margin: 0 0 14px; color: var(--ink); max-width: 68ch; }
+  .dim { color: var(--ink-dim); }
+
+  .callout { border: 1px solid var(--accent); background: oklch(86% 0.175 97 / 0.06); margin-top: 8px; position: relative; }
+  .callout::before {
+    content: "FORMAT LOCKED · TEAMS OPEN"; position: absolute; top: -10px; left: 20px;
+    background: var(--bg); color: var(--accent); font-size: 11px; letter-spacing: 0.2em;
+    padding: 0 8px; z-index: 3; text-transform: uppercase;
+  }
+  .callout-inner { padding: 26px 26px 20px; }
+  .callout p { font-size: 17px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* Proposals */
+  .props { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .prop { background: var(--bg-2); padding: 22px 22px 20px; }
+  .prop-by { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .prop-title { font-family: var(--display); font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.05; margin-bottom: 10px; }
+  .prop-body { font-size: 13px; color: var(--ink-dim); line-height: 1.6; max-width: none; margin: 0 0 12px; }
+  .prop-verdict { font-family: var(--mono); font-size: 10.5px; line-height: 1.55; letter-spacing: 0.02em; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .prop-verdict b { letter-spacing: 0.12em; text-transform: uppercase; font-size: 9.5px; display: block; margin-bottom: 4px; }
+  .v-good b { color: var(--accent); }
+  .v-warn b { color: var(--accent-2); }
+  .prop-verdict span { color: var(--ink-dim); }
+
+  /* Index formula */
+  .formula { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 18px; }
+  .formula > div { background: var(--bg); padding: 16px 16px 14px; }
+  .formula .w { font-family: var(--display); font-size: 26px; color: var(--accent); line-height: 1; }
+  .formula .n { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); margin: 8px 0 5px; }
+  .formula .d { font-size: 11.5px; color: var(--ink-dim); line-height: 1.5; }
+
+
+  /* Record table */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; }
+  .rec-table { border-collapse: collapse; font-family: var(--mono); font-size: 11.5px; white-space: nowrap; min-width: 820px; width: 100%; }
+  .rec-table th {
+    padding: 8px 9px; text-align: center; color: var(--ink-dim); font-weight: 400;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--line); vertical-align: bottom;
+  }
+  .rec-table th.h-name { text-align: left; min-width: 132px; }
+  .rec-table td { padding: 6px 9px; text-align: center; border: 1px solid oklch(18% 0.005 97 / 60%); color: var(--ink-dim); }
+  .rec-table td.h-name { text-align: left; color: var(--ink); font-family: var(--body); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+  .rec-table td.idx { color: var(--accent); font-weight: 700; }
+  .rec-table td.na { color: oklch(34% 0.006 97); }
+  .rec-table tr.is-cap td.h-name::before { content: "★ "; color: var(--accent); }
+  .p1 { background: oklch(48% 0.17 97); color: oklch(12% 0.01 97); font-weight: 700; }
+  .p2 { background: oklch(38% 0.12 97); color: oklch(88% 0.01 97); font-weight: 600; }
+  .p3 { background: oklch(30% 0.09 97); color: oklch(80% 0.02 97); }
+  .p4 { background: oklch(16% 0.005 97); color: var(--ink-dim); }
+  .p5 { background: oklch(13% 0.003 97); color: oklch(42% 0.01 97); }
+  .rec-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .rec-legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 9.5px; color: var(--ink-dim); }
+  .sw { width: 11px; height: 11px; flex-shrink: 0; }
+  .note { font-size: 11.5px; color: oklch(64% 0.005 97 / 85%); margin-top: 10px; line-height: 1.6; max-width: 76ch; }
+
+  /* Balance sim */
+  .sim { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 16px; }
+  .sim-card { background: var(--bg-2); padding: 20px 20px 18px; }
+  .sim-name { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .sim-caps { font-family: var(--body); font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 12px; line-height: 1.45; }
+  .sim-spread { display: flex; align-items: baseline; gap: 10px; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .sim-num { font-family: var(--display); font-size: 32px; line-height: 1; color: var(--ink); }
+  .sim-lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); line-height: 1.4; }
+  .bars { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; color: var(--ink-dim); }
+  .bar-name { min-width: 84px; text-align: right; }
+  .bar-track { flex: 1; height: 8px; background: var(--bg); border: 1px solid var(--line); position: relative; }
+  .bar-fill { position: absolute; inset: 0 auto 0 0; background: oklch(86% 0.175 97 / 0.45); }
+  .bar-val { min-width: 30px; }
+
+  /* Facts */
+  .facts { list-style: none; padding: 0; margin: 0; }
+  .facts li { display: flex; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .facts li:first-child { padding-top: 0; }
+  .facts li:last-child { border-bottom: none; }
+  .fact-num { font-family: var(--display); font-size: 2.1rem; line-height: 1; color: var(--accent); min-width: 86px; flex-shrink: 0; }
+  .fact-text { font-size: 0.88rem; line-height: 1.62; color: var(--ink-dim); }
+  .fact-text strong { color: var(--ink); font-weight: 600; }
+
+  /* Recommendation */
+  .rec-box { border: 1px solid var(--accent); background: oklch(86% 0.175 97 / 0.06); position: relative; margin-bottom: 20px; }
+  .rec-box::before {
+    content: "THE RECOMMENDATION"; position: absolute; top: -10px; left: 20px;
+    background: var(--bg); color: var(--accent); font-size: 11px; letter-spacing: 0.2em;
+    padding: 0 8px; text-transform: uppercase;
+  }
+  .rec-inner { padding: 28px 26px 22px; }
+  .rec-caps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 4px 0 20px; }
+  .rec-cap { border: 1px solid var(--line); background: var(--bg); padding: 14px 14px 12px; }
+  .rec-cap-ord { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 6px; }
+  .rec-cap-name { font-family: var(--display); font-size: 21px; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1; margin-bottom: 6px; }
+  .rec-cap-why { font-family: var(--mono); font-size: 9.5px; color: var(--ink-dim); line-height: 1.5; }
+  .steps { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+  .steps li { position: relative; padding: 0 0 14px 34px; font-size: 14px; color: var(--ink-dim); line-height: 1.6; counter-increment: s; }
+  .steps li::before {
+    content: counter(s, decimal-leading-zero); position: absolute; left: 0; top: 1px;
+    font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.06em;
+  }
+  .steps li b { color: var(--ink); font-weight: 600; }
+
+  footer { padding: 40px 0 48px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); }
+  footer .sig { color: var(--accent); margin-top: 6px; }
+
+  /* Light theme */
+  [data-theme="light"] {
+    --bg: oklch(97% 0.004 97);
+    --bg-2: oklch(92.5% 0.006 97);
+    --ink: oklch(11% 0.006 97);
+    --ink-dim: oklch(47% 0.005 97);
+    --line: oklch(83% 0.005 97);
+    --accent: oklch(50% 0.17 97);
+    --accent-2: oklch(50% 0.215 28);
+    color-scheme: light;
+  }
+  [data-theme="light"] body::before {
+    background:
+      radial-gradient(circle at 85% -10%, oklch(50% 0.17 97 / 7%), transparent 40%),
+      radial-gradient(circle at 0% 110%, oklch(50% 0.215 28 / 5%), transparent 45%);
+  }
+  [data-theme="light"] .flag { background: repeating-conic-gradient(oklch(18% 0.006 97) 0% 25%, var(--bg) 0% 50%) 0 0 / 18px 18px; }
+  [data-theme="light"] .p1 { background: oklch(78% 0.16 97); color: oklch(18% 0.02 97); }
+  [data-theme="light"] .p2 { background: oklch(86% 0.10 97); color: oklch(22% 0.01 97); }
+  [data-theme="light"] .p3 { background: oklch(91% 0.06 97); color: oklch(30% 0.01 97); }
+  [data-theme="light"] .p4 { background: oklch(94% 0.004 97); color: var(--ink-dim); }
+  [data-theme="light"] .p5 { background: oklch(96% 0.003 97); color: oklch(62% 0.005 97); }
+  [data-theme="light"] .rec-table td.na { color: oklch(76% 0.004 97); }
+  [data-theme="light"] .bar-fill { background: oklch(50% 0.17 97 / 0.35); }
+
+  .theme-btn {
+    position: fixed; bottom: 20px; right: 20px; z-index: 100;
+    font-family: var(--mono); font-size: 9px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim);
+    background: var(--bg-2); border: 1px solid var(--line); padding: 7px 12px; cursor: pointer;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .theme-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+  @media (max-width: 860px) {
+    .props, .formula, .sim, .rec-caps { grid-template-columns: 1fr 1fr; }
+    .meta { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .props, .formula, .sim, .rec-caps { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal, .stagger > * { opacity: 1 !important; transform: none !important; }
+    h1 .word > span, .subtitle > span { transform: none !important; }
+  }
+
+  /* --- added for the full-history revision --- */
+  .arc-table { border-collapse: collapse; font-family: var(--mono); font-size: 11.5px; width: 100%; min-width: 560px; }
+  .arc-table th { padding: 8px 9px; text-align: center; color: var(--ink-dim); font-weight: 400; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--line); }
+  .arc-table th.h-name { text-align: left; min-width: 128px; }
+  .arc-table td { padding: 6px 9px; text-align: center; border: 1px solid oklch(18% 0.005 97 / 60%); color: var(--ink-dim); }
+  .arc-table td.h-name { text-align: left; color: var(--ink); font-family: var(--body); font-size: 12px; font-weight: 600; }
+  .arc-table td.trend { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .t-up { color: var(--accent); }
+  .t-down { color: var(--accent-2); }
+  .t-flat { color: var(--ink-dim); }
+  .titles { list-style: none; padding: 0; margin: 0 0 8px; }
+  .titles li { display: flex; gap: 14px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .titles li:last-child { border-bottom: none; }
+  .t-count { font-family: var(--display); font-size: 26px; line-height: 1; color: var(--accent); min-width: 34px; flex-shrink: 0; }
+  .t-name { font-family: var(--display); font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; min-width: 150px; flex-shrink: 0; line-height: 1.1; }
+  .t-list { font-size: 12.5px; color: var(--ink-dim); line-height: 1.55; }
+  .t-gone { color: var(--accent-2); font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .newcomers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .nc { background: var(--bg-2); padding: 16px 18px; }
+  .nc-name { font-family: var(--display); font-size: 18px; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1; margin-bottom: 3px; }
+  .nc-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 7px; }
+  .nc-body { font-size: 12px; color: var(--ink-dim); line-height: 1.55; margin: 0; }
+  @media (max-width: 560px) { .newcomers { grid-template-columns: 1fr; } .t-name { min-width: 0; } .titles li { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+
+<div class="flag"></div>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span><b>Multi-Class S5</b></span><span class="dot">&#9679;</span>
+    <span>4 Teams &times; 4 Drivers</span><span class="dot">&#9679;</span>
+    <span>Format poll passed <b>14&ndash;0</b></span><span class="dot">&#9679;</span>
+    <span>Registration <b>Jul 30 &middot; Noon ET</b></span><span class="dot">&#9679;</span>
+    <span>First 16 claim a spot</span><span class="dot">&#9679;</span>
+    <span>Built from <b>19 tournaments</b></span><span class="dot">&#9679;</span>
+    <span>Sully &middot; 4 career titles</span><span class="dot">&#9679;</span>
+    <span><b>Multi-Class S5</b></span><span class="dot">&#9679;</span>
+    <span>4 Teams &times; 4 Drivers</span><span class="dot">&#9679;</span>
+    <span>Format poll passed <b>14&ndash;0</b></span><span class="dot">&#9679;</span>
+    <span>Registration <b>Jul 30 &middot; Noon ET</b></span><span class="dot">&#9679;</span>
+    <span>First 16 claim a spot</span><span class="dot">&#9679;</span>
+    <span>Built from <b>19 tournaments</b></span><span class="dot">&#9679;</span>
+    <span>Sully &middot; 4 career titles</span><span class="dot">&#9679;</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <nav class="nav"><a href="../">Hairpin Racing</a></nav>
+
+  <header>
+    <div class="eyebrow">Season 5 &middot; Draft Prep &middot; Jul 29, 2026</div>
+    <h1><span class="word w1"><span>Captain</span></span><br /><span class="word w2"><span>Candidates.</span></span></h1>
+    <div class="subtitle"><span>Multi-Class S5 &middot; 4 Teams of 4</span></div>
+    <div class="meta">
+      <div><div class="k">Format</div><div class="v">4 &times; 4</div></div>
+      <div><div class="k">Captains</div><div class="v">4</div></div>
+      <div><div class="k">Registration</div><div class="v">Jul 30 &middot; 12pm</div></div>
+      <div><div class="k">Pool Needed</div><div class="v">16</div></div>
+      <div><div class="k">History Used</div><div class="v">19 Events</div></div>
+    </div>
+  </header>
+
+  <!-- 01 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">01</span><h2>Where Things Stand</h2></div>
+    <div class="callout reveal">
+      <div class="callout-inner">
+        <p><strong>The format is locked. The teams are not.</strong> Barry's S5 proposal &mdash; four
+        four-man teams, ten weeks, all four classes, with R5 and R10 running all four on track at once
+        like S4 &mdash; passed its poll <strong>14&ndash;0</strong>. Settings carry over from S4 except a
+        flat 10-minute qualifier. Registration posts <strong>Thursday July 30 at noon ET</strong>, and
+        the first 16 to sign up claim guaranteed spots.</p>
+        <p class="dim">What's open is how the teams get built. This page ranks the captain candidates
+        using <strong>every tournament Hairpin has ever run</strong> &mdash; all 17 in the tournament
+        app plus the two Wednesday Gr.3 seasons that only exist on this site. That's four Multi-Class
+        seasons, not one, and it changes the answer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">02</span><h2>The Three Proposals</h2></div>
+    <p class="reveal dim">From <span style="font-family:var(--mono);font-size:0.85em">#multi-class-s5-chat</span>, July 29.</p>
+    <div class="props reveal">
+      <div class="prop">
+        <div class="prop-by">Boltus</div>
+        <div class="prop-title">Time-Trial Shootout</div>
+        <p class="prop-body">Everyone drives the same car, the fastest four become captains, then they
+        pick. Backed by esully: "Not a bad plan IMO."</p>
+        <div class="prop-verdict v-warn">
+          <b>Risk</b>
+          <span>Rewards one hot lap, not ten weeks of showing up. t0pher is a Super Formula champion
+          on <b>8 of 23</b> rounds started this year &mdash; exactly the profile a time trial promotes
+          and attendance should demote.</span>
+        </div>
+      </div>
+      <div class="prop">
+        <div class="prop-by">iCrazy</div>
+        <div class="prop-title">Top or Bottom 4, Reverse Picks</div>
+        <p class="prop-body">Four captains from last season's top four or bottom four. Picks run in
+        reverse order &mdash; S4's P1 picks 4th, P2 picks 3rd. Draft day on a call or streamed.</p>
+        <div class="prop-verdict v-good">
+          <b>Right mechanism</b>
+          <span>Reverse-order picking is the correct balancing tool and should be kept. The
+          "bottom 4" half doesn't survive contact with the data &mdash; see section 07.</span>
+        </div>
+      </div>
+      <div class="prop">
+        <div class="prop-by">Barry</div>
+        <div class="prop-title">Past Standings</div>
+        <p class="prop-body">"I was also leaning on using past standings depending on who signs up."
+        Captains seeded off prior results once the 16-driver field is known.</p>
+        <div class="prop-verdict v-good">
+          <b>Right instinct, wrong window</b>
+          <span>One season is a 10-race sample. Across four Multi-Class seasons and 15 other
+          tournaments the order shuffles noticeably &mdash; and produces materially fairer teams.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">03</span><h2>How These Are Ranked</h2></div>
+    <p class="reveal">A captain here does three jobs: drive fast, show up all ten weeks, and coordinate
+    four drivers across four classes every race night. The Captain Index weighs all three. Older
+    results still count but are discounted &mdash; a 2025 season carries about a third of the weight of
+    a live one.</p>
+    <div class="formula reveal">
+      <div><div class="w">30%</div><div class="n">Multi-Class Record</div><div class="d">Finishing strength across S1&ndash;S4 &mdash; the format S5 runs. S4 weighted heaviest.</div></div>
+      <div><div class="w">20%</div><div class="n">All-Event Record</div><div class="d">Same measure across all 19 tournaments, recency-weighted.</div></div>
+      <div><div class="w">22%</div><div class="n">Recent Attendance</div><div class="d">Rounds started &divide; available across the four series live in 2026.</div></div>
+      <div><div class="w">16%</div><div class="n">Current Form</div><div class="d">Best finishing position in any series running right now.</div></div>
+      <div><div class="w">12%</div><div class="n">Leadership</div><div class="d">Series admin roles and Community Cup hosting slots.</div></div>
+    </div>
+    <p class="note"><strong>Eligibility gate:</strong> a captain must have started a round in one of
+    the four series live in 2026, so drivers with strong records but no recent starts are excluded from
+    the ranking entirely. Finishing strength is normalised per
+    series, so P4 of 25 beats P4 of 16. Aliases merged: Chief Sandbagger = Dark Delacroix,
+    Weaksauce412 = Jett, mxer699 = iCrazy, vdvbrothers / Kyle Gillard 13TH = TVDV, esully =
+    Speedysully, wreathafranklin / Saudialabia = RollingSmoke, D. Earnhardt = t0pher, nrinks3 =
+    Shabba_Ranks, eryczekdf = LART Eric, Catch23situ8ion = BTBG_Rage.</p>
+  </section>
+
+  <!-- 04 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">04</span><h2>Career Championships</h2></div>
+    <p class="reveal">Outright championship wins across all 19 tournaments. Two of the 17 in the
+    tournament app &mdash; Constructor's Cup and the Thursday Manufacture Cup &mdash; have rosters but
+    no results recorded, so no title is credited for them.</p>
+    <ul class="titles reveal">
+      <li><span class="t-count">4</span><span class="t-name">Sully</span><span class="t-list">Multi-Class S3 &middot; Multi-Class S4 &middot; GR3 Season 3 &middot; Gr3 Tuning Series<br /><span class="dim">Plus Multi-Class S2 runner-up and a 194&ndash;194 tiebreak loss in Fri's Fry Friday Fours.</span></span></li>
+      <li><span class="t-count">2</span><span class="t-name">iCrazy</span><span class="t-list">Super Formula S1 &middot; Ferrari 458 vs 296<br /><span class="dim">Plus the S4 team title with Ncardw11, and P2/P3/P2 in three of four Multi-Class seasons.</span></span></li>
+      <li><span class="t-count">2</span><span class="t-name">BTBG_Rage</span><span class="t-list">Multi-Class S1 &middot; Multi-Class S2 &nbsp;<span class="t-gone">&#9679; inactive since Feb 2026</span><br /><span class="dim">The only two-time Multi-Class champion &mdash; 231 points with nine class wins, then 195. No longer racing, so he is not in the candidate ranking.</span></span></li>
+      <li><span class="t-count">1</span><span class="t-name">TVDV</span><span class="t-list">Wed Gr.3 S2 &mdash; won on July 23, 2026<br /><span class="dim">Won the championship he organises, holding off Barry. Four Multi-Class seasons and 15 tournaments before finally topping one.</span></span></li>
+      <li><span class="t-count">1</span><span class="t-name">Jett</span><span class="t-list">Fri's Fry Friday Fours<br /><span class="dim">Currently leads Manufacture Cup S2. Top three in six different championships &mdash; the most podiums without a second title.</span></span></li>
+      <li><span class="t-count">1</span><span class="t-name">Barry</span><span class="t-list">Wed Gr.3 S1 (by one point)<br /><span class="dim">The only driver to appear in all 19 tournaments.</span></span></li>
+      <li><span class="t-count">1</span><span class="t-name">t0pher</span><span class="t-list">Super Formula S2<br /><span class="dim">Also Super Formula S1 runner-up. Has never completed a full Multi-Class season.</span></span></li>
+      <li><span class="t-count">1</span><span class="t-name">LART Eric</span><span class="t-list">Constructor's Cup 2.0<br /><span class="dim">A newcomer to Multi-Class &mdash; registered for the Community Cup, never raced a Multi-Class round.</span></span></li>
+    </ul>
+    <p class="note">TVDV's title arrived only last week &mdash; before Wed Gr.3 S2 closed on July 23 he
+    had four Multi-Class seasons and 15 tournaments without ever topping one, finishing P3, P4, P4, P6,
+    P7 and P8 across the league's biggest series. Worth noting he won the championship he himself
+    organises, which is either a credential or a punchline depending on who you ask.</p>
+  </section>
+
+  <!-- 05 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">05</span><h2>Four Seasons Of Multi-Class</h2></div>
+    <p class="reveal">This is the table that matters most, because S5 is a Multi-Class season. Position
+    in each of the four completed Multi-Class championships, oldest to newest.</p>
+    <div class="table-scroll reveal">
+      <table class="arc-table">
+        <thead><tr>
+          <th class="h-name">Driver</th><th>S1<br /><span style="opacity:.6">Nov 25</span></th>
+          <th>S2<br /><span style="opacity:.6">Feb 26</span></th><th>S3<br /><span style="opacity:.6">Apr 26</span></th>
+          <th>S4<br /><span style="opacity:.6">Jul 26</span></th><th>Seasons</th><th>Direction</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="h-name">Sully</td><td class="p3">P6</td><td class="p2">P2</td><td class="p1">P1</td><td class="p1">P1</td><td>4</td><td class="trend t-up">&#9650; Rising</td></tr>
+          <tr><td class="h-name">iCrazy</td><td class="p2">P2</td><td class="p2">P3</td><td class="na">&mdash;</td><td class="p2">P2</td><td>3</td><td class="trend t-flat">Elite, flat</td></tr>
+          <tr><td class="h-name">TVDV</td><td class="p2">P3</td><td class="p2">P4</td><td class="p4">P8</td><td class="p2">P4</td><td>4</td><td class="trend t-flat">Steady</td></tr>
+          <tr><td class="h-name">Dark Delacroix</td><td class="p4">P9</td><td class="p4">P7</td><td class="p2">P2</td><td class="p2">P3</td><td>4</td><td class="trend t-up">&#9650; Rising</td></tr>
+          <tr><td class="h-name">Barry</td><td class="p3">P5</td><td class="p3">P5</td><td class="p2">P3</td><td class="p4">P8</td><td>4</td><td class="trend t-down">&#9660; Slipping</td></tr>
+          <tr><td class="h-name">Jett</td><td class="p2">P4</td><td class="p3">P6</td><td class="p3">P5</td><td class="p4">P9</td><td>4</td><td class="trend t-down">&#9660; Slipping</td></tr>
+          <tr><td class="h-name">Boltus</td><td class="na">&mdash;</td><td class="p4">P9</td><td class="p4">P7</td><td class="p4">P7</td><td>3</td><td class="trend t-up">&#9650; Rising</td></tr>
+          <tr><td class="h-name">PunkTree</td><td class="p5">P13</td><td class="na">&mdash;</td><td class="p3">P6</td><td class="p2">P5</td><td>3</td><td class="trend t-up">&#9650; Rising</td></tr>
+          <tr><td class="h-name">Speedysully</td><td class="na">&mdash;</td><td class="na">&mdash;</td><td class="p5">P14</td><td class="p3">P6</td><td>2</td><td class="trend t-up">&#9650; Rising</td></tr>
+          <tr><td class="h-name">Pawl</td><td class="p4">P7</td><td class="p4">P11</td><td class="p4">P9</td><td class="p5">P13</td><td>4</td><td class="trend t-down">&#9660; Slipping</td></tr>
+          <tr><td class="h-name">Ncardw11</td><td class="p5">P14</td><td class="p5">P12</td><td class="p4">P11</td><td class="p4">P10</td><td>4</td><td class="trend t-up">&#9650; Rising</td></tr>
+          <tr><td class="h-name">CtillVR</td><td class="na">&mdash;</td><td class="na">&mdash;</td><td class="p5">P12</td><td class="p5">P16</td><td>2</td><td class="trend t-down">&#9660; Slipping</td></tr>
+          <tr><td class="h-name">LART_Jesus</td><td class="na">&mdash;</td><td class="na">&mdash;</td><td class="p5">P15</td><td class="p4">P11</td><td>2</td><td class="trend t-up">&#9650; Rising</td></tr>
+          <tr><td class="h-name">RollingSmoke</td><td class="p4">P10</td><td class="na">&mdash;</td><td class="na">&mdash;</td><td class="p5">P15</td><td>2</td><td class="trend t-down">&#9660; Slipping</td></tr>
+          <tr><td class="h-name">TheEliteWeasel61</td><td class="p5">P16</td><td class="p5">P15</td><td class="p5">P16</td><td class="p5">P14</td><td>4</td><td class="trend t-flat">Flat</td></tr>
+          <tr><td class="h-name">BTBG_Rage</td><td class="p1">P1</td><td class="p1">P1</td><td class="na">&mdash;</td><td class="na">&mdash;</td><td>2</td><td class="trend t-down">Inactive</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">BTBG_Rage is listed last despite winning S1 and S2 because he has not raced since
+    February and is excluded from the candidate ranking. Among the active drivers, three things jump out.
+    <strong>Sully's arc is the story of the league</strong>
+    &mdash; P6 in S1 to back-to-back titles. <strong>iCrazy is the most consistently elite
+    Multi-Class driver after him</strong>, P2/P3/P2 in the three seasons he entered, which one season
+    of data completely hides. And <strong>Barry and Jett are both drifting the wrong way</strong> in
+    this format even as they dominate elsewhere.</p>
+  </section>
+
+  <!-- 06 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">06</span><h2>The Board</h2></div>
+    <p class="reveal">Active drivers only, ranked by Captain Index. MC is the four-season Multi-Class
+    score (1.00 = best on record); 2026 is rounds started across every live series.</p>
+    <div class="rec-legend reveal">
+      <span class="rec-legend-item"><span class="sw p1"></span>Won / P1</span>
+      <span class="rec-legend-item"><span class="sw p2"></span>Top 15%</span>
+      <span class="rec-legend-item"><span class="sw p3"></span>Top third</span>
+      <span class="rec-legend-item"><span class="sw p4"></span>Mid</span>
+      <span class="rec-legend-item"><span class="sw p5"></span>Bottom third</span>
+      <span class="rec-legend-item">&#9733; = recommended captain</span>
+    </div>
+    <div class="table-scroll reveal">
+      <table class="rec-table">
+        <thead><tr>
+          <th class="h-name">Driver</th><th>IDX</th><th>MC<br /><span style="opacity:.6">4 seasons</span></th>
+          <th>All<br /><span style="opacity:.6">19 events</span></th><th>2026<br />Rounds</th>
+          <th>Events</th><th>MC<br />Seasons</th><th>Wins</th><th>Titles</th><th>Admin</th>
+        </tr></thead>
+        <tbody>
+          <tr class="is-cap"><td class="h-name">Sully</td><td class="idx">0.830</td><td class="p1">0.94</td><td class="p1">0.84</td><td class="p1">10/10</td><td>11</td><td class="p1">4</td><td class="p1">15</td><td class="p1">4</td><td class="na">&mdash;</td></tr>
+          <tr class="is-cap"><td class="h-name">TVDV</td><td class="idx">0.823</td><td class="p2">0.73</td><td class="p2">0.74</td><td class="p2">23/27</td><td class="p1">15</td><td class="p1">4</td><td class="p3">5</td><td class="p3">1</td><td class="p1">2&times;</td></tr>
+          <tr class="is-cap"><td class="h-name">Barry</td><td class="idx">0.766</td><td class="p2">0.70</td><td class="p2">0.76</td><td class="p2">31/34</td><td class="p1">17</td><td class="p1">4</td><td class="p2">7</td><td class="p3">1</td><td class="p1">1&times;</td></tr>
+          <tr class="is-cap"><td class="h-name">Jett</td><td class="idx">0.744</td><td class="p3">0.61</td><td class="p2">0.76</td><td class="p2">30/34</td><td class="p1">16</td><td class="p1">4</td><td class="p3">6</td><td class="p3">1</td><td class="p2">1&times;</td></tr>
+          <tr><td class="h-name">Pawl</td><td class="idx">0.691</td><td class="p4">0.43</td><td class="p3">0.62</td><td class="p1">24/25</td><td class="p2">13</td><td class="p1">4</td><td class="p5">3</td><td class="p5">0</td><td class="p1">2&times;</td></tr>
+          <tr><td class="h-name">Speedysully</td><td class="idx">0.670</td><td class="p4">0.47</td><td class="p3">0.66</td><td class="p1">17/17</td><td class="p5">4</td><td class="p4">2</td><td class="p5">2</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">iCrazy</td><td class="idx">0.650</td><td class="p1">0.90</td><td class="p4">0.54</td><td class="p5">19/34</td><td class="p1">15</td><td class="p2">3</td><td class="p2">11</td><td class="p2">2</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">Boltus</td><td class="idx">0.644</td><td class="p3">0.56</td><td class="p4">0.59</td><td class="p1">18/18</td><td class="p2">12</td><td class="p2">3</td><td class="p5">3</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">SnakePlissken</td><td class="idx">0.623</td><td class="na">&mdash;</td><td class="p3">0.64</td><td class="p1">16/16</td><td class="p5">3</td><td class="p5">0</td><td class="p5">0</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">Dark Delacroix</td><td class="idx">0.600</td><td class="p2">0.73</td><td class="p4">0.50</td><td class="p4">22/34</td><td class="p1">15</td><td class="p1">4</td><td class="p3">5</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">Ncardw11</td><td class="idx">0.562</td><td class="p5">0.33</td><td class="p4">0.49</td><td class="p1">25/25</td><td class="p1">16</td><td class="p1">4</td><td class="p5">0</td><td class="p5">0</td><td class="p4">host</td></tr>
+          <tr><td class="h-name">CtillVR</td><td class="idx">0.494</td><td class="p5">0.10</td><td class="p4">0.54</td><td class="p1">32/34</td><td class="p3">6</td><td class="p4">2</td><td class="p5">1</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">PunkTree</td><td class="idx">0.481</td><td class="p3">0.53</td><td class="p5">0.33</td><td class="p5">12/19</td><td class="p3">9</td><td class="p2">3</td><td class="p5">0</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">RollingSmoke</td><td class="idx">0.478</td><td class="p5">0.16</td><td class="p4">0.45</td><td class="p2">31/34</td><td class="p3">10</td><td class="p4">2</td><td class="p5">1</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">t0pher</td><td class="idx">0.413</td><td class="p5">0.31</td><td class="p4">0.54</td><td class="p5">8/24</td><td class="p2">12</td><td class="p5">1</td><td class="p2">9</td><td class="p3">1</td><td class="na">&mdash;</td></tr>
+          <tr><td class="h-name">LART_Jesus</td><td class="idx">0.409</td><td class="p5">0.23</td><td class="p5">0.33</td><td class="p1">10/10</td><td class="p5">5</td><td class="p4">2</td><td class="p5">1</td><td class="p5">0</td><td class="na">&mdash;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><strong>Read the top four rows against iCrazy's.</strong> He has the second-best
+    Multi-Class record ever recorded (0.90) and 11 class wins, but 19 of 33 rounds in 2026 drops him to
+    7th overall. That single tension &mdash; best-in-format pace against thinnest recent attendance
+    &mdash; is the real captain decision. Leadfoot GT is excluded (taking S5 off, fill-in only).
+    Wins combine Multi-Class class wins with outright round wins elsewhere.</p>
+  </section>
+
+  <!-- 07 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">07</span><h2>The Newcomers</h2></div>
+    <p class="reveal">Several active drivers have never raced a Multi-Class round. None can be a
+    captain &mdash; there's no record in this format to seed them on &mdash; but the top two are
+    first-round draft material, and whoever's writing the pick list should know who they are.</p>
+    <div class="newcomers reveal">
+      <div class="nc">
+        <div class="nc-name">SnakePlissken</div>
+        <div class="nc-tag">Best newcomer &middot; IDX 0.623</div>
+        <p class="nc-body">Perfect <b>15 of 15</b> rounds in 2026 &mdash; P4 in Manufacture Cup S2 from
+        all nine starts, P5 in Group 1 from all seven. Ranks 9th overall despite zero Multi-Class
+        history. The most reliable unproven driver on the board.</p>
+      </div>
+      <div class="nc">
+        <div class="nc-name">LART Eric</div>
+        <div class="nc-tag">Constructor's Cup 2.0 champion</div>
+        <p class="nc-body">Won Constructor's Cup 2.0 outright on 193 points, ahead of Ncardw11 and
+        LART_Jesus. Registered for the Community Cup. A title-holder with no Multi-Class start &mdash;
+        the biggest unknown quantity in the pool.</p>
+      </div>
+      <div class="nc">
+        <div class="nc-name">WERA-Fraiji</div>
+        <div class="nc-tag">P7 Manufacture Cup S2</div>
+        <p class="nc-body">92 points from six starts and an outright round win at Trial Mountain in R3.
+        Also ran GR3 Season 3 back in 2025. Solid mid-pack pace, partial seasons only.</p>
+      </div>
+      <div class="nc">
+        <div class="nc-name">MPR_Modfox &middot; H. Senna &middot; JoeKing02</div>
+        <div class="nc-tag">Fringe &middot; low sample</div>
+        <p class="nc-body">Modfox is P12 in Group 1 and hosts Community Cup R3. H. Senna scored on his
+        Group 1 debut at Barcelona, then took 16 points at Interlagos, and is active in the S5 chat. JoeKing02 is P9 in the Manufacture Cup
+        across seven starts.</p>
+      </div>
+    </div>
+    <p class="note">Also worth a mention if they resurface: <strong>fri9875</strong> (won the
+    4x4x4x4 Showdown outright, P8 in Wed Gr.3 S1, two Multi-Class seasons) and
+    <strong>Shabba_Ranks</strong> (P8 in both Multi-Class S1 and S2). Neither has raced since April.</p>
+  </section>
+
+  <!-- 08 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">08</span><h2>Which Captain Set Is Fairest</h2></div>
+    <p class="reveal">Take the 16 active drivers, rank them by Captain Index, and run iCrazy's
+    reverse-order snake draft from each candidate captain set &mdash; weakest captain picks first,
+    order reverses each round. Unlike a single-season view, the full history separates the options
+    clearly.</p>
+    <div class="sim reveal">
+      <div class="sim-card">
+        <div class="sim-name">Recommended &middot; full-history top 4</div>
+        <div class="sim-caps">Sully &middot; TVDV &middot; Barry &middot; Jett</div>
+        <div class="bars">
+          <div class="bar-row"><span class="bar-name">Sully</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="bar-val">2.49</span></div>
+          <div class="bar-row"><span class="bar-name">TVDV</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="bar-val">2.49</span></div>
+          <div class="bar-row"><span class="bar-name">Barry</span><span class="bar-track"><span class="bar-fill" style="width:99%"></span></span><span class="bar-val">2.46</span></div>
+          <div class="bar-row"><span class="bar-name">Jett</span><span class="bar-track"><span class="bar-fill" style="width:97%"></span></span><span class="bar-val">2.42</span></div>
+        </div>
+        <div class="sim-spread"><span class="sim-num">3.9%</span><span class="sim-lbl">team spread<br />tightest realistic</span></div>
+      </div>
+      <div class="sim-card">
+        <div class="sim-name">Alt &middot; swap Barry for iCrazy</div>
+        <div class="sim-caps">Sully &middot; TVDV &middot; iCrazy &middot; Jett</div>
+        <div class="bars">
+          <div class="bar-row"><span class="bar-name">Sully</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="bar-val">2.51</span></div>
+          <div class="bar-row"><span class="bar-name">TVDV</span><span class="bar-track"><span class="bar-fill" style="width:99%"></span></span><span class="bar-val">2.48</span></div>
+          <div class="bar-row"><span class="bar-name">Jett</span><span class="bar-track"><span class="bar-fill" style="width:98%"></span></span><span class="bar-val">2.45</span></div>
+          <div class="bar-row"><span class="bar-name">iCrazy</span><span class="bar-track"><span class="bar-fill" style="width:97%"></span></span><span class="bar-val">2.42</span></div>
+        </div>
+        <div class="sim-spread"><span class="sim-num">4.7%</span><span class="sim-lbl">team spread<br />keeps admin free</span></div>
+      </div>
+      <div class="sim-card">
+        <div class="sim-name">Barry's lean &middot; S4 top 4</div>
+        <div class="sim-caps">Sully &middot; iCrazy &middot; Dark Delacroix &middot; TVDV</div>
+        <div class="bars">
+          <div class="bar-row"><span class="bar-name">TVDV</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="bar-val">2.55</span></div>
+          <div class="bar-row"><span class="bar-name">Sully</span><span class="bar-track"><span class="bar-fill" style="width:99%"></span></span><span class="bar-val">2.53</span></div>
+          <div class="bar-row"><span class="bar-name">iCrazy</span><span class="bar-track"><span class="bar-fill" style="width:95%"></span></span><span class="bar-val">2.43</span></div>
+          <div class="bar-row"><span class="bar-name">Dark Delacroix</span><span class="bar-track"><span class="bar-fill" style="width:92%"></span></span><span class="bar-val">2.35</span></div>
+        </div>
+        <div class="sim-spread"><span class="sim-num">8.6%</span><span class="sim-lbl">team spread<br />widest of the four</span></div>
+      </div>
+      <div class="sim-card">
+        <div class="sim-name">S4 bottom 4</div>
+        <div class="sim-caps">Pawl &middot; TheEliteWeasel61 &middot; RollingSmoke &middot; CtillVR</div>
+        <div class="bars">
+          <div class="bar-row"><span class="bar-name">&mdash;</span><span class="bar-track"></span><span class="bar-val">n/a</span></div>
+        </div>
+        <p class="nc-body" style="margin-bottom:12px">Can't be simulated as proposed. TheEliteWeasel61
+        ranks 25th of 29 on the full-history index &mdash; last among four-season Multi-Class drivers
+        &mdash; while CtillVR sits second in Group 1, two points a round off the lead. The set mixes a
+        genuine back-marker with a title contender and calls both a handicap.</p>
+        <div class="sim-spread"><span class="sim-num">&#10007;</span><span class="sim-lbl">not<br />recommended</span></div>
+      </div>
+    </div>
+    <ul class="facts reveal">
+      <li><span class="fact-num">3.9<span style="font-size:0.5em">%</span></span><span class="fact-text"><strong>vs 8.6% &mdash; the captain set genuinely matters.</strong> With four Multi-Class seasons in view, Sully, TVDV, Barry and Jett sit within 0.09 index points of each other, so the snake draft closes the gap almost perfectly. S4's top four span 0.83 down to 0.60, and reverse-order picking can't fully absorb that.</span></li>
+      <li><span class="fact-num">85<span style="font-size:0.5em">%</span></span><span class="fact-text"><strong>is the worst recent attendance in the recommended four</strong> &mdash; TVDV at 23 of 27 rounds. Sully is 10/10, Barry 31/34, Jett 30/34. In S4's top four the weakest link is iCrazy at <strong>19 of 34</strong>, which is the specific risk a four-man team can least afford.</span></li>
+      <li><span class="fact-num">4</span><span class="fact-text"><strong>Multi-Class seasons each.</strong> All four recommended captains have raced every Multi-Class season the league has run. Only six active drivers can say that &mdash; the other two are Dark Delacroix and Pawl.</span></li>
+      <li><span class="fact-num">1</span><span class="fact-text"><strong>prior event has ever used this format.</strong> The 4x4x4x4 Showdown, one round at Spa in November 2025, split 16 drivers four-per-class across Gr1&ndash;Gr4. Class winners were fri9875 (Gr4), oatmeal_squared (Gr3), Pawl (Gr1) and iCrazy (Gr2) &mdash; worth re-reading before setting R5 and R10 rules.</span></li>
+    </ul>
+    <p class="note">Simulation drafts strictly by Captain Index with no class or positional strategy,
+    on the assumption the 16 active drivers listed in section 07 are the field. Real drafts pick on
+    class fit and friendships, so treat these as a floor on fairness rather than a forecast. If the
+    actual signups differ, the ranking holds but the spreads move.</p>
+  </section>
+
+  <!-- 09 -->
+  <section>
+    <div class="section-head reveal"><span class="section-num">09</span><h2>Recommendation</h2></div>
+    <div class="rec-box reveal">
+      <div class="rec-inner">
+        <p><strong>Captains: Sully, TVDV, Barry and Jett &mdash; picking in reverse order.</strong>
+        Barry's instinct to use past standings is right; it just needs a four-season window instead of
+        one. These four are the only drivers who combine a full Multi-Class history, top-four
+        all-event records, and <strong>85%+ attendance across every series running right now</strong>
+        &mdash; and they produce the tightest four teams of any set tested.</p>
+        <div class="rec-caps">
+          <div class="rec-cap">
+            <div class="rec-cap-ord">Picks 4th</div>
+            <div class="rec-cap-name">Sully</div>
+            <div class="rec-cap-why">4 career titles, 2&times; MC champion, 15 class wins, 10/10. Must be a captain or pick 1 decides the title.</div>
+          </div>
+          <div class="rec-cap">
+            <div class="rec-cap-ord">Picks 3rd</div>
+            <div class="rec-cap-name">TVDV</div>
+            <div class="rec-cap-why">2nd overall. Just won Wed Gr.3 S2 &mdash; the series he runs. 4 MC seasons, 15 events.</div>
+          </div>
+          <div class="rec-cap">
+            <div class="rec-cap-ord">Picks 2nd</div>
+            <div class="rec-cap-name">Barry</div>
+            <div class="rec-cap-why">The only driver in all 19 events. Wed S1 champion, S2 runner-up, 31/34 rounds.</div>
+          </div>
+          <div class="rec-cap">
+            <div class="rec-cap-ord">Picks 1st</div>
+            <div class="rec-cap-name">Jett</div>
+            <div class="rec-cap-why">Leads Manufacture Cup and runs it. Top three in six championships, 30/34 rounds.</div>
+          </div>
+        </div>
+        <h3 style="margin-top:4px">Three live objections, all fair</h3>
+        <p class="dim"><strong>Barry is the admin.</strong> Captaining while running registration, the
+        schedule and the draft is real work and invites awkward optics. If he'd rather stay neutral,
+        swap in <strong>iCrazy</strong> &mdash; second-best Multi-Class record ever, two career titles,
+        and he proposed the draft. Team spread only moves 3.9% &rarr; 4.7%.</p>
+        <p class="dim"><strong>Barry and Jett are slipping in this specific format</strong> (P8 and
+        P9 in S4). If the room wants captains picked purely on Multi-Class pace, the honest answer is
+        Sully, iCrazy, Dark Delacroix and TVDV &mdash; but accept the 8.6% spread and iCrazy's
+        19-of-34 attendance that come with it.</p>
+        <p class="dim" style="margin-bottom:0"><strong>Speedysully has the best live form of anyone
+        outside the four.</strong> He now <strong>leads Group 1</strong> on 133 points after winning
+        Interlagos on July 27, with a perfect 17-of-17 attendance record in 2026 and the steepest
+        improvement curve in the league &mdash; P14 in Multi-Class S3 to P6 in S4. Two Multi-Class
+        seasons is a thin record to captain on, but he is the first name to add if the field is
+        bigger than 16 or anyone above him passes.</p>
+      </div>
+    </div>
+
+    <h3>Three things to settle before Thursday noon</h3>
+    <ol class="steps reveal">
+      <li><b>Drop the "bottom 4" option.</b> It reads fair and isn't. CtillVR is running second in Group 1 right now
+      and TheEliteWeasel61 is the lowest-ranked four-season driver in the league &mdash; the set treats
+      them as equivalent, and hands the weekly four-driver coordination job to the drivers with the
+      least of that experience.</li>
+      <li><b>Make the time trial a tiebreak, not the method.</b> Use it to set pick order among agreed
+      captains. As a selection filter it promotes exactly the wrong profile &mdash; t0pher is a Super
+      Formula champion on 8 of 23 rounds, and has never finished a Multi-Class season.</li>
+      <li><b>Publish an attendance expectation with the registration post.</b> This format punishes
+      absence four times harder than S4 did: one missing driver is 25% of a team's score, and R5 and
+      R10 run all four classes at once. A one-line "if you can't make 8 of 10, take a reserve spot"
+      would do it.</li>
+    </ol>
+  </section>
+
+  <footer class="reveal">
+    Hairpin Racing &middot; Multi-Class Season 5 &middot; Draft Prep
+    <div class="sig">19 tournaments &middot; 4 Multi-Class seasons &middot; Jul 2025 &ndash; Jul 2026</div>
+  </footer>
+
+</div>
+
+<div class="flag"></div>
+
+<button class="theme-btn" aria-label="Toggle colour theme">&#9675; light</button>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
+
+  (function() {
+    const btn = document.querySelector('.theme-btn');
+    function updateBtn(t) { if (btn) btn.textContent = t === 'dark' ? '○ light' : '● dark'; }
+    updateBtn(document.documentElement.dataset.theme || 'dark');
+    if (btn) btn.addEventListener('click', function() {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('hairpin-theme', next);
+      updateBtn(next);
+    });
+  })();
+</script>
+
+</body>
+</html>

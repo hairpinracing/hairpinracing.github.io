@@ -229,7 +229,7 @@
   }
   .callout-tag { font-family: var(--body); font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 16px; display: block; }
   .callout-inner p { font-family: var(--display); font-size: clamp(22px, 3.5vw, 34px); line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase; margin: 0; color: var(--ink); max-width: 720px; }
-  .callout-sub { font-family: var(--body); font-size: 14px; color: var(--ink-dim); line-height: 1.7; text-transform: none; margin: 16px 0 0; letter-spacing: 0; max-width: 65ch; }
+  .callout-inner p.callout-sub { font-family: var(--body); font-size: 14px; color: var(--ink-dim); line-height: 1.7; text-transform: none; margin: 16px 0 0; letter-spacing: 0; max-width: 65ch; }
   .callout-hl { color: var(--accent-2); }
 
   /* S1 back callout */
@@ -428,6 +428,16 @@
     h1 .word > span, .subtitle > span { transform: none !important; }
     html { scroll-behavior: auto; }
   }
+
+  /* Final podium strip (S2 close-out) */
+  .final-podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 0 0 22px; }
+  .fp-item { background: var(--bg-2); padding: 18px 20px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .fp-pos { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-dim); }
+  .fp-1 .fp-pos { color: var(--accent); }
+  .fp-name { font-family: var(--display); font-size: 26px; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1; }
+  .fp-1 .fp-name { color: var(--accent); }
+  .fp-note { font-size: 11.5px; color: var(--ink-dim); line-height: 1.5; }
+  @media (max-width: 640px) { .final-podium { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -438,17 +448,17 @@
   <div class="marquee-track">
     <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
     <span>Season 2</span><span class="dot">●</span>
-    <span>R8/9 Complete</span><span class="dot">●</span>
-    <span>TVDV Leads · 178 pts</span><span class="dot">●</span>
-    <span>R9 Raced Jul 15 · Results Pending</span><span class="dot">●</span>
+    <span>Season Complete</span><span class="dot">●</span>
+    <span>Champion: TVDV</span><span class="dot">●</span>
+    <span>Barry 2nd · Boltus 3rd</span><span class="dot">●</span>
     <span>Kyoto Driving Park · GT-R Nismo</span><span class="dot">●</span>
     <span>50 Min · BOP · 4x–8x Wear</span><span class="dot">●</span>
     <span>S1 Champion: Barry</span><span class="dot">●</span>
     <span><b>Wednesday Night Gr.3</b></span><span class="dot">●</span>
     <span>Season 2</span><span class="dot">●</span>
-    <span>R8/9 Complete</span><span class="dot">●</span>
-    <span>TVDV Leads · 178 pts</span><span class="dot">●</span>
-    <span>R9 Raced Jul 15 · Results Pending</span><span class="dot">●</span>
+    <span>Season Complete</span><span class="dot">●</span>
+    <span>Champion: TVDV</span><span class="dot">●</span>
+    <span>Barry 2nd · Boltus 3rd</span><span class="dot">●</span>
     <span>Kyoto Driving Park · GT-R Nismo</span><span class="dot">●</span>
     <span>50 Min · BOP · 4x–8x Wear</span><span class="dot">●</span>
     <span>S1 Champion: Barry</span><span class="dot">●</span>
@@ -463,7 +473,7 @@
   </nav>
 
   <header>
-    <div class="status-badge">● Season Underway · R8/9 Complete</div>
+    <div class="status-badge">✓ Season 2 · Complete</div>
     <h1>
       <span class="word w1"><span>Wednesday</span></span><br />
       <span class="word w2"><span>Gr.3.</span></span>
@@ -471,9 +481,9 @@
     <div class="subtitle"><span>BOP Series · Season 2</span></div>
     <div class="meta">
       <div><div class="k">Season</div><div class="v">2</div></div>
-      <div><div class="k">Leader</div><div class="v">TVDV</div></div>
+      <div><div class="k">Champion</div><div class="v">TVDV</div></div>
+      <div><div class="k">Runner-Up</div><div class="v">Barry</div></div>
       <div><div class="k">Race Length</div><div class="v">50 Min</div></div>
-      <div><div class="k">Status</div><div class="v v-live">Ongoing</div></div>
     </div>
   </header>
 
@@ -484,13 +494,14 @@
       <h2>Season 2</h2>
     </div>
     <div class="callout-inner reveal">
-      <span class="callout-tag">● Season 2 — 8 of 9 Races Complete · Through July 8, 2026</span>
-      <p>Down to the wire.<br/><span class="callout-hl">TVDV</span> leads with 178 points after a dominant R8 win at Trial Mountain.</p>
+      <span class="callout-tag">✓ Season 2 — Complete · All 9 Races Run · Champion Crowned Jul 23, 2026</span>
+      <p>He ran it and he won it.<br/><span class="callout-hl">TVDV</span> takes the Season 2 title — the series organiser, champion of his own championship.</p>
       <p class="callout-sub">
-        TVDV took P1 and fastest lap at Trial Mountain to extend the points lead over <span class="callout-hl">Barry</span> (158),
-        with Jett (138) and Boltus (137) still mathematically alive. Race 9 — the season finale at Kyoto Driving Park
-        in the GT-R Nismo GT3 — ran the night of <span class="callout-hl">July 15, 2026</span>, but official results
-        haven't been posted to the league yet. Standings below reflect Races 1–8.
+        Organiser TVDV closed out the season he ran, holding off <span class="callout-hl">Barry</span> in second.
+        Third went down to the final round: Boltus and Jett arrived at Kyoto separated by a single point, and
+        <span class="callout-hl">Boltus</span> nudged ahead to take the last podium spot. Announcing the result,
+        TVDV thanked "everyone who showed up consistently" and said he'd poll the group on whether to keep racing
+        Wednesdays or move to a different night for a bigger grid.
       </p>
     </div>
     <a class="s1-callout reveal" href="../">
@@ -556,7 +567,7 @@
           <tr class="round-done"><td class="round-num">R6</td><td class="date-col">Jun 24</td><td class="track-name">Tsukuba Circuit</td><td class="date-col">Lexus RC F</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
           <tr class="round-done"><td class="round-num">R7</td><td class="date-col">Jul 1</td><td class="track-name">Monza</td><td class="date-col">Aston Martin Vantage</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
           <tr class="round-done"><td class="round-num">R8</td><td class="date-col">Jul 8</td><td class="track-name">Trial Mountain</td><td class="date-col">Ford Mustang</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
-          <tr class="round-next"><td class="round-num">R9</td><td class="date-col">Jul 15</td><td class="track-name">Kyoto Driving Park</td><td class="date-col">GT-R Nismo</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-upcoming">Results Pending</span></td></tr>
+          <tr class="round-done"><td class="round-num">R9</td><td class="date-col">Jul 15</td><td class="track-name">Kyoto Driving Park</td><td class="date-col">GT-R Nismo</td><td class="date-col">50 min</td><td class="date-col">4–8×</td><td class="date-col"><span class="status-done">✓ Complete</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -568,7 +579,13 @@
       <div class="section-num">04</div>
       <h2>Championship Standings</h2>
     </div>
-    <p class="reveal section-intro tight">After 8 of 9 rounds. Fastest lap bonus included. Points scored only by race starters. R9 (Kyoto, Jul 15) has been raced but results aren't posted yet — not reflected below.</p>
+    <p class="reveal section-intro tight">Final podium — TVDV, Barry, Boltus — as announced by the organiser on July 23, 2026. Point totals below are the last ones posted to the league (after R8); the Round 9 tally was only ever shared as an image, so the numbers here stop at Trial Mountain even though the order is final.</p>
+    <div class="final-podium reveal">
+      <div class="fp-item fp-1"><span class="fp-pos">Champion</span><span class="fp-name">TVDV</span><span class="fp-note">organiser and title-winner</span></div>
+      <div class="fp-item fp-2"><span class="fp-pos">2nd</span><span class="fp-name">Barry</span><span class="fp-note">runner-up in back-to-back seasons</span></div>
+      <div class="fp-item fp-3"><span class="fp-pos">3rd</span><span class="fp-name">Boltus</span><span class="fp-note">took P3 from Jett at Kyoto</span></div>
+    </div>
+
     <div class="reveal table-scroll">
       <table class="standings-table">
         <thead>
@@ -607,6 +624,7 @@
         </tbody>
       </table>
     </div>
+    <p class="pts-fl reveal"><strong>On rows 3 and 4:</strong> the table is the last published points snapshot, taken after R8, where Jett led Boltus 138–137. Round 9 at Kyoto reversed them — the organiser confirmed Boltus third on July 23 — but the round’s point tally was never posted in text, so the figures above stop at Trial Mountain.</p>
     <p class="pts-fl reveal">Fastest laps: R1 Boltus (1:52.885) · R2 Jett (1:08.485) · R3 Jett (1:41.571) · R4 Barry (2:10.111) · R5 Jett (1:23.492) · R6 Boltus (2:00.257) · R7 PeekabooRacing (1:49.453) · R8 TVDV (1:52.894)</p>
   </section>
 
@@ -811,7 +829,7 @@
 
 <footer>
   <div>Hairpin Racing · Wednesday Night Gr.3 BOP</div>
-  <div class="sig">Season 2 · R8/9 Complete · TVDV Leads · R9 Results Pending</div>
+  <div class="sig">Season 2 · Complete · Champion: TVDV ★</div>
 </footer>
 
 <button class="theme-btn" onclick="(function(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('hairpin-theme',t);})()">Toggle Theme</button>
