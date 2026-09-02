@@ -438,6 +438,19 @@
   .ga-day { padding: 8px 16px 4px; font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); border-bottom: 1px solid var(--line); background: var(--bg-2); }
   @media (max-width: 560px) { .ga-wave { grid-template-columns: 80px 1fr; } .ga-wave .ga-tag { grid-column: 2; } }
 
+  /* Race schedule: collapsible day sections */
+  .sd { border: 1px solid var(--line); margin-bottom: 8px; }
+  .sd-head { width: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-2); border: 0; color: var(--ink); text-align: left; cursor: pointer; font-family: var(--body); }
+  .sd-head:hover { background: var(--line); }
+  .sd-date { font-family: var(--display); font-size: 17px; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; }
+  .sd-sum { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sd-sum b { color: var(--accent-2); font-weight: 700; }
+  .sd-chev { font-family: var(--mono); font-size: 14px; color: var(--ink-dim); }
+  .sd.open .sd-chev { color: var(--accent); }
+  .sd-body { padding: 8px 8px 0; }
+  .sd-body .exp-card { margin-bottom: 8px; }
+  @media (max-width: 560px) { .sd-head { grid-template-columns: 1fr auto; } .sd-sum { grid-column: 1 / -1; white-space: normal; } }
+
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
   .kv .row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
@@ -943,7 +956,7 @@
       <span class="section-num">04</span>
       <h2>Race Schedule — COTA</h2>
     </div>
-    <p class="dim reveal" style="margin-bottom:18px;">On-track sessions across the weekend. Times are local (Central) and firm up as the FIA releases the final timetable.</p>
+    <p class="dim reveal" style="margin-bottom:18px;">Official Lone Star Le Mans timetable, all times Central. Tap a day to expand — the race row is highlighted.</p>
 
     <div id="scheduleList"></div>
     <button class="add-btn" data-listadd="schedule">+ Add session</button>
@@ -1903,10 +1916,47 @@
       '<div style="margin-top:14px;text-align:right;"><button class="btn list-remove" data-kind="' + kind + '" data-id="' + item.id + '">Remove</button></div>' +
     '</div>';
   }
+  // Schedule is grouped by day; days start collapsed except the current trip day.
+  const openDays = new Set(); let openDaysReady = false;
+  function loadOpenDays() {
+    if (openDaysReady) return; openDaysReady = true;
+    try { const saved = JSON.parse(localStorage.getItem(KEY + '-days') || 'null'); if (Array.isArray(saved)) { saved.forEach(function (d) { openDays.add(d); }); return; } } catch (e) {}
+    openDays.add(nowCT().ymd);
+  }
+  function saveOpenDays() { try { localStorage.setItem(KEY + '-days', JSON.stringify(Array.from(openDays))); } catch (e) {} }
+  function renderScheduleDays(el, arr) {
+    loadOpenDays();
+    const byDay = {}; arr.forEach(function (it) { const d = it.day || ''; (byDay[d] = byDay[d] || []).push(it); });
+    el.innerHTML = Object.keys(byDay).sort().map(function (d) {
+      const items = byDay[d];
+      const open = openDays.has(d) || items.some(function (it) { return openList.schedule.has(it.id); });
+      // Collapsed summary: the WEC beats only, abbreviated (skip autographs / lap of honour).
+      const wec = items.filter(function (it) { return /FIA WEC|6 Hours/i.test(it.session || '') && !/Autograph|Lap of Honour/i.test(it.session || ''); });
+      function abbr(it) {
+        if (it.race) return '<b>RACE ' + esc(it.time) + '</b>';
+        const n = (it.session || '').replace(/^FIA WEC — /, '').replace(/Free Practice /, 'FP').replace(/Qualifying /, 'Q ').replace(/Hyperpole /, 'HP ');
+        return esc(n + (it.time ? ' ' + it.time.replace(/:00 /, ' ') : ''));
+      }
+      const sum = open
+        ? items.length + ' session' + (items.length === 1 ? '' : 's') + ' · tap to collapse'
+        : (wec.length ? wec : items).slice(0, 7).map(abbr).join(' · ');
+      return '<div class="sd' + (open ? ' open' : '') + '">' +
+        '<button type="button" class="sd-head" data-sday="' + esc(d) + '"><span class="sd-date">' + (d ? fmtDate(d) : 'No date') + '</span><span class="sd-sum">' + sum + '</span><span class="sd-chev">' + (open ? '−' : '+') + '</span></button>' +
+        (open ? '<div class="sd-body">' + items.map(function (it) { return openList.schedule.has(it.id) ? listEditCard('schedule', it) : listSummaryCard('schedule', it); }).join('') + '</div>' : '') +
+      '</div>';
+    }).join('');
+  }
+  document.addEventListener('click', function (ev) {
+    const b = ev.target.closest('[data-sday]'); if (!b) return;
+    const d = b.getAttribute('data-sday');
+    if (openDays.has(d)) openDays.delete(d); else openDays.add(d);
+    saveOpenDays(); renderList('schedule');
+  });
   function renderList(kind) {
     const el = document.getElementById(kind + 'List'); if (!el) return;
     const arr = state[kind] || [];
     if (!arr.length) { el.innerHTML = '<p class="dim" style="font-style:italic;margin:0 0 4px;">' + LISTS[kind].empty + '</p>'; return; }
+    if (kind === 'schedule') { renderScheduleDays(el, arr); return; }
     el.innerHTML = arr.map(function (it) { return openList[kind].has(it.id) ? listEditCard(kind, it) : listSummaryCard(kind, it); }).join('');
   }
   function renderAllLists() { ['schedule', 'plan', 'logistics', 'food', 'faq'].forEach(renderList); }
