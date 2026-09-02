@@ -417,6 +417,27 @@
   .ft-meta a { color: var(--accent); text-decoration: none; }
   .ft-meta a:hover { text-decoration: underline; }
 
+  /* Getting around: directions hub + airport runs */
+  .ga { border: 1px solid var(--line); margin-bottom: 14px; }
+  .ga-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--line); font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+  .ga-head .ga-sub { font-weight: 400; letter-spacing: 0.04em; text-transform: none; font-family: var(--mono); font-size: 11px; }
+  .ga-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .ga-link { display: block; padding: 12px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: background 0.2s var(--ease); }
+  .ga-link:hover { background: var(--bg-2); }
+  .ga-link .ga-k { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+  .ga-link .ga-v { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-top: 3px; }
+  .ga-link .ga-n { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-top: 2px; }
+  .ga-wave { display: grid; grid-template-columns: 96px 1fr auto; gap: 12px; align-items: baseline; padding: 10px 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+  .ga-wave:last-child { border-bottom: none; }
+  .ga-wave .ga-t { color: var(--ink); font-weight: 700; }
+  .ga-wave .ga-who { color: var(--ink); }
+  .ga-wave .ga-who small { color: var(--ink-dim); }
+  .ga-wave .ga-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .ga-wave .ga-tag.van { color: var(--accent); }
+  .ga-wave .ga-tag.novan { color: var(--accent-2); }
+  .ga-day { padding: 8px 16px 4px; font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); border-bottom: 1px solid var(--line); background: var(--bg-2); }
+  @media (max-width: 560px) { .ga-wave { grid-template-columns: 80px 1fr; } .ga-wave .ga-tag { grid-column: 2; } }
+
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
   .kv .row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
@@ -946,6 +967,7 @@
     </div>
     <p class="dim reveal" style="margin-bottom:18px;">Van, check-in/out, and the moving parts. Van splits evenly across everyone.</p>
 
+    <div id="getAround"></div>
     <div id="logisticsList"></div>
     <button class="add-btn" data-listadd="logistics">+ Add logistics item</button>
   </section>
@@ -1019,7 +1041,8 @@
       beds: 10,
       payTo: "Felipe",
       payVenmo: "", payZelle: "", payPaypal: "",
-      settleNote: ""
+      settleNote: "",
+      vanDriver: ""
     },
     // Crew filled in via Edit. Traveler: {inTime,outTime,ticket}.
     travelers: [],
@@ -1778,6 +1801,7 @@
         f('Venmo', 'payVenmo') +
         f('PayPal', 'payPaypal') +
         f('Zelle', 'payZelle') +
+        f('Van driver (airport runs)', 'vanDriver') +
         '<div class="ed-field full"><label>Settle-up note (shown to everyone)</label><input data-tf="settleNote" placeholder="e.g. Airbnb charges in August — settle up then" value="' + esc(tr.settleNote) + '" /></div>' +
       '</div>' +
     '</div>';
@@ -2060,8 +2084,78 @@
   function esc2(s) { return s; }
 
   /* ---------- full render ---------- */
+  /* ---------- getting around: directions hub + airport runs ---------- */
+  const PLACES = {
+    aus:   { label: 'AUS airport', q: 'Austin-Bergstrom International Airport, 3600 Presidential Blvd, Austin, TX 78719' },
+    cota:  { label: 'COTA',        q: 'Circuit of The Americas, 9201 Circuit of the Americas Blvd, Austin, TX 78617' }
+  };
+  function houseQuery() { const a = (state.trip.lodgingAddress || '').split(' — ')[0].trim(); return a || null; }
+  function dirUrl(from, to) { return 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(from) + '&destination=' + encodeURIComponent(to) + '&travelmode=driving'; }
+  function gaLink(k, from, to, note) {
+    return '<a class="ga-link" href="' + dirUrl(from.q, to.q) + '" target="_blank" rel="noopener">' +
+      '<div class="ga-k">' + esc(k) + '</div><div class="ga-v">' + esc(from.label) + ' → ' + esc(to.label) + ' ↗</div>' +
+      (note ? '<div class="ga-n">' + esc(note) + '</div>' : '') + '</a>';
+  }
+  // Group arrivals on the same day into pickup waves (gap ≤ 45 min = same run).
+  function arrivalWaves() {
+    const byDay = {};
+    state.travelers.forEach(t => {
+      if (!t.arrive) return;
+      const m = parseClock(t.inTime);
+      (byDay[t.arrive] = byDay[t.arrive] || []).push({ name: t.name || '—', min: m, time: t.inTime, flight: parseFlight(t.inFlight) });
+    });
+    return Object.keys(byDay).sort().map(day => {
+      const ppl = byDay[day].sort((a, b) => (a.min == null) - (b.min == null) || (a.min || 0) - (b.min || 0));
+      const waves = [];
+      ppl.forEach(p => {
+        const w = waves[waves.length - 1];
+        if (w && p.min != null && w.last != null && p.min - w.last <= 45) { w.ppl.push(p); w.last = p.min; }
+        else waves.push({ ppl: [p], first: p.min, last: p.min });
+      });
+      return { day, waves };
+    });
+  }
+  function renderGetAround() {
+    const box = document.getElementById('getAround'); if (!box) return;
+    const houseQ = houseQuery();
+    const house = houseQ ? { label: 'the house', q: houseQ } : null;
+    let html = '';
+    if (house) {
+      html += '<div class="ga"><div class="ga-head"><span>Getting around</span><span class="ga-sub">opens Maps with live traffic</span></div><div class="ga-grid">' +
+        gaLink('Airport → house', PLACES.aus, house, houseQ) +
+        gaLink('House → track', house, PLACES.cota, '~14 mi via TX-130') +
+        gaLink('Track → house', PLACES.cota, house, 'post-race') +
+        gaLink('House → airport', house, PLACES.aus, 'Monday departures') +
+      '</div></div>';
+    }
+    const driver = (state.trip.vanDriver || '').trim();
+    const drv = driver ? state.travelers.find(t => (t.name || '').toLowerCase().indexOf(driver.toLowerCase()) === 0) : null;
+    const days = arrivalWaves();
+    if (days.length) {
+      html += '<div class="ga"><div class="ga-head"><span>Airport runs</span><span class="ga-sub">' + (driver ? 'van: ' + esc(driver) + ' drives' : 'set a van driver in payment settings') + '</span></div>';
+      days.forEach(d => {
+        html += '<div class="ga-day">' + fmtDate(d.day) + '</div>';
+        d.waves.forEach(w => {
+          const t = w.first != null ? (w.first === w.last ? fmtClock(w.first) : fmtClock(w.first) + '–' + fmtClock(w.last)) : 'time TBD';
+          const who = w.ppl.map(p => esc(p.name.replace(/\s*\(.*\)$/, '')) + (p.flight ? ' <small>' + p.flight.label + '</small>' : '')).join(', ');
+          let tag = '';
+          if (drv && drv.arrive === d.day && parseClock(drv.inTime) != null && w.last != null) {
+            const dm = parseClock(drv.inTime);
+            tag = w.ppl.some(p => p.name === drv.name) || w.last >= dm
+              ? '<span class="ga-tag van">van</span>'
+              : '<span class="ga-tag novan">van lands ' + fmtClock(dm) + ' · wait or rideshare</span>';
+          } else if (drv && d.day > drv.arrive) tag = '<span class="ga-tag van">van</span>';
+          else if (drv && d.day < drv.arrive) tag = '<span class="ga-tag novan">before van · rideshare</span>';
+          html += '<div class="ga-wave"><span class="ga-t">' + t + '</span><span class="ga-who">' + who + '</span>' + tag + '</div>';
+        });
+      });
+      html += '</div>';
+    }
+    box.innerHTML = html;
+  }
+
   function renderAll() {
-    renderArrivals(); renderExpenses();
+    renderArrivals(); renderExpenses(); renderGetAround();
     renderTripSettings();
     renderMeSelect();
     renderAllLists();
