@@ -1,0 +1,5 @@
+project_id = "hairpin-austin"
+
+# The trip page calls this with the publishable key only; no user JWT to verify.
+[functions.flight-status]
+verify_jwt = false

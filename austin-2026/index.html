@@ -385,6 +385,37 @@
     .exp-row { flex-wrap: wrap; }
     .trav-side { max-width: none; width: 100%; justify-content: flex-start; }
   }
+  .flight-chip { font-family: var(--mono); font-size: 11px; color: var(--accent); text-decoration: none; white-space: nowrap; }
+  .flight-chip:hover { text-decoration: underline; }
+
+  /* Flight tracker (per leg, shown from the day before travel through the day after) */
+  .ft { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .ft-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 9px; flex-wrap: wrap; }
+  .ft-flight { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+  .ft-flight a { color: var(--accent); text-decoration: none; }
+  .ft-flight a:hover { text-decoration: underline; }
+  .ft-badge { font-family: var(--mono); font-size: 10px; padding: 3px 9px; border: 1px solid; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+  .ft-badge.sched { color: var(--ink-dim); border-color: var(--line); }
+  .ft-badge.ontime { color: var(--accent); border-color: oklch(86% 0.175 97 / 0.45); }
+  .ft-badge.delayed { color: var(--accent-2); border-color: oklch(56% 0.215 28 / 0.5); background: oklch(56% 0.215 28 / 0.06); }
+  .ft-badge.landed { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+  .ft-bar { position: relative; height: 2px; background: var(--line); margin: 0 6px 8px; }
+  .ft-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); transition: width .6s var(--ease); }
+  .ft-fill.delayed { background: var(--accent-2); }
+  .ft-plane { position: absolute; top: 50%; transform: translate(-50%, -50%); font-size: 12px; color: var(--accent); transition: left .6s var(--ease); }
+  .ft-plane.delayed { color: var(--accent-2); }
+  .ft-dot { position: absolute; top: 50%; width: 6px; height: 6px; border-radius: 50%; background: var(--line); transform: translate(-50%, -50%); }
+  .ft-dot.done { background: var(--accent); }
+  .ft-dot.done.delayed { background: var(--accent-2); }
+  .ft-nodes { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
+  .ft-nodes span { width: 25%; }
+  .ft-nodes span:nth-child(2), .ft-nodes span:nth-child(3) { text-align: center; }
+  .ft-nodes span:last-child { text-align: right; }
+  .ft-nodes span.done { color: var(--accent); }
+  .ft-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-top: 6px; }
+  .ft-meta b { color: var(--ink); }
+  .ft-meta a { color: var(--accent); text-decoration: none; }
+  .ft-meta a:hover { text-decoration: underline; }
 
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
@@ -1439,9 +1470,10 @@
         '<div class="exp-info">' +
           '<div class="exp-label">' + esc(t.name || 'Someone') + '</div>' +
           '<div class="trav-legs">' +
-            '<div class="trav-leg"><span class="leg-k">In</span><span class="leg-v">' + legText(t.arrive, t.inTime, t.inMode, t.inNote) + '</span></div>' +
-            '<div class="trav-leg"><span class="leg-k">Out</span><span class="leg-v">' + legText(t.depart, t.outTime, t.outMode, t.outNote) + '</span></div>' +
+            '<div class="trav-leg"><span class="leg-k">In</span><span class="leg-v">' + legText(t.arrive, t.inTime, t.inMode, t.inNote) + flightChip(t.inFlight) + '</span></div>' +
+            '<div class="trav-leg"><span class="leg-k">Out</span><span class="leg-v">' + legText(t.depart, t.outTime, t.outMode, t.outNote) + flightChip(t.outFlight) + '</span></div>' +
           '</div>' +
+          travelerLegs(t).map(trackerHtml).join('') +
         '</div>' +
         '<div class="exp-actions trav-side">' + np + tk +
           '<button class="icon-btn trav-edit" data-id="' + t.id + '" title="Edit">✎</button>' +
@@ -1461,8 +1493,12 @@
         '<div class="ed-field"><label>Depart date</label><input type="date" data-field="depart" value="' + esc(t.depart) + '" /></div>' +
         '<div class="ed-field"><label>Getting in</label>' + modeSelect(t.inMode, 'inMode') + '</div>' +
         '<div class="ed-field"><label>Getting out</label>' + modeSelect(t.outMode, 'outMode') + '</div>' +
-        '<div class="ed-field"><label>Flight in time</label><input data-field="inTime" placeholder="e.g. 8:30 AM" value="' + esc(t.inTime) + '" /></div>' +
-        '<div class="ed-field"><label>Flight out time</label><input data-field="outTime" placeholder="e.g. 6:55 PM" value="' + esc(t.outTime) + '" /></div>' +
+        '<div class="ed-field"><label>Lands in Austin (time)</label><input data-field="inTime" placeholder="e.g. 8:30 AM" value="' + esc(t.inTime) + '" /></div>' +
+        '<div class="ed-field"><label>Departs Austin (time)</label><input data-field="outTime" placeholder="e.g. 6:55 PM" value="' + esc(t.outTime) + '" /></div>' +
+        '<div class="ed-field"><label>Flight # in (for live tracking)</label><input data-field="inFlight" placeholder="e.g. AS 540" value="' + esc(t.inFlight || '') + '" /></div>' +
+        '<div class="ed-field"><label>Flight # out</label><input data-field="outFlight" placeholder="e.g. AS 1396" value="' + esc(t.outFlight || '') + '" /></div>' +
+        '<div class="ed-field"><label>Departs origin (local time)</label><input data-field="inDep" placeholder="e.g. 12:35 PM" value="' + esc(t.inDep || '') + '" /></div>' +
+        '<div class="ed-field"><label>Lands home (local time)</label><input data-field="outArr" placeholder="e.g. 1:05 PM" value="' + esc(t.outArr || '') + '" /></div>' +
         '<div class="ed-field full"><label>Arrival note (flight #, from where)</label><input data-field="inNote" placeholder="e.g. AA1123 from DCA" value="' + esc(t.inNote) + '" /></div>' +
         '<div class="ed-field full"><label>Departure note</label><input data-field="outNote" value="' + esc(t.outNote) + '" /></div>' +
       '</div>' +
@@ -1471,6 +1507,130 @@
       '</div>' +
     '</div>';
   }
+  /* ---------- flight tracker ----------
+     Each traveler has two legs (in → AUS, out ← AUS). Times typed on the page are
+     Austin-local for the AUS side of a leg; the far-end time (origin departure /
+     home arrival) is in that city's zone and only ever displayed, never compared.
+     Live status comes from the flight-status Edge Function (AeroDataBox behind a
+     cache); when it isn't deployed or a flight # is missing, the bar falls back
+     to the scheduled times and says so. */
+  const AIRLINES = { UA: ['United', 'UAL'], AS: ['Alaska', 'ASA'], DL: ['Delta', 'DAL'], WN: ['Southwest', 'SWA'], AA: ['American', 'AAL'],
+    B6: ['JetBlue', 'JBU'], NK: ['Spirit', 'NKS'], F9: ['Frontier', 'FFT'], G4: ['Allegiant', 'AAY'], SY: ['Sun Country', 'SCX'], HA: ['Hawaiian', 'HAL'] };
+  const AIRLINE_BY_NAME = {}; Object.keys(AIRLINES).forEach(k => AIRLINE_BY_NAME[AIRLINES[k][0].toLowerCase()] = k);
+  function parseFlight(s) {
+    if (!s) return null;
+    const str = String(s).trim();
+    let m = str.match(/^([A-Za-z]{2}|[A-Za-z]\d|\d[A-Za-z])\s*-?\s*(\d{1,4})$/);
+    if (m) { const code = m[1].toUpperCase(); return { iata: code, num: m[2], icao: (AIRLINES[code] || [])[1] || code, label: code + ' ' + m[2] }; }
+    m = str.match(/^([A-Za-z][A-Za-z ]*?)\s+(\d{1,4})$/);
+    if (m) { const code = AIRLINE_BY_NAME[m[1].trim().toLowerCase()]; if (code) return { iata: code, num: m[2], icao: AIRLINES[code][1], label: code + ' ' + m[2] }; }
+    return null;
+  }
+  function trackUrl(f) { return 'https://www.flightaware.com/live/flight/' + f.icao + f.num; }
+  function flightChip(s) { const f = parseFlight(s); return f ? ' · <a class="flight-chip" href="' + trackUrl(f) + '" target="_blank" rel="noopener">' + f.label + ' ↗</a>' : ''; }
+  function parseClock(s) {
+    if (!s) return null;
+    const m = String(s).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*([AaPp])?/); if (!m) return null;
+    let h = +m[1]; const mi = +(m[2] || 0), ap = m[3] ? m[3].toLowerCase() : '';
+    if (ap === 'p' && h < 12) h += 12; if (ap === 'a' && h === 12) h = 0;
+    return (h > 23 || mi > 59) ? null : h * 60 + mi;
+  }
+  function fmtClock(min) { min = ((min % 1440) + 1440) % 1440; const h = Math.floor(min / 60), m = min % 60; return ((h % 12) || 12) + ':' + String(m).padStart(2, '0') + ' ' + (h >= 12 ? 'PM' : 'AM'); }
+  function nowCT() {
+    const p = {};
+    new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      .formatToParts(new Date()).forEach(x => p[x.type] = x.value);
+    return { ymd: p.year + '-' + p.month + '-' + p.day, min: (p.hour === '24' ? 0 : +p.hour) * 60 + (+p.minute) };
+  }
+  function dayDiff(a, b) { return Math.round((new Date(a + 'T00:00:00Z') - new Date(b + 'T00:00:00Z')) / 86400000); }
+  function isoLocalMin(iso) { const m = String(iso || '').match(/T(\d{2}):(\d{2})/); return m ? (+m[1]) * 60 + (+m[2]) : null; }
+  function travelerLegs(t) {
+    return [
+      { kind: 'in',  date: t.arrive, flight: parseFlight(t.inFlight),  ausMin: parseClock(t.inTime),  farMin: parseClock(t.inDep),  mode: t.inMode },
+      { kind: 'out', date: t.depart, flight: parseFlight(t.outFlight), ausMin: parseClock(t.outTime), farMin: parseClock(t.outArr), mode: t.outMode }
+    ];
+  }
+  const flightLive = {};   // "AS540|2026-09-03" → payload from the edge function
+  function legKey(leg) { return leg.flight.iata + leg.flight.num + '|' + leg.date; }
+  function legInWindow(leg, now) { if (!leg.date) return false; const dd = dayDiff(leg.date, now.ymd); return dd >= -1 && dd <= 1; }
+
+  // Phase 0 Scheduled · 1 Boarding · 2 En route · 3 Landed. pct drives the bar.
+  function legState(leg, live) {
+    const now = nowCT(), dd = dayDiff(leg.date, now.ymd), today = dd === 0, past = dd < 0;
+    const s = { phase: 0, pct: 0, cls: 'sched', badge: '', meta: '' };
+    if (live && live.ok) {
+      const st = live.status || 'Unknown';
+      const mv = leg.kind === 'in' ? live.arr : live.dep;                 // the AUS-side movement
+      const schedMin = isoLocalMin(mv.sched), estMin = isoLocalMin(mv.est || mv.sched);
+      const delay = (schedMin != null && estMin != null) ? estMin - schedMin : 0;
+      const late = delay >= 10;
+      const gate = mv.gate ? ' · Gate ' + esc(mv.gate) : '';
+      const depUtc = Date.parse(live.dep.estUtc || live.dep.schedUtc), arrUtc = Date.parse(live.arr.estUtc || live.arr.schedUtc);
+      const airFrac = (depUtc && arrUtc && arrUtc > depUtc) ? Math.min(1, Math.max(0, (Date.now() - depUtc) / (arrUtc - depUtc))) : 0.5;
+      const landsTxt = isoLocalMin(live.arr.est || live.arr.sched) != null ? fmtClock(isoLocalMin(live.arr.est || live.arr.sched)) : '';
+      if (st === 'Canceled' || st === 'CanceledUncertain') { s.cls = 'delayed'; s.badge = 'Canceled'; }
+      else if (st === 'Diverted') { s.phase = 2; s.pct = 66; s.cls = 'delayed'; s.badge = 'Diverted'; }
+      else if (st === 'Arrived') { s.phase = 3; s.pct = 100; s.cls = 'landed'; s.badge = '✓ Landed' + (landsTxt ? ' ' + landsTxt : ''); }
+      else if (st === 'Departed' || st === 'EnRoute' || st === 'Approaching') { s.phase = 2; s.pct = Math.round(66 + 34 * airFrac); s.cls = late ? 'delayed' : 'ontime'; s.badge = 'In air' + (landsTxt ? ' · lands ' + landsTxt : ''); }
+      else if (st === 'Boarding' || st === 'GateClosed') { s.phase = 1; s.pct = 40; s.cls = late ? 'delayed' : 'ontime'; s.badge = 'Boarding' + gate; }
+      else { s.phase = 0; s.pct = 12; s.cls = late ? 'delayed' : 'ontime'; s.badge = (late ? 'Delayed ' + delay + 'm' : 'On time') + gate; }
+      if (st === 'Delayed' && s.phase < 2) { s.cls = 'delayed'; s.badge = 'Delayed' + (delay > 0 ? ' ' + delay + 'm' : '') + gate; }
+      const dep = isoLocalMin(live.dep.est || live.dep.sched), arr = isoLocalMin(live.arr.est || live.arr.sched);
+      s.meta = 'Live · dep <b>' + (dep != null ? fmtClock(dep) : '—') + '</b> ' + esc(live.dep.iata || '') + ' → arr <b>' + (arr != null ? fmtClock(arr) : '—') + '</b> ' + esc(live.arr.iata || '') +
+        (leg.kind === 'in' && live.arr.belt ? ' · bags ' + esc(live.arr.belt) : '') +
+        (live.fetchedAt ? ' · updated ' + Math.max(0, Math.round((Date.now() - Date.parse(live.fetchedAt)) / 60000)) + 'm ago' : '');
+      return s;
+    }
+    // Scheduled-only fallback (no live data). Honest labels — nothing is inferred beyond the clock.
+    const t = leg.ausMin;
+    if (leg.kind === 'out') {
+      if (past || (today && t != null && now.min >= t)) { s.phase = 2; s.pct = 70; s.badge = 'Departed (sched.)'; }
+      else if (today && t != null && now.min >= t - 40) { s.phase = 1; s.pct = 40; s.badge = 'Boarding (sched.)'; }
+      else s.badge = 'Scheduled' + (t != null ? ' · ' + fmtClock(t) : '');
+    } else {
+      if (past || (today && t != null && now.min >= t)) { s.phase = 3; s.pct = 100; s.badge = 'Landed (sched.)'; }
+      else if (today && t != null) { s.pct = 12; s.badge = 'Due ' + fmtClock(t); }
+      else s.badge = 'Scheduled' + (t != null ? ' · lands ' + fmtClock(t) : '');
+    }
+    const trackLink = leg.flight ? ' · <a href="' + trackUrl(leg.flight) + '" target="_blank" rel="noopener">live status ↗</a>' : '';
+    s.meta = 'Scheduled times' + (leg.flight ? '' : ' · add a flight # to track') + trackLink;
+    return s;
+  }
+  function trackerHtml(leg) {
+    if (!leg.date || (leg.mode !== 'flight' && !leg.flight)) return '';
+    const now = nowCT();
+    if (!legInWindow(leg, now)) return '';
+    const live = leg.flight ? flightLive[legKey(leg)] : null;
+    const s = legState(leg, live);
+    const dl = s.cls === 'delayed' ? ' delayed' : '';
+    const nodes = ['Scheduled', 'Boarding', 'En route', 'Landed'];
+    const title = (leg.kind === 'in' ? 'In · ' : 'Out · ') + fmtDate(leg.date) +
+      (leg.flight ? ' · <a href="' + trackUrl(leg.flight) + '" target="_blank" rel="noopener">' + leg.flight.label + '</a>' : '');
+    return '<div class="ft">' +
+      '<div class="ft-head"><span class="ft-flight">✈ ' + title + '</span><span class="ft-badge ' + s.cls + '">' + s.badge + '</span></div>' +
+      '<div class="ft-bar"><div class="ft-fill' + dl + '" style="width:' + s.pct + '%"></div>' +
+        nodes.map((_, i) => '<div class="ft-dot' + (i <= s.phase ? ' done' + dl : '') + '" style="left:' + (i * 100 / 3) + '%"></div>').join('') +
+        (s.pct > 0 ? '<div class="ft-plane' + dl + '" style="left:' + s.pct + '%">✈</div>' : '') +
+      '</div>' +
+      '<div class="ft-nodes">' + nodes.map((n, i) => '<span' + (i <= s.phase ? ' class="done"' : '') + '>' + n + '</span>').join('') + '</div>' +
+      '<div class="ft-meta">' + s.meta + '</div>' +
+    '</div>';
+  }
+  async function refreshFlights() {
+    const now = nowCT(), seen = new Set(); let changed = false;
+    for (const t of state.travelers) for (const leg of travelerLegs(t)) {
+      if (!leg.flight || !legInWindow(leg, now)) continue;
+      const k = legKey(leg); if (seen.has(k)) continue; seen.add(k);
+      try {
+        const r = await fetch(SUPA_URL + '/functions/v1/flight-status?flight=' + encodeURIComponent(leg.flight.iata + leg.flight.num) + '&date=' + leg.date, { headers: supaHeaders() });
+        if (!r.ok) continue;                       // function not deployed / upstream down → keep schedule mode
+        flightLive[k] = await r.json(); changed = true;
+      } catch (e) { /* offline → schedule mode */ }
+    }
+    // Don't rebuild cards while someone is mid-edit; the next render picks the data up.
+    if (changed && !openTraveler.size) renderArrivals();
+  }
+
   function renderArrivals() {
     const list = document.getElementById('arrList'); if (!list) return;
     if (!state.travelers.length) { list.innerHTML = '<p class="dim" style="font-style:italic;margin:0 0 4px;">No one added yet — hit + Add traveler to put yourself on the list.</p>'; return; }
@@ -1965,7 +2125,7 @@
     if (add) {
       if (!inEdit) return;
       const kind = add.getAttribute('data-add');
-      if (kind === 'traveler')  state.travelers.push({ id: uid(), name: '', arrive: '', depart: '', inMode: '', inTime: '', inNote: '', outMode: '', outTime: '', outNote: '', ticket: false });
+      if (kind === 'traveler')  state.travelers.push({ id: uid(), name: '', arrive: '', depart: '', inMode: '', inTime: '', inNote: '', inFlight: '', inDep: '', outMode: '', outTime: '', outNote: '', outFlight: '', outArr: '', ticket: false });
       if (kind === 'expense')   state.expenses.push({ id: uid(), label: '', amount: 0, payer: '', splitMode: 'evenAll', participants: [] });
       if (kind === 'schedule')  state.schedule.push({ id: uid(), day: '', time: '', session: '', note: '' });
       if (kind === 'plan')      state.plan.push({ id: uid(), day: '', time: '', title: '', note: '' });
@@ -2014,7 +2174,7 @@
     const addB = ev.target.closest('#addTravelerBtn');
     if (addB) {
       const id = uid();
-      state.travelers.push({ id: id, name: '', arrive: '', depart: '', inMode: '', inTime: '', inNote: '', outMode: '', outTime: '', outNote: '', ticket: false });
+      state.travelers.push({ id: id, name: '', arrive: '', depart: '', inMode: '', inTime: '', inNote: '', inFlight: '', inDep: '', outMode: '', outTime: '', outNote: '', outFlight: '', outArr: '', ticket: false });
       openTraveler.add(id);
       saveTravelers(); renderArrivals(); renderComputed();
       return;
@@ -2136,7 +2296,11 @@
   setStatus('loading');
   loadRemote();
   setInterval(function () { if (!anyEditing()) loadRemote(); }, 15000);
-  document.addEventListener('visibilitychange', function () { if (!document.hidden && !anyEditing()) loadRemote(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && !anyEditing()) { loadRemote(); refreshFlights(); } });
+  // Live flight status: the edge function caches upstream calls, so a 5-minute poll is cheap.
+  setTimeout(refreshFlights, 2500);
+  setInterval(refreshFlights, 5 * 60 * 1000);
+  setInterval(function () { if (!openTraveler.size) renderArrivals(); }, 60 * 1000);   // keep schedule-mode bars ticking
 </script>
 
 </body>
