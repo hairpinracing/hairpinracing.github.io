@@ -86,10 +86,14 @@ Deno.serve(async (req) => {
 
   let payload: any;
   try {
-    const r = await fetch(
-      `https://aerodatabox.p.rapidapi.com/flights/number/${flight}/${date}?withAircraftImage=false&withLocation=false&dateLocalRole=Both`,
-      { headers: { "x-rapidapi-key": rapidKey, "x-rapidapi-host": "aerodatabox.p.rapidapi.com" } },
-    );
+    const upstream = `https://aerodatabox.p.rapidapi.com/flights/number/${flight}/${date}?withAircraftImage=false&withLocation=false&dateLocalRole=Both`;
+    const headers = { "x-rapidapi-key": rapidKey, "x-rapidapi-host": "aerodatabox.p.rapidapi.com" };
+    let r = await fetch(upstream, { headers });
+    if (r.status === 429) {
+      // Basic plan allows 1 req/s; two travelers refreshing at once can collide. One spaced retry.
+      await new Promise((res) => setTimeout(res, 1300));
+      r = await fetch(upstream, { headers });
+    }
     if (r.status === 204 || r.status === 404) {
       payload = { ok: false, reason: "not-found", flight, date };
     } else if (!r.ok) {
