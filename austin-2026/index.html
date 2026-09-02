@@ -528,6 +528,27 @@
   .wx .foot { grid-column: 1 / -1; font-family: var(--mono); font-size: 10px; color: var(--ink-dim); padding: 6px 12px; background: var(--bg-2); }
   @media (max-width: 640px) { .wx { grid-template-columns: repeat(3, 1fr); } .wx .t { font-size: 19px; } }
 
+  /* Avatars: initials on a per-person hue */
+  .av { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: oklch(12% 0.02 var(--h)); background: oklch(78% 0.13 var(--h)); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px oklch(78% 0.13 var(--h) / 0.55); flex-shrink: 0; vertical-align: middle; }
+  .av.sm { width: 20px; height: 20px; font-size: 9px; box-shadow: 0 0 0 1.5px var(--bg); }
+  .av-row { display: inline-flex; align-items: center; gap: 10px; }
+  .av-stack { display: inline-flex; align-items: center; margin-right: 6px; }
+  .av-stack .av.sm { margin-right: -6px; }
+  .bal-row > div:first-child { display: flex; align-items: center; gap: 10px; }
+  .settle-item .parties { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+  /* Settle-up progress ring */
+  .ring-wrap { display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center; padding: 10px 0 4px; }
+  .ring { width: 56px; height: 56px; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 4; }
+  .ring .bg { stroke: var(--line); }
+  .ring .fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 0.8s var(--ease); }
+  .ring.done .fg { stroke: var(--accent); }
+  .ring-txt { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); line-height: 1.5; }
+  .ring-txt b { font-family: var(--display); font-size: 20px; color: var(--ink); letter-spacing: 0.02em; margin-right: 2px; }
+  .ring-txt .out { color: var(--accent-2); }
+  .ring-txt .ok { color: var(--accent); }
+
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
   .kv .row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
@@ -1581,6 +1602,15 @@
     else if (MODE[mode]) parts.push(modeIco(mode).trim());
     return parts.join(' · ');
   }
+  // Roster members get hues spread evenly round the wheel (golden angle) so no two neighbours clash;
+  // anyone else falls back to a name hash.
+  function avHue(name) {
+    const i = (state.travelers || []).findIndex(function (t) { return (t.name || '') === name; });
+    if (i >= 0) return Math.round((20 + i * 137.508) % 360);
+    let h = 0; String(name || '').toLowerCase().split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) % 360; }); return h;
+  }
+  function avInit(name) { const first = String(name || '').replace(/\s*\(.*?\)/g, '').trim().split(/\s+/)[0] || '?'; return first.slice(0, 2).toUpperCase(); }
+  function avatar(name, small) { return '<span class="av' + (small ? ' sm' : '') + '" style="--h:' + avHue(name) + '" title="' + esc(name || '') + '">' + esc(avInit(name)) + '</span>'; }
   function travelerSummaryCard(t) {
     const n = nightsFor(t);
     const np = (t.arrive && t.depart) ? '<span class="pill">' + n + ' night' + (n === 1 ? '' : 's') + '</span>' : '<span class="pill zero">no dates</span>';
@@ -1588,7 +1618,7 @@
     return '<div class="exp-card" data-id="' + t.id + '">' +
       '<div class="exp-row">' +
         '<div class="exp-info">' +
-          '<div class="exp-label">' + esc(t.name || 'Someone') + '</div>' +
+          '<div class="exp-label av-row">' + avatar(t.name) + '<span>' + esc(t.name || 'Someone') + '</span></div>' +
           '<div class="trav-legs">' +
             '<div class="trav-leg"><span class="leg-k">In</span><span class="leg-v">' + legText(t.arrive, t.inTime, t.inMode, t.inNote) + flightChip(t.inFlight) + '</span></div>' +
             '<div class="trav-leg"><span class="leg-k">Out</span><span class="leg-v">' + legText(t.depart, t.outTime, t.outMode, t.outNote) + flightChip(t.outFlight) + '</span></div>' +
@@ -2172,7 +2202,7 @@
     const myIn = c.transfers.filter(t => t.toId === meId);
     const collectLine = myIn.length ? '<div class="me-pay">' + myIn.map(t => 'Collect from <b>' + esc(t.from) + '</b> · ' + money(t.amt)).join('<br>') + '</div>' : '';
     box.innerHTML = '<div class="me-card-inner">' +
-      '<div class="me-head"><div class="me-name">' + esc(b.name) + '</div>' + head + '</div>' +
+      '<div class="me-head"><div class="me-name av-row">' + avatar(b.name) + '<span>' + esc(b.name) + '</span></div>' + head + '</div>' +
       '<div class="me-rows">' + itemRows.join('') + totalRow + paidLine + '</div>' +
       payLine + collectLine + '</div>';
   }
@@ -2214,8 +2244,8 @@
         const cls = isPaid ? 'zero' : (b.balance > 0 ? 'pos' : (b.balance < 0 ? 'neg' : 'zero'));
         const tag = isPaid ? '<span class="pill ok">✓ paid</span>'
           : (b.balance > 0 ? 'gets back ' + money(b.balance) : (b.balance < 0 ? 'owes ' + money(-b.balance) : 'square'));
-        return '<div class="bal-row"><div><div class="bal-name">' + esc(b.name) + '</div>' +
-          '<div class="bal-sub">share ' + money(b.fair) + ' · paid ' + money(b.paid) + '</div></div>' +
+        return '<div class="bal-row"><div>' + avatar(b.name) + '<div><div class="bal-name">' + esc(b.name) + '</div>' +
+          '<div class="bal-sub">share ' + money(b.fair) + ' · paid ' + money(b.paid) + '</div></div></div>' +
           '<div class="bal-amt ' + cls + '">' + tag + '</div></div>';
       }).join('');
     }
@@ -2246,12 +2276,15 @@
       if (!meIsDebtor) {
         const outstanding = c.transfers.filter(t => !settled[t.key]).reduce((s, t) => s + t.amt, 0);
         const paidCount = c.transfers.filter(t => settled[t.key]).length;
-        tally = '<div class="pay-note">' + (outstanding > 0 ? '<b>' + money(outstanding) + '</b> outstanding · ' : 'All settled ✓ · ') + paidCount + ' of ' + c.transfers.length + ' paid</div>';
+        const total = c.transfers.reduce(function (s, t) { return s + t.amt; }, 0);
+        const frac = total > 0 ? (total - outstanding) / total : 1, C = 2 * Math.PI * 17;
+        tally = '<div class="ring-wrap"><svg class="ring' + (outstanding <= 0 ? ' done' : '') + '" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="17"/><circle class="fg" cx="20" cy="20" r="17" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - frac)).toFixed(1) + '"/></svg>' +
+          '<div class="ring-txt"><b>' + paidCount + '</b>/ ' + c.transfers.length + ' paid · ' + Math.round(frac * 100) + '%<br>' + (outstanding > 0 ? '<span class="out">' + money(outstanding) + ' outstanding</span>' : '<span class="ok">All settled ✓</span>') + ' of ' + money(total) + '</div></div>';
       }
       set.innerHTML = payNote + tally + transfers.map(t => {
         const paid = !!settled[t.key];
         return '<div class="settle-item' + (paid ? ' is-paid' : '') + '">' +
-          '<div class="parties"><span class="from">' + esc(t.from) + '</span><span class="arr">→</span><span class="to">' + esc(t.to) + '</span></div>' +
+          '<div class="parties">' + avatar(t.from, true) + '<span class="from">' + esc(t.from) + '</span><span class="arr">→</span>' + avatar(t.to, true) + '<span class="to">' + esc(t.to) + '</span></div>' +
           '<span class="amt">' + money(t.amt) + '</span>' +
           '<button class="btn paid-toggle" data-id="' + t.key + '">' + (paid ? '✓ paid · undo' : 'mark paid') + '</button>' +
           '</div>';
@@ -2327,7 +2360,7 @@
         html += '<div class="ga-day">' + fmtDate(d.day) + '</div>';
         d.waves.forEach(w => {
           const t = w.first != null ? (w.first === w.last ? fmtClock(w.first) : fmtClock(w.first) + '–' + fmtClock(w.last)) : 'time TBD';
-          const who = w.ppl.map(p => esc(p.name.replace(/\s*\(.*\)$/, '')) + (p.flight ? ' <small>' + p.flight.label + '</small>' : '')).join(', ');
+          const who = '<span class="av-stack">' + w.ppl.map(function (p) { return avatar(p.name, true); }).join('') + '</span>' + w.ppl.map(p => esc(p.name.replace(/\s*\(.*\)$/, '')) + (p.flight ? ' <small>' + p.flight.label + '</small>' : '')).join(', ');
           let tag = '';
           if (drv && drv.arrive === d.day && parseClock(drv.inTime) != null && w.last != null) {
             const dm = parseClock(drv.inTime);
