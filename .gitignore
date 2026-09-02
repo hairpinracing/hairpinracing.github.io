@@ -1,1 +1,4 @@
 .DS_Store
+
+# Supabase CLI scratch (created by `supabase link`)
+supabase/.temp/
