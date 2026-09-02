@@ -529,11 +529,11 @@
   @media (max-width: 640px) { .wx { grid-template-columns: repeat(3, 1fr); } .wx .t { font-size: 19px; } }
 
   /* Avatars: initials on a per-person hue */
-  .av { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: oklch(12% 0.02 var(--h)); background: oklch(78% 0.13 var(--h)); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px oklch(78% 0.13 var(--h) / 0.55); flex-shrink: 0; vertical-align: middle; }
-  .av.sm { width: 20px; height: 20px; font-size: 9px; box-shadow: 0 0 0 1.5px var(--bg); }
+  .av { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: var(--ink); background: var(--bg-2); border: 1px solid var(--ink-dim); flex-shrink: 0; vertical-align: middle; }
+  .av.sm { width: 20px; height: 20px; font-size: 9px; }
   .av-row { display: inline-flex; align-items: center; gap: 10px; }
   .av-stack { display: inline-flex; align-items: center; margin-right: 6px; }
-  .av-stack .av.sm { margin-right: -6px; }
+  .av-stack .av.sm { margin-right: -6px; box-shadow: 0 0 0 1.5px var(--bg); }
   .bal-row > div:first-child { display: flex; align-items: center; gap: 10px; }
   .settle-item .parties { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
