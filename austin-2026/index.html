@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script>(function(){var t=localStorage.getItem('hairpin-theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t;})();</script>
 <style>
   :root {
@@ -326,7 +327,7 @@
   .pill {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-dim);
@@ -344,7 +345,7 @@
   .exp-row { display: flex; align-items: center; gap: 14px; padding: 13px 16px; }
   .exp-info { flex: 1; min-width: 0; }
   .exp-label { font-family: var(--display); font-size: 19px; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.05; }
-  .exp-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-top: 3px; }
+  .exp-meta { font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--ink-dim); margin-top: 3px; }
   .exp-actions { display: flex; gap: 6px; flex-shrink: 0; }
   .icon-btn { width: 34px; height: 34px; min-height: 34px; padding: 0; line-height: 1; font-size: 15px; color: var(--ink-dim); background: var(--bg-2); border: 1px solid var(--line); cursor: pointer; transition: color 0.2s var(--ease), border-color 0.2s var(--ease); }
   .icon-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
@@ -356,7 +357,7 @@
   .logi-card { margin-bottom: 6px; }
   .logi-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 12px; padding: 11px 16px; }
   .logi-k { font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
-  .logi-v { font-family: var(--mono); font-size: 14px; color: var(--ink); text-align: right; min-width: 0; word-break: break-word; }
+  .logi-v { font-family: var(--mono); font-size: 14px; line-height: 1.5; color: var(--ink); text-align: right; min-width: 0; word-break: break-word; }
   @media (max-width: 560px) {
     .logi-row { grid-template-columns: 1fr auto; row-gap: 3px; }
     .logi-v { grid-column: 1 / -1; text-align: left; }
@@ -365,18 +366,18 @@
   /* Food & Places card */
   .food-card .exp-label { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .food-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; }
-  .food-note { margin-top: 5px; line-height: 1.45; }
+  .food-note { margin-top: 5px; line-height: 1.55; }
   .food-lines { display: flex; flex-direction: column; gap: 4px; margin-top: 9px; }
   .food-line { display: grid; grid-template-columns: 42px 1fr; align-items: baseline; gap: 10px; text-decoration: none; }
   .food-k { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
-  .food-v { font-family: var(--mono); font-size: 13px; color: var(--ink); word-break: break-word; }
+  .food-v { font-family: var(--mono); font-size: 13.5px; color: var(--ink); word-break: break-word; }
   a.food-map { cursor: pointer; }
   a.food-map .food-v { color: var(--accent); }
   a.food-map:hover .food-v { text-decoration: underline; }
 
   /* Traveler card: aligned In/Out legs + right-side pills */
   .trav-legs { margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
-  .trav-leg { display: flex; gap: 10px; align-items: baseline; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+  .trav-leg { display: flex; gap: 10px; align-items: baseline; font-family: var(--mono); font-size: 13px; color: var(--ink); }
   .trav-leg .leg-k { flex-shrink: 0; width: 26px; color: var(--ink-dim); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
   .trav-leg .leg-v { min-width: 0; }
   .trav-side { align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; max-width: 46%; }
@@ -391,7 +392,7 @@
   /* Flight tracker (per leg, shown from the day before travel through the day after) */
   .ft { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
   .ft-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 9px; flex-wrap: wrap; }
-  .ft-flight { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+  .ft-flight { font-family: var(--mono); font-size: 13px; color: var(--ink); }
   .ft-flight a { color: var(--accent); text-decoration: none; }
   .ft-flight a:hover { text-decoration: underline; }
   .ft-badge { font-family: var(--mono); font-size: 10px; padding: 3px 9px; border: 1px solid; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
@@ -407,12 +408,12 @@
   .ft-dot { position: absolute; top: 50%; width: 6px; height: 6px; border-radius: 50%; background: var(--line); transform: translate(-50%, -50%); }
   .ft-dot.done { background: var(--accent); }
   .ft-dot.done.delayed { background: var(--accent-2); }
-  .ft-nodes { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
+  .ft-nodes { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
   .ft-nodes span { width: 25%; }
   .ft-nodes span:nth-child(2), .ft-nodes span:nth-child(3) { text-align: center; }
   .ft-nodes span:last-child { text-align: right; }
   .ft-nodes span.done { color: var(--accent); }
-  .ft-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-top: 6px; }
+  .ft-meta { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); margin-top: 6px; }
   .ft-meta b { color: var(--ink); }
   .ft-meta a { color: var(--accent); text-decoration: none; }
   .ft-meta a:hover { text-decoration: underline; }
@@ -420,14 +421,14 @@
   /* Getting around: directions hub + airport runs */
   .ga { border: 1px solid var(--line); margin-bottom: 14px; }
   .ga-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--line); font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
-  .ga-head .ga-sub { font-weight: 400; letter-spacing: 0.04em; text-transform: none; font-family: var(--mono); font-size: 11px; }
+  .ga-head .ga-sub { font-weight: 400; letter-spacing: 0.04em; text-transform: none; font-family: var(--mono); font-size: 12px; }
   .ga-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
   .ga-link { display: block; padding: 12px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: background 0.2s var(--ease); }
   .ga-link:hover { background: var(--bg-2); }
   .ga-link .ga-k { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
   .ga-link .ga-v { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-top: 3px; }
-  .ga-link .ga-n { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-top: 2px; }
-  .ga-wave { display: grid; grid-template-columns: 96px 1fr auto; gap: 12px; align-items: baseline; padding: 10px 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+  .ga-link .ga-n { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); margin-top: 2px; }
+  .ga-wave { display: grid; grid-template-columns: 96px 1fr auto; gap: 12px; align-items: baseline; padding: 10px 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 13px; }
   .ga-wave:last-child { border-bottom: none; }
   .ga-wave .ga-t { color: var(--ink); font-weight: 700; }
   .ga-wave .ga-who { color: var(--ink); }
@@ -443,13 +444,60 @@
   .sd-head { width: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-2); border: 0; color: var(--ink); text-align: left; cursor: pointer; font-family: var(--body); }
   .sd-head:hover { background: var(--line); }
   .sd-date { font-family: var(--display); font-size: 17px; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; }
-  .sd-sum { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sd-sum { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sd-sum b { color: var(--accent-2); font-weight: 700; }
   .sd-chev { font-family: var(--mono); font-size: 14px; color: var(--ink-dim); }
   .sd.open .sd-chev { color: var(--accent); }
   .sd-body { padding: 8px 8px 0; }
   .sd-body .exp-card { margin-bottom: 8px; }
   @media (max-width: 560px) { .sd-head { grid-template-columns: 1fr auto; } .sd-sum { grid-column: 1 / -1; white-space: normal; } }
+
+  /* Map */
+  #tripMap { height: 420px; background: var(--bg-2); }
+  @media (max-width: 640px) { #tripMap { height: 340px; } }
+  .map-legend { display: flex; flex-wrap: wrap; gap: 14px; padding: 9px 16px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
+  .map-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .pin-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--ink-dim); background: var(--ink-dim); }
+  .pin-dot.house { background: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .pin-dot.track { background: var(--accent-2); box-shadow: 0 0 0 1px var(--accent-2); }
+  .pin-dot.eat { background: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .pin-dot.drink { background: oklch(70% 0.12 60); box-shadow: 0 0 0 1px oklch(70% 0.12 60); }
+  .lpin { position: relative; }
+  .lpin .dot { position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--ink); border: 2px solid var(--bg); box-shadow: 0 0 0 1.5px var(--ink); }
+  .lpin.drink .dot { background: oklch(70% 0.12 60); box-shadow: 0 0 0 1.5px oklch(70% 0.12 60); }
+  .lpin.airport .dot { background: var(--ink-dim); box-shadow: 0 0 0 1.5px var(--ink-dim); }
+  .lpin.house .dot { width: 16px; height: 16px; margin: -8px 0 0 -8px; background: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .lpin.track .dot { width: 16px; height: 16px; margin: -8px 0 0 -8px; background: var(--accent-2); box-shadow: 0 0 0 2px var(--accent-2); }
+  .lpin.house .ring, .lpin.track .ring { position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; border: 2px solid var(--accent); animation: pinring 2.2s ease-out infinite; }
+  .lpin.track .ring { border-color: var(--accent-2); }
+  @keyframes pinring { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(3.2); opacity: 0; } }
+  .leaflet-container { font-family: var(--body); }
+  #tripMap.map-dark .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.82) contrast(0.9) saturate(0.35); }
+  #tripMap .leaflet-tile-pane { filter: saturate(0.55) contrast(0.95); }
+  .leaflet-tooltip.lbl { background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 2px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; box-shadow: none; }
+  .leaflet-tooltip.lbl::before { display: none; }
+  .leaflet-popup-content-wrapper { background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 2px; box-shadow: 0 6px 24px oklch(0% 0 0 / 0.25); }
+  .leaflet-popup-tip { background: var(--bg); }
+  .leaflet-popup-content { margin: 12px 14px; font-family: var(--body); font-size: 13px; line-height: 1.45; }
+  .mp-name { font-family: var(--display); font-size: 17px; text-transform: uppercase; letter-spacing: 0.02em; }
+  .mp-meta { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); margin-top: 2px; }
+  .mp-links { display: flex; gap: 12px; margin-top: 8px; font-family: var(--mono); font-size: 12px; }
+  .mp-links a { color: var(--accent); text-decoration: none; }
+  .mp-links a:hover { text-decoration: underline; }
+  .leaflet-control-attribution { font-size: 9px; background: oklch(0% 0 0 / 0.35) !important; color: var(--ink-dim) !important; }
+  .leaflet-control-attribution a { color: var(--ink-dim) !important; }
+  .leaflet-bar a { background: var(--bg); color: var(--ink); border-bottom-color: var(--line); }
+
+  /* "Now" marker inside today's expanded day */
+  .sd.today > .sd-head { border-left: 3px solid var(--accent-2); }
+  .sd-today { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; color: var(--accent-2); border: 1px solid oklch(56% 0.215 28 / 0.5); padding: 1px 6px; margin-left: 8px; vertical-align: middle; }
+  .now-line { display: flex; align-items: center; gap: 10px; margin: 4px 4px 10px; }
+  .now-line::before, .now-line::after { content: ""; flex: 1; height: 2px; background: var(--accent-2); }
+  .now-line span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); border: 1px solid oklch(56% 0.215 28 / 0.6); padding: 3px 9px; white-space: nowrap; }
+  .exp-card.is-past { opacity: 0.5; }
+  .exp-card.is-now { border-color: var(--accent-2); background: oklch(56% 0.215 28 / 0.05); }
+  .exp-card.is-now .exp-label::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); margin-right: 9px; vertical-align: 2px; animation: nowpulse 1.4s ease-in-out infinite; }
+  @keyframes nowpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
@@ -980,6 +1028,11 @@
     </div>
     <p class="dim reveal" style="margin-bottom:18px;">Van, check-in/out, and the moving parts. Van splits evenly across everyone.</p>
 
+    <div class="ga map-card" id="mapCard" hidden>
+      <div class="ga-head"><span>The weekend, mapped</span><span class="ga-sub" id="mapSub">tap a pin for directions</span></div>
+      <div id="tripMap" aria-label="Map of the house, track, airport and food spots"></div>
+      <div class="map-legend"><span><i class="pin-dot house"></i>house</span><span><i class="pin-dot track"></i>track</span><span><i class="pin-dot airport"></i>airport</span><span><i class="pin-dot eat"></i>eat</span><span><i class="pin-dot drink"></i>coffee & drinks</span></div>
+    </div>
     <div id="getAround"></div>
     <div id="logisticsList"></div>
     <button class="add-btn" data-listadd="logistics">+ Add logistics item</button>
@@ -1032,6 +1085,7 @@
 
 <button class="theme-btn" aria-label="Toggle colour theme">○ light</button>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 /* ============================================================
    Austin 2026 — trip command center
@@ -1949,10 +2003,31 @@
       const items = byDay[d];
       const open = openDays.has(dayKey(kind, d)) || items.some(function (it) { return openList[kind].has(it.id); });
       const noun = kind === 'schedule' ? 'session' : 'item';
-      const sum = open ? items.length + ' ' + noun + (items.length === 1 ? '' : 's') + ' · tap to collapse' : daySummary(kind, items);
-      return '<div class="sd' + (open ? ' open' : '') + '">' +
-        '<button type="button" class="sd-head" data-sday="' + esc(d) + '" data-skind="' + kind + '"><span class="sd-date">' + (d ? fmtDate(d) : 'No date') + '</span><span class="sd-sum">' + sum + '</span><span class="sd-chev">' + (open ? '−' : '+') + '</span></button>' +
-        (open ? '<div class="sd-body">' + items.map(function (it) { return openList[kind].has(it.id) ? listEditCard(kind, it) : listSummaryCard(kind, it); }).join('') + '</div>' : '') +
+      const now = nowCT(), today = d && d === now.ymd;
+      // "Now" placement: items are stored in time order; the current one is the last that has started.
+      const starts = items.map(function (it) { return parseClock(it.time); });
+      let nowIdx = -1, insertBefore = items.length;
+      if (today) {
+        items.forEach(function (it, i) { if (starts[i] != null && starts[i] <= now.min) nowIdx = i; });
+        insertBefore = items.findIndex(function (it, i) { return starts[i] != null && starts[i] > now.min; });
+        if (insertBefore < 0) insertBefore = items.length;
+      }
+      const nextUp = today && insertBefore < items.length ? items[insertBefore] : null;
+      let sum;
+      if (open) sum = items.length + ' ' + noun + (items.length === 1 ? '' : 's') + ' · tap to collapse';
+      else if (today && nextUp) sum = 'Next: ' + esc((nextUp.session || nextUp.title || '').replace(/^FIA WEC — /, '')) + (nextUp.time ? ' · ' + esc(nextUp.time) : '') + ' · ' + daySummary(kind, items);
+      else sum = daySummary(kind, items);
+      const body = items.map(function (it, i) {
+        let html = openList[kind].has(it.id) ? listEditCard(kind, it) : listSummaryCard(kind, it);
+        if (today && !openList[kind].has(it.id)) {
+          if (i === nowIdx) html = html.replace('class="exp-card', 'class="exp-card is-now');
+          else if (starts[i] != null && starts[i] <= now.min) html = html.replace('class="exp-card', 'class="exp-card is-past');
+        }
+        return (today && i === insertBefore ? '<div class="now-line"><span>Now · ' + fmtClock(now.min) + '</span></div>' : '') + html;
+      }).join('') + (today && insertBefore === items.length ? '<div class="now-line"><span>Now · ' + fmtClock(now.min) + '</span></div>' : '');
+      return '<div class="sd' + (open ? ' open' : '') + (today ? ' today' : '') + '">' +
+        '<button type="button" class="sd-head" data-sday="' + esc(d) + '" data-skind="' + kind + '"><span class="sd-date">' + (d ? fmtDate(d) : 'No date') + (today ? '<span class="sd-today">Today</span>' : '') + '</span><span class="sd-sum">' + sum + '</span><span class="sd-chev">' + (open ? '−' : '+') + '</span></button>' +
+        (open ? '<div class="sd-body">' + body + '</div>' : '') +
       '</div>';
     }).join('');
   }
@@ -2214,8 +2289,54 @@
     box.innerHTML = html;
   }
 
+  /* ---------- map (Leaflet + CARTO tiles, no API key) ---------- */
+  let tripMap = null, tileLayer = null, markerLayer = null;
+  const FIXED_PINS = [
+    { key: 'cota', cls: 'track',   name: 'Circuit of The Americas', lat: 30.1328, lng: -97.6411, sub: 'Race weekend · Grand Plaza & Main Grandstand gates', q: PLACES.cota.q },
+    { key: 'aus',  cls: 'airport', name: 'AUS airport',              lat: 30.1975, lng: -97.6664, sub: 'Austin-Bergstrom', q: PLACES.aus.q }
+  ];
+  // OpenStreetMap standard tiles (no API key). Dark theme is a CSS filter on the tile pane.
+  function tileUrl() { return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'; }
+  function setMapTheme() { const el = document.getElementById('tripMap'); if (el) el.classList.toggle('map-dark', document.documentElement.dataset.theme !== 'light'); }
+  function pinIcon(cls, ring) { return L.divIcon({ className: 'lpin ' + cls, iconSize: [20, 20], iconAnchor: [10, 10], popupAnchor: [0, -10], html: (ring ? '<span class="ring"></span>' : '') + '<span class="dot"></span>' }); }
+  function popupHtml(name, sub, q, isHouse) {
+    const houseQ = houseQuery();
+    const links = ['<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q) + '" target="_blank" rel="noopener">Open in Maps ↗</a>'];
+    if (houseQ && !isHouse) links.unshift('<a href="' + dirUrl(houseQ, q) + '" target="_blank" rel="noopener">Directions from house ↗</a>');
+    return '<div class="mp-name">' + esc(name) + '</div>' + (sub ? '<div class="mp-meta">' + esc(sub) + '</div>' : '') + '<div class="mp-links">' + links.join('') + '</div>';
+  }
+  function renderMap() {
+    const card = document.getElementById('mapCard'); if (!card || typeof L === 'undefined') return;
+    const tr = state.trip;
+    const pins = [];
+    if (tr.houseLat && tr.houseLng) pins.push({ cls: 'house', name: 'The house', lat: +tr.houseLat, lng: +tr.houseLng, sub: houseQuery() || '', q: houseQuery(), ring: true, label: 'House', isHouse: true });
+    FIXED_PINS.forEach(function (f) { pins.push(Object.assign({ ring: f.cls === 'track', label: f.cls === 'track' ? 'COTA' : 'AUS' }, f)); });
+    (state.food || []).forEach(function (f) {
+      if (!f.lat || !f.lng) return;
+      pins.push({ cls: (f.kind === 'Drink' ? 'drink' : 'eat'), name: f.name || 'Place', lat: +f.lat, lng: +f.lng, sub: [f.kind, f.price ? f.price + ' / person' : '', f.dist ? f.dist + ' from house' : ''].filter(Boolean).join(' · '), q: f.address || f.name });
+    });
+    if (pins.length < 2) { card.hidden = true; return; }
+    card.hidden = false;
+    if (!tripMap) {
+      tripMap = L.map('tripMap', { scrollWheelZoom: false, zoomControl: true, attributionControl: true });
+      tileLayer = L.tileLayer(tileUrl(), { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(tripMap);
+      setMapTheme();
+      markerLayer = L.layerGroup().addTo(tripMap);
+    }
+    markerLayer.eachLayer(function (m) { if (m.unbindTooltip) m.unbindTooltip(); if (m.unbindPopup) m.unbindPopup(); });
+    markerLayer.clearLayers();
+    const bounds = [];
+    pins.forEach(function (p) {
+      const m = L.marker([p.lat, p.lng], { icon: pinIcon(p.cls, p.ring), zIndexOffset: p.ring ? 1000 : 0 }).addTo(markerLayer);
+      m.bindPopup(popupHtml(p.name, p.sub, p.q, p.isHouse), { maxWidth: 280 });
+      if (p.label) m.bindTooltip(p.label, { permanent: true, direction: 'right', offset: [10, 0], className: 'lbl' });
+      bounds.push([p.lat, p.lng]);
+    });
+    if (!tripMap._fitted) { tripMap.fitBounds(bounds, { padding: [28, 28], maxZoom: 13 }); tripMap._fitted = true; }
+    setTimeout(function () { tripMap.invalidateSize(); }, 50);
+  }
   function renderAll() {
-    renderArrivals(); renderExpenses(); renderGetAround();
+    renderArrivals(); renderExpenses(); renderGetAround(); renderMap();
     renderTripSettings();
     renderMeSelect();
     renderAllLists();
@@ -2428,7 +2549,7 @@
   /* ---------- scroll reveal + theme ---------- */
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); }
+      if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); if (tripMap) setTimeout(function () { tripMap.invalidateSize(); }, 400); }
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
@@ -2439,7 +2560,7 @@
     updateBtn(document.documentElement.dataset.theme || 'dark');
     if (btn) btn.addEventListener('click', function () {
       const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = next;
+      document.documentElement.dataset.theme = next; setMapTheme();
       localStorage.setItem('hairpin-theme', next);
       updateBtn(next);
     });
@@ -2455,6 +2576,7 @@
   setTimeout(refreshFlights, 2500);
   setInterval(refreshFlights, 5 * 60 * 1000);
   setInterval(function () { if (!openTraveler.size) renderArrivals(); }, 60 * 1000);   // keep schedule-mode bars ticking
+  setInterval(function () { if (!openList.schedule.size) renderList('schedule'); if (!openList.plan.size) renderList('plan'); }, 60 * 1000);   // move the NOW line
 </script>
 
 </body>
