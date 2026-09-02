@@ -499,6 +499,21 @@
   .exp-card.is-now .exp-label::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); margin-right: 9px; vertical-align: 2px; animation: nowpulse 1.4s ease-in-out infinite; }
   @keyframes nowpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 
+  /* Weather strip (Open-Meteo, COTA) */
+  .wx { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 14px; }
+  .wx > div { background: var(--bg); padding: 11px 12px 10px; min-width: 0; }
+  .wx > div.race { background: oklch(56% 0.215 28 / 0.06); }
+  .wx > div.today { box-shadow: inset 0 3px 0 var(--accent); }
+  .wx .d { font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+  .wx > div.race .d { color: var(--accent-2); }
+  .wx .t { font-family: var(--display); font-size: 22px; line-height: 1.1; margin-top: 4px; letter-spacing: 0.01em; }
+  .wx .t small { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); margin-left: 4px; letter-spacing: 0; }
+  .wx .c { font-family: var(--mono); font-size: 11px; color: var(--ink); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wx .r { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-top: 2px; }
+  .wx .r.wet { color: var(--accent-2); }
+  .wx .foot { grid-column: 1 / -1; font-family: var(--mono); font-size: 10px; color: var(--ink-dim); padding: 6px 12px; background: var(--bg-2); }
+  @media (max-width: 640px) { .wx { grid-template-columns: repeat(3, 1fr); } .wx .t { font-size: 19px; } }
+
   /* Key/value blocks (lodging, logistics) */
   .kv { border: 1px solid var(--line); margin-top: 4px; }
   .kv .row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
@@ -920,7 +935,7 @@
     <div class="meta">
       <div><div class="k">Race</div><div class="v">6H COTA</div></div>
       <div><div class="k">Dates</div><div class="v">Sep 4–6</div></div>
-      <div><div class="k">Track</div><div class="v">COTA</div></div>
+      <div><div class="k" id="cdK">Countdown</div><div class="v accent" id="cdV">—</div></div>
       <div><div class="k">City</div><div class="v">Austin</div></div>
       <div><div class="k">Crew</div><div class="v" id="metaCrew">—</div></div>
     </div>
@@ -1006,6 +1021,7 @@
     </div>
     <p class="dim reveal" style="margin-bottom:18px;">Official Lone Star Le Mans timetable, all times Central. Tap a day to expand — the race row is highlighted.</p>
 
+    <div class="wx" id="wxStrip" hidden></div>
     <div id="scheduleList"></div>
     <button class="add-btn" data-listadd="schedule">+ Add session</button>
   </section>
@@ -2335,8 +2351,54 @@
     if (!tripMap._fitted) { tripMap.fitBounds(bounds, { padding: [28, 28], maxZoom: 13 }); tripMap._fitted = true; }
     setTimeout(function () { tripMap.invalidateSize(); }, 50);
   }
+  /* ---------- countdown (hero) ---------- */
+  function renderCountdown() {
+    const k = document.getElementById('cdK'), v = document.getElementById('cdV'); if (!k || !v) return;
+    const now = nowCT(), start = state.trip.lodgingCheckIn, end = state.trip.lodgingCheckOut;
+    const race = (state.schedule || []).find(function (x) { return x.race && x.day; });
+    if (!start) { k.textContent = 'Countdown'; v.textContent = '—'; return; }
+    const toStart = dayDiff(start, now.ymd);
+    if (toStart > 0) { k.textContent = 'Wheels up in'; v.textContent = toStart === 1 ? '1 day' : toStart + ' days'; return; }
+    if (race && race.day === now.ymd) { k.textContent = 'Today'; v.textContent = 'Race day'; return; }
+    if (race && dayDiff(race.day, now.ymd) > 0) { const r = dayDiff(race.day, now.ymd); k.textContent = 'Race in'; v.textContent = r === 1 ? '1 day' : r + ' days'; return; }
+    if (end && dayDiff(end, now.ymd) >= 0) { k.textContent = 'Trip'; v.textContent = 'Day ' + (dayDiff(now.ymd, start) + 1); return; }
+    k.textContent = 'Austin 2026'; v.textContent = 'That’s a wrap';
+  }
+
+  /* ---------- weather strip (Open-Meteo, no key) ---------- */
+  const WX_CODES = [[0, 'Clear'], [1, 'Mostly clear'], [2, 'Partly cloudy'], [3, 'Overcast'], [45, 'Fog'], [48, 'Fog'], [51, 'Drizzle'], [53, 'Drizzle'], [55, 'Drizzle'],
+    [61, 'Light rain'], [63, 'Rain'], [65, 'Heavy rain'], [66, 'Freezing rain'], [67, 'Freezing rain'], [80, 'Showers'], [81, 'Showers'], [82, 'Heavy showers'], [95, 'Thunderstorms'], [96, 'T-storms · hail'], [99, 'T-storms · hail']];
+  function wxLabel(code) { let out = 'Unknown'; WX_CODES.forEach(function (c) { if (c[0] === code) out = c[1]; }); return out; }
+  async function renderWeather() {
+    const el = document.getElementById('wxStrip'); if (!el) return;
+    const start = state.trip.lodgingCheckIn, end = state.trip.lodgingCheckOut; if (!start || !end) return;
+    const now = nowCT(); if (dayDiff(start, now.ymd) > 10) { el.hidden = true; return; }   // forecast only means something inside ~10 days
+    const cacheKey = KEY + '-wx';
+    let data = null;
+    try { const c = JSON.parse(localStorage.getItem(cacheKey) || 'null'); if (c && Date.now() - c.at < 60 * 60 * 1000 && c.start === start) data = c.data; } catch (e) {}
+    if (!data) {
+      try {
+        const u = 'https://api.open-meteo.com/v1/forecast?latitude=30.1328&longitude=-97.6411&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago&start_date=' + start + '&end_date=' + end;
+        const r = await fetch(u); if (!r.ok) throw new Error('wx ' + r.status);
+        data = (await r.json()).daily;
+        try { localStorage.setItem(cacheKey, JSON.stringify({ at: Date.now(), start: start, data: data })); } catch (e) {}
+      } catch (e) { el.hidden = true; return; }
+    }
+    if (!data || !data.time) { el.hidden = true; return; }
+    const race = (state.schedule || []).find(function (x) { return x.race && x.day; });
+    el.innerHTML = data.time.map(function (d, i) {
+      const rain = data.precipitation_probability_max[i], gust = data.wind_gusts_10m_max[i];
+      const cls = (race && race.day === d ? ' race' : '') + (d === now.ymd ? ' today' : '');
+      return '<div class="' + cls.trim() + '"><div class="d">' + fmtDate(d) + (race && race.day === d ? ' · race' : '') + '</div>' +
+        '<div class="t">' + Math.round(data.temperature_2m_max[i]) + '°<small>/ ' + Math.round(data.temperature_2m_min[i]) + '°</small></div>' +
+        '<div class="c">' + esc(wxLabel(data.weather_code[i])) + '</div>' +
+        '<div class="r' + (rain >= 40 ? ' wet' : '') + '">rain ' + (rain == null ? '—' : rain + '%') + (gust ? ' · gusts ' + Math.round(gust) + ' mph' : '') + '</div></div>';
+    }).join('') + '<div class="foot">Forecast for Circuit of The Americas · Open-Meteo · refreshes hourly</div>';
+    el.hidden = false;
+  }
+
   function renderAll() {
-    renderArrivals(); renderExpenses(); renderGetAround(); renderMap();
+    renderArrivals(); renderExpenses(); renderGetAround(); renderMap(); renderCountdown(); renderWeather();
     renderTripSettings();
     renderMeSelect();
     renderAllLists();
@@ -2576,7 +2638,8 @@
   setTimeout(refreshFlights, 2500);
   setInterval(refreshFlights, 5 * 60 * 1000);
   setInterval(function () { if (!openTraveler.size) renderArrivals(); }, 60 * 1000);   // keep schedule-mode bars ticking
-  setInterval(function () { if (!openList.schedule.size) renderList('schedule'); if (!openList.plan.size) renderList('plan'); }, 60 * 1000);   // move the NOW line
+  setInterval(function () { if (!openList.schedule.size) renderList('schedule'); if (!openList.plan.size) renderList('plan'); renderCountdown(); }, 60 * 1000);   // move the NOW line
+  setInterval(renderWeather, 60 * 60 * 1000);
 </script>
 
 </body>
