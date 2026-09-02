@@ -2369,31 +2369,52 @@
   const WX_CODES = [[0, 'Clear'], [1, 'Mostly clear'], [2, 'Partly cloudy'], [3, 'Overcast'], [45, 'Fog'], [48, 'Fog'], [51, 'Drizzle'], [53, 'Drizzle'], [55, 'Drizzle'],
     [61, 'Light rain'], [63, 'Rain'], [65, 'Heavy rain'], [66, 'Freezing rain'], [67, 'Freezing rain'], [80, 'Showers'], [81, 'Showers'], [82, 'Heavy showers'], [95, 'Thunderstorms'], [96, 'T-storms · hail'], [99, 'T-storms · hail']];
   function wxLabel(code) { let out = 'Unknown'; WX_CODES.forEach(function (c) { if (c[0] === code) out = c[1]; }); return out; }
+  // Primary: NWS (api.weather.gov, keyless, CORS). Fallback: Open-Meteo. Both cached an hour.
+  async function fetchNws(start, end) {
+    const hdr = { 'Accept': 'application/geo+json' };
+    const pt = await fetch('https://api.weather.gov/points/30.1328,-97.6411', { headers: hdr }); if (!pt.ok) throw new Error('nws points ' + pt.status);
+    const fcUrl = (await pt.json()).properties.forecast;
+    const fc = await fetch(fcUrl, { headers: hdr }); if (!fc.ok) throw new Error('nws forecast ' + fc.status);
+    const periods = (await fc.json()).properties.periods;
+    const byDay = {};
+    periods.forEach(function (pr) {
+      const d = String(pr.startTime).slice(0, 10); if (d < start || d > end) return;
+      const o = byDay[d] = byDay[d] || { hi: null, lo: null, cond: '', rain: null, wind: '' };
+      const pop = pr.probabilityOfPrecipitation && pr.probabilityOfPrecipitation.value;
+      if (pr.isDaytime) { o.hi = pr.temperature; o.cond = pr.shortForecast; o.wind = pr.windSpeed || ''; o.rain = pop; }
+      else { o.lo = pr.temperature; if (o.rain == null) o.rain = pop; if (!o.cond) o.cond = pr.shortForecast; }
+    });
+    const days = Object.keys(byDay).sort();
+    if (!days.length) throw new Error('nws empty');
+    return { source: 'National Weather Service (Austin/San Antonio)', days: days.map(function (d) { const o = byDay[d]; return { d: d, hi: o.hi, lo: o.lo, cond: o.cond.replace(/ then .*$/, ''), rain: o.rain, wind: o.wind }; }) };
+  }
+  async function fetchOpenMeteo(start, end) {
+    const u = 'https://api.open-meteo.com/v1/forecast?latitude=30.1328&longitude=-97.6411&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago&start_date=' + start + '&end_date=' + end;
+    const r = await fetch(u); if (!r.ok) throw new Error('om ' + r.status);
+    const dd = (await r.json()).daily;
+    return { source: 'Open-Meteo', days: dd.time.map(function (d, i) { return { d: d, hi: Math.round(dd.temperature_2m_max[i]), lo: Math.round(dd.temperature_2m_min[i]), cond: wxLabel(dd.weather_code[i]), rain: dd.precipitation_probability_max[i], wind: dd.wind_gusts_10m_max[i] ? 'gusts ' + Math.round(dd.wind_gusts_10m_max[i]) + ' mph' : '' }; }) };
+  }
   async function renderWeather() {
     const el = document.getElementById('wxStrip'); if (!el) return;
     const start = state.trip.lodgingCheckIn, end = state.trip.lodgingCheckOut; if (!start || !end) return;
-    const now = nowCT(); if (dayDiff(start, now.ymd) > 10) { el.hidden = true; return; }   // forecast only means something inside ~10 days
-    const cacheKey = KEY + '-wx';
-    let data = null;
-    try { const c = JSON.parse(localStorage.getItem(cacheKey) || 'null'); if (c && Date.now() - c.at < 60 * 60 * 1000 && c.start === start) data = c.data; } catch (e) {}
-    if (!data) {
-      try {
-        const u = 'https://api.open-meteo.com/v1/forecast?latitude=30.1328&longitude=-97.6411&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago&start_date=' + start + '&end_date=' + end;
-        const r = await fetch(u); if (!r.ok) throw new Error('wx ' + r.status);
-        data = (await r.json()).daily;
-        try { localStorage.setItem(cacheKey, JSON.stringify({ at: Date.now(), start: start, data: data })); } catch (e) {}
-      } catch (e) { el.hidden = true; return; }
+    const now = nowCT(); if (dayDiff(start, now.ymd) > 10) { el.hidden = true; return; }
+    const cacheKey = KEY + '-wx2';
+    let wx = null;
+    try { const c = JSON.parse(localStorage.getItem(cacheKey) || 'null'); if (c && Date.now() - c.at < 60 * 60 * 1000 && c.start === start) wx = c.wx; } catch (e) {}
+    if (!wx) {
+      try { wx = await fetchNws(start, end); }
+      catch (e1) { try { wx = await fetchOpenMeteo(start, end); } catch (e2) { el.hidden = true; return; } }
+      try { localStorage.setItem(cacheKey, JSON.stringify({ at: Date.now(), start: start, wx: wx })); } catch (e) {}
     }
-    if (!data || !data.time) { el.hidden = true; return; }
     const race = (state.schedule || []).find(function (x) { return x.race && x.day; });
-    el.innerHTML = data.time.map(function (d, i) {
-      const rain = data.precipitation_probability_max[i], gust = data.wind_gusts_10m_max[i];
-      const cls = (race && race.day === d ? ' race' : '') + (d === now.ymd ? ' today' : '');
-      return '<div class="' + cls.trim() + '"><div class="d">' + fmtDate(d) + (race && race.day === d ? ' · race' : '') + '</div>' +
-        '<div class="t">' + Math.round(data.temperature_2m_max[i]) + '°<small>/ ' + Math.round(data.temperature_2m_min[i]) + '°</small></div>' +
-        '<div class="c">' + esc(wxLabel(data.weather_code[i])) + '</div>' +
-        '<div class="r' + (rain >= 40 ? ' wet' : '') + '">rain ' + (rain == null ? '—' : rain + '%') + (gust ? ' · gusts ' + Math.round(gust) + ' mph' : '') + '</div></div>';
-    }).join('') + '<div class="foot">Forecast for Circuit of The Americas · Open-Meteo · refreshes hourly</div>';
+    el.innerHTML = wx.days.map(function (o) {
+      const isRace = race && race.day === o.d;
+      const cls = (isRace ? ' race' : '') + (o.d === now.ymd ? ' today' : '');
+      return '<div class="' + cls.trim() + '"><div class="d">' + fmtDate(o.d) + (isRace ? ' · race' : '') + '</div>' +
+        '<div class="t">' + (o.hi != null ? o.hi + '°' : '—') + '<small>/ ' + (o.lo != null ? o.lo + '°' : '—') + '</small></div>' +
+        '<div class="c">' + esc(o.cond || '') + '</div>' +
+        '<div class="r' + (o.rain >= 40 ? ' wet' : '') + '">rain ' + (o.rain == null ? '—' : o.rain + '%') + (o.wind ? ' · ' + esc(o.wind) : '') + '</div></div>';
+    }).join('') + '<div class="foot">Forecast for Circuit of The Americas · ' + esc(wx.source) + ' · refreshes hourly</div>';
     el.hidden = false;
   }
 
