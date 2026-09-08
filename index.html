@@ -612,6 +612,13 @@
     transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
   }
   .utility-card:hover .arrow { opacity: 1; transform: translateX(4px); }
+  .utility-card.trip-done { opacity: 0.82; }
+  .utility-card.trip-done .utility-card-label { display: flex; align-items: center; gap: 8px; }
+  .utility-card-done-badge {
+    font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: oklch(56% 0.215 28 / 0.7); border: 1px solid oklch(56% 0.215 28 / 0.25); background: oklch(56% 0.215 28 / 0.04);
+    padding: 1px 7px; border-radius: 2px;
+  }
 
   /* Theme toggle */
   .theme-btn {
@@ -895,13 +902,13 @@
   <div class="series-block">
     <div class="series-header">
       <span class="series-header-name">League Road Trip</span>
-      <span class="series-header-meta">FIA WEC · Lone Star Le Mans · Austin TX · Sept 4–6 2026</span>
+      <span class="series-header-meta">FIA WEC · Lone Star Le Mans · Austin TX · Sept 4–6 2026 · Complete</span>
     </div>
-    <a class="utility-card" href="austin-2026/" style="border-top:1px solid var(--line)">
+    <a class="utility-card trip-done" href="austin-2026/" style="border-top:1px solid var(--line)">
       <div class="utility-card-left">
-        <span class="utility-card-label">Trip · WEC</span>
+        <span class="utility-card-label">Trip · WEC <span class="utility-card-done-badge">✓ Complete</span></span>
         <span class="utility-card-title">Austin 2026 — 6H of COTA</span>
-        <span class="utility-card-sub">Itinerary · Arrivals · Fair cost split</span>
+        <span class="utility-card-sub">Trip wrapped — kept live as the archive</span>
       </div>
       <div class="arrow">→</div>
     </a>

@@ -258,6 +258,34 @@
   p { margin: 0 0 14px; color: var(--ink); max-width: 65ch; }
   .dim { color: var(--ink-dim); }
 
+  .archived-banner {
+    border: 1px solid oklch(56% 0.215 28 / 0.35);
+    background: oklch(56% 0.215 28 / 0.05);
+    margin-top: 20px;
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .archived-banner::before {
+    content: "ARCHIVED";
+    position: absolute;
+    top: -10px; left: 20px;
+    background: var(--bg);
+    color: oklch(56% 0.215 28 / 0.85);
+    font-family: var(--body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0 8px;
+  }
+  .archived-banner .flag-txt { font-size: 15px; }
+  .archived-banner p { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--ink-dim); line-height: 1.6; }
+  .archived-banner b { color: var(--ink); font-weight: 700; }
+
   .callout {
     border: 1px solid var(--accent);
     background: oklch(86% 0.175 97 / 0.06);
@@ -973,6 +1001,11 @@
       <div><div class="k" id="cdK">Countdown</div><div class="v accent" id="cdV">—</div></div>
       <div><div class="k">City</div><div class="v">Austin</div></div>
       <div><div class="k">Crew</div><div class="v" id="metaCrew">—</div></div>
+    </div>
+
+    <div class="archived-banner reveal">
+      <span class="flag-txt">🏁</span>
+      <p><b>Trip complete.</b> The 6 Hours of COTA weekend has wrapped — this page is kept live as the archive: settle-up, the food list and everyone's flights stay here for the record. Building next year's trip page? Copy this one as the starting point.</p>
     </div>
   </header>
 
